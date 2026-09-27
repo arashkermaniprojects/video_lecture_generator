@@ -1,0 +1,85 @@
+================================================================================
+  ACT 5: DPO vs RLHF TAB (10 minutes)
+  Tab: DPO vs RLHF (fifth tab)
+================================================================================
+
+
+COMPONENTS — LEFT PANEL
+-----------------------
+  1. RLHF summary phase bar (blue border)
+     Static: "Three separate stages: SFT -> train reward model -> PPO."
+
+  2. DPO summary phase bar (green border)
+     Static: "Two stages: SFT -> direct preference optimisation."
+
+  3. "Implicit reward gap" slider
+     Range: 0.00 to 5.00. Default: 1.50.
+     Represents: log(pi(y_w|x)/pi_ref(y_w|x)) - log(pi(y_l|x)/pi_ref(y_l|x))
+     Higher = policy strongly separates winner from loser.
+
+  4. Beta slider for DPO
+     Range: 0.01 to 0.50. Default: 0.10.
+     Controls DPO loss temperature.
+
+  5. Stat pills (DPO Loss, P(preferred), Implicit R(y_w), Implicit R(y_l))
+     Shows the DPO reparameterisation: R(x,y) = beta * log(pi/pi_ref).
+
+
+COMPONENTS — RIGHT PANEL
+-------------------------
+  6. "DPO Loss Landscape" chart (SVG)
+     Plots DPO loss vs log-ratio gap for four beta values (0.05, 0.10, 0.20,
+     0.50) as coloured curves. Current beta drawn thicker. Purple dot marks
+     the current operating point. Vertical dashed line at current gap.
+
+  7. Comparison table (static, 6 rows)
+     Compares RLHF vs DPO across: Reward Model, RL Loop, Training Stability,
+     Flexibility, Compute Cost, Online Exploration. Colour-coded tags.
+
+  8. "Key Insight" phase bar (green border)
+     Explains DPO's closed-form solution for the optimal RLHF policy.
+
+
+TEACHING STEPS
+--------------
+1. Read the two summary phase bars (components 1, 2) aloud. Contrast:
+   "RLHF: three stages, needs a reward model, needs PPO."
+   "DPO: two stages, no reward model, no RL."
+
+2. Explain the insight: "DPO's key discovery is that you don't need to learn
+   the reward model separately. The reward is implicitly defined by the policy:
+   R(x,y) = beta * log(pi(y|x) / pi_ref(y|x))."
+
+3. Walk through the comparison table (component 7) row by row:
+   - Reward Model: RLHF needs one, DPO doesn't.
+   - RL Loop: RLHF uses PPO, DPO uses classification loss.
+   - Stability: RLHF can be unstable, DPO is more stable.
+   - Flexibility: RLHF is more flexible, DPO is moderate.
+   - Compute: RLHF needs 4 models in memory, DPO needs 2.
+   - Online Exploration: RLHF generates new responses, DPO uses offline data.
+
+4. DEMONSTRATION 1 — Default values (gap=1.50, beta=0.10):
+   Point to the loss chart (component 6): "Four curves for different betas.
+   The thicker one is our current beta=0.10."
+   Point to the purple dot: "At gap=1.50, our loss is [value]."
+   Read stat pills.
+
+5. DEMONSTRATION 2 — Sweep the gap from 0 to 5:
+   Slowly drag the gap slider from 0 to 5.
+   "As the policy separates winner from loser, loss drops toward zero."
+   "At gap=0: loss is maximised — model can't distinguish them."
+   "At gap=5: loss near zero — model is very confident."
+
+6. DEMONSTRATION 3 — Compare beta values:
+   Set gap=2.00. Toggle beta through 0.05, 0.10, 0.20, 0.50.
+   "Lower beta = flatter curve = weaker gradient. Slower but gentler learning."
+   "Higher beta = steeper curve = stronger signal. Faster but may over-correct."
+   Point to which curve becomes thick as beta changes.
+
+7. Read the "Key Insight" phase bar (component 8). Connect back to the Core
+   Idea equation from the theory section: "DPO's equation is mathematically
+   equivalent to the RLHF objective, just solved in closed form."
+
+>> Transition: Load 07_epilogue_checklist.txt for wrap-up.
+
+================================================================================

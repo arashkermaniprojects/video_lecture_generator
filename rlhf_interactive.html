@@ -1,0 +1,1716 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Reinforcement Learning from Human Feedback — Full Interactive Lecture</title>
+  <style>
+    :root{
+      --bg:#08101f;--panel:rgba(17,24,47,0.88);--stroke:rgba(255,255,255,0.18);
+      --text:#f5f7ff;--muted:#e7edff;--muted-soft:#d9e3ff;
+      --normal:rgba(106,169,255,0.72);--compare:rgba(255,209,102,0.78);
+      --match:rgba(100,240,200,0.65);--mismatch:rgba(255,92,122,0.82);
+      --skip:rgba(199,125,255,0.80);--found:rgba(100,240,200,0.85);
+      --inactive:rgba(255,255,255,0.10);
+      --c1:#6aa9ff;--c2:#64f0c8;--c3:#ffd166;--c4:#ff5c7a;--c5:#c77dff;--c6:#ff9f43;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:radial-gradient(1200px 800px at 20% 0%,#14204a 0%,var(--bg) 45%,#070a14 100%);
+      color:var(--text);min-height:100vh;font-size:16px;line-height:1.6;}
+    h1{text-align:center;font-size:30px;font-weight:760;margin:18px 0 6px;letter-spacing:-.4px}
+    .subtitle{text-align:center;font-size:16px;color:var(--muted-soft);margin:0 0 16px}
+
+    .wrap{max-width:1520px;margin:0 auto;padding:0 16px 24px;display:grid;grid-template-columns:minmax(470px,0.92fr) minmax(0,1.35fr);gap:18px}
+    @media(max-width:980px){.wrap{grid-template-columns:1fr}}
+    .card{background:linear-gradient(180deg,rgba(28,38,74,0.92),rgba(12,18,37,0.96));
+      border:1px solid rgba(255,255,255,0.14);border-radius:18px;box-shadow:0 14px 34px rgba(0,0,0,0.34);overflow:hidden}
+    .card h2{margin:0;padding:16px 18px 12px;font-size:22px;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.10)}
+    .controls{padding:16px 18px 18px}
+    label{display:block;font-size:15px;font-weight:650;color:var(--muted-soft);margin-bottom:8px}
+    select,input[type="text"],input[type="number"],input[type="range"],button{
+      width:100%;border-radius:12px;border:1px solid rgba(255,255,255,0.18);
+      background:rgba(7,10,24,0.72);color:var(--text);padding:12px 14px;outline:none;font-size:15px}
+    input[type="range"]{padding:10px 0;-webkit-appearance:auto}
+    button{cursor:pointer;font-weight:720;background:rgba(106,169,255,0.18);transition:transform .08s,background .12s}
+    button:hover{background:rgba(106,169,255,0.28)}button:active{transform:scale(0.99)}
+    button.secondary{background:rgba(255,255,255,0.10)}button.secondary:hover{background:rgba(255,255,255,0.16)}
+    button.danger{background:rgba(255,92,122,0.18)}button.danger:hover{background:rgba(255,92,122,0.26)}
+    button.success{background:rgba(100,240,200,0.14)}button.success:hover{background:rgba(100,240,200,0.22)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+    .btnRow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px}
+    @media(max-width:980px){.btnRow{grid-template-columns:repeat(3,1fr)}}
+    .mb10{margin-bottom:10px}
+    .stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.10)}
+    .pill{border-radius:14px;border:1px solid rgba(255,255,255,0.14);background:rgba(5,9,21,0.68);
+      padding:12px 14px;font-size:15px;color:var(--muted-soft);display:flex;justify-content:space-between;gap:10px}
+    .pill b{color:var(--text);font-weight:750}
+    .pill.wide{grid-column:1/-1}
+    .hint{font-size:15px;color:var(--muted-soft);padding:0 18px 18px;line-height:1.55}
+
+    /* Intro/Theory */
+    .intro-section{max-width:1520px;margin:0 auto 14px;padding:0 16px}
+    .intro-card{background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03));
+      border:1px solid rgba(255,255,255,0.14);border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,0.30);overflow:hidden}
+    .intro-header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
+      cursor:pointer;background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.08)}
+    .intro-header h2{margin:0;font-size:22px}
+    .intro-toggle{background:rgba(106,169,255,0.14);border:1px solid rgba(106,169,255,0.25);
+      color:#cfe0ff;border-radius:8px;padding:7px 14px;font-size:14px;font-weight:700;cursor:pointer;width:auto;
+      transition:background .15s}
+    .intro-toggle:hover{background:rgba(106,169,255,0.22)}
+    .intro-body{padding:22px 24px;line-height:1.75;font-size:16px;overflow:hidden;max-height:80000px;transition:max-height .4s,padding .4s}
+    .intro-body.collapsed{max-height:0!important;padding-top:0;padding-bottom:0}
+    .intro-body h3{font-size:19px;color:#9dc3ff;margin:20px 0 8px;font-weight:760}
+    .intro-body h3:first-child{margin-top:0}
+    .intro-body p{margin:0 0 12px;color:var(--text)}
+    .math-inline{display:inline-block;padding:4px 9px;background:rgba(106,169,255,0.22);border:1px solid rgba(210,228,255,0.20);border-radius:6px;
+      font-family:'Courier New',monospace;font-size:16px;font-weight:700;color:#f3f7ff}
+    .key-concept{border-radius:14px;border:1px solid rgba(100,240,200,0.15);background:rgba(100,240,200,0.04);
+      padding:16px 18px;margin:14px 0;font-size:15px;line-height:1.72}
+    .key-concept .kc-title{font-weight:760;color:#8df3d7;margin-bottom:6px;font-size:16px}
+    .warning-box{border-radius:14px;border:1px solid rgba(255,92,122,0.15);background:rgba(255,92,122,0.04);
+      padding:16px 18px;margin:14px 0;font-size:15px;line-height:1.72}
+    .warning-box .wb-title{font-weight:760;color:#ff7e96;margin-bottom:6px;font-size:16px}
+    .example-box{border-radius:14px;border:1px solid rgba(106,169,255,0.15);background:rgba(106,169,255,0.04);
+      padding:16px 18px;margin:14px 0;font-size:15px;line-height:1.72}
+    .example-box .eb-title{font-weight:760;color:#9dc3ff;margin-bottom:6px;font-size:16px}
+    .code-block{display:block;padding:14px 18px;background:rgba(1,5,18,0.92);border-radius:10px;
+      border:1px solid rgba(214,230,255,0.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.04);font-family:'Courier New',monospace;font-size:16px;font-weight:700;color:#f4f8ff;margin:12px 0;line-height:1.8;white-space:pre-wrap}
+
+    /* Tabs */
+    .tabBar{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,0.10);overflow-x:auto}
+    .tab{flex:1;padding:12px 10px;font-size:15px;font-weight:700;color:var(--muted-soft);background:transparent;
+      border:none;border-bottom:2px solid transparent;border-radius:0;cursor:pointer;
+      transition:color .15s,border-color .15s,background .15s;white-space:nowrap;text-align:center}
+    .tab:hover{color:var(--text);background:rgba(106,169,255,0.04)}
+    .tab.active{color:var(--text);border-bottom-color:rgba(106,169,255,0.7);background:rgba(106,169,255,0.06)}
+    .modulePanel,.moduleViz{display:block}
+    .modulePanel.hidden,.moduleViz.hidden{display:none}
+
+    /* Viz */
+    .viz{padding:18px;display:flex;flex-direction:column;gap:14px}
+    .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:15px;color:var(--muted-soft);align-items:center}
+    .dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;border:1px solid rgba(255,255,255,0.18)}
+    svg{width:100%;display:block}
+
+    .phase-bar{border-radius:14px;border:1px solid rgba(255,255,255,0.14);background:rgba(4,8,20,0.64);
+      padding:13px 16px;font-size:15px;color:var(--muted-soft);line-height:1.68;transition:border-color .3s}
+    .phase-bar .phaseTitle{font-weight:800;font-size:17px;margin-bottom:4px}
+
+    .graph-wrap{background:rgba(4,8,20,0.62);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:14px;overflow:hidden}
+    .graph-wrap .strip-label{font-size:16px;font-weight:760;color:var(--muted-soft);margin-bottom:8px;letter-spacing:.45px;text-transform:uppercase;padding:2px 2px 0}
+
+    /* Pipeline nodes */
+    .pipeline-node{
+      border-radius:14px;border:1px solid rgba(255,255,255,0.14);padding:18px 18px;
+      text-align:center;cursor:pointer;transition:all .2s;position:relative;
+    }
+    .pipeline-node:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.3)}
+    .pipeline-node .node-title{font-weight:760;font-size:17px;margin-bottom:6px}
+    .pipeline-node .node-desc{font-size:15px;color:var(--muted-soft);line-height:1.5}
+    .pipeline-node.active{border-width:2px}
+
+    .pipeline-arrow{color:var(--muted-soft);font-size:28px;display:flex;align-items:center;justify-content:center;opacity:0.6}
+
+    /* Response cards */
+    .response-card{
+      border-radius:14px;border:1px solid rgba(255,255,255,0.14);padding:16px 18px;
+      cursor:pointer;transition:all .2s;font-size:15px;line-height:1.72;
+      background:rgba(5,9,21,0.62);
+    }
+    .response-card:hover{border-color:rgba(106,169,255,0.4);background:rgba(106,169,255,0.06)}
+    .response-card.selected-win{border-color:rgba(100,240,200,0.5);background:rgba(100,240,200,0.08)}
+    .response-card.selected-lose{border-color:rgba(255,92,122,0.4);background:rgba(255,92,122,0.06);opacity:0.7}
+    .response-label{font-size:15px;font-weight:760;text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
+
+    /* Bar charts */
+    .bar-container{display:flex;align-items:flex-end;gap:6px;height:210px;padding:0 12px}
+    .bar-group{flex:1;display:flex;flex-direction:column;align-items:center;height:100%}
+    .bar{border-radius:6px 6px 0 0;transition:height .4s cubic-bezier(.4,0,.2,1);min-width:20px;width:100%}
+    .bar-label{font-size:15px;color:var(--muted-soft);margin-top:8px;text-align:center;white-space:nowrap}
+    .bar-value{font-size:15px;color:var(--text);font-weight:760;margin-bottom:4px}
+    .bar-wrapper{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;width:100%}
+
+    /* Distribution viz */
+    .dist-bars{display:flex;align-items:flex-end;gap:4px;height:176px;padding:0 6px}
+    .dist-bar{flex:1;border-radius:4px 4px 0 0;transition:height .3s;min-width:14px;cursor:grab;position:relative}
+    .dist-bar:hover{filter:brightness(1.3)}
+    .dist-bar .dval{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:14px;font-weight:760;color:var(--text);white-space:nowrap}
+
+    /* Reward hacking chart */
+    .rh-chart{position:relative;height:240px;background:rgba(0,0,0,0.15);border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden}
+
+    /* Comparison table */
+    .cmp-table{width:100%;border-collapse:collapse;font-size:15px;margin:12px 0}
+    .cmp-table th{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.12);color:var(--muted-soft);font-size:15px;font-weight:700}
+    .cmp-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.06)}
+    .cmp-table tr:hover td{background:rgba(106,169,255,0.04)}
+
+    .tag{display:inline-block;padding:4px 10px;border-radius:6px;font-size:15px;font-weight:760}
+    .tag-blue{background:rgba(106,169,255,0.16);color:#bed8ff}
+    .tag-green{background:rgba(100,240,200,0.16);color:#b6f9e8}
+    .tag-yellow{background:rgba(255,209,102,0.16);color:#ffe7ab}
+    .tag-red{background:rgba(255,92,122,0.18);color:#ffb4c3}
+    .tag-purple{background:rgba(199,125,255,0.18);color:#e8c8ff}
+
+    .slider-val{display:inline-block;min-width:52px;text-align:right;font-family:'Courier New',monospace;font-size:15px;font-weight:760;color:#b8d5ff}
+
+    /* Full-width sections */
+    .full-section{max-width:1520px;margin:0 auto 14px;padding:0 16px}
+    .full-card{background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03));
+      border:1px solid rgba(255,255,255,0.14);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,0.25);overflow:hidden}
+
+    /* Pipeline diagram */
+    .pipeline-grid{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:stretch;padding:14px}
+    @media(max-width:700px){
+      .pipeline-grid{grid-template-columns:1fr;gap:12px}
+      .pipeline-arrow{transform:rotate(90deg)}
+    }
+
+    .mini-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}
+    .mini-table th{text-align:center;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.12);color:var(--muted-soft);font-weight:700;font-size:15px}
+    .mini-table td{text-align:center;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Courier New',monospace}
+  </style>
+</head>
+<body>
+
+<h1>Reinforcement Learning from Human Feedback (RLHF)</h1>
+<p class="subtitle">NLP — Interactive Lecture</p>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- THEORY SECTION                                           -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="intro-section">
+  <div class="intro-card">
+    <div class="intro-header" onclick="toggleIntro()">
+      <h2>Theory &amp; Background</h2>
+      <button class="intro-toggle" id="introBtn">Collapse</button>
+    </div>
+    <div class="intro-body" id="introBody">
+
+      <div class="theory-module" id="theory-what-is-rlhf">
+        <h3>What is RLHF?</h3>
+        <p>Reinforcement Learning from Human Feedback (RLHF) is a technique for fine-tuning large language models (LLMs) so their outputs better align with human preferences. Instead of relying solely on next-token prediction (which optimises likelihood), RLHF trains the model to maximise a <em>reward signal</em> learned from human judgements.</p>
+      </div>
+
+      <div class="theory-module" id="theory-core-idea">
+        <div class="key-concept">
+          <div class="kc-title">Core Idea</div>
+          Traditional LLM training optimises: <span class="math-inline">max log P(token | context)</span><br>
+          RLHF adds a preference-based objective: <span class="math-inline">max E[R(response)] - &beta; &middot; KL(&pi; || &pi;<sub>ref</sub>)</span><br>
+          where <span class="math-inline">R</span> is the learned reward, <span class="math-inline">&pi;</span> is the policy, <span class="math-inline">&pi;<sub>ref</sub></span> is the reference (SFT) policy, and <span class="math-inline">&beta;</span> controls the KL penalty.
+        </div>
+      </div>
+
+      <div class="theory-module" id="theory-three-stages">
+        <h3>The Three Stages of RLHF</h3>
+        <p>The RLHF pipeline consists of three sequential stages, each building on the previous one:</p>
+        <p><strong>Stage 1 — Supervised Fine-Tuning (SFT):</strong> Start with a pre-trained LLM and fine-tune it on high-quality demonstration data (prompt, ideal-response pairs). This gives the model a baseline ability to follow instructions and produce coherent responses.</p>
+        <p><strong>Stage 2 — Reward Model Training:</strong> Collect human preference data by showing annotators pairs of model responses and asking which is better. Train a reward model <span class="math-inline">R(x, y)</span> that predicts a scalar score for any (prompt, response) pair. The reward model learns to capture human preferences via the Bradley-Terry model:</p>
+        <div class="code-block">P(y_w > y_l | x) = sigmoid(R(x, y_w) - R(x, y_l))</div>
+        <p>where <span class="math-inline">y<sub>w</sub></span> is the preferred (winning) response and <span class="math-inline">y<sub>l</sub></span> is the rejected (losing) response.</p>
+        <p><strong>Stage 3 — RL Optimisation (PPO):</strong> Use the reward model as the environment's reward signal and fine-tune the SFT model using Proximal Policy Optimisation (PPO). A KL divergence penalty prevents the policy from straying too far from the SFT baseline, avoiding reward hacking.</p>
+      </div>
+
+      <div class="theory-module" id="theory-why-not-supervised">
+        <div class="example-box">
+          <div class="eb-title">Why Not Just Use More Supervised Data?</div>
+          Supervised learning requires knowing the <em>correct</em> output for every input — but for open-ended tasks like "write a helpful response," there are many valid answers. RLHF sidesteps this by learning from <em>comparisons</em>: it's much easier for humans to judge "Response A is better than Response B" than to write the perfect response from scratch.
+        </div>
+      </div>
+
+      <div class="theory-module" id="theory-bradley-terry">
+        <h3>The Reward Model (Bradley-Terry)</h3>
+        <p>The reward model is trained on pairwise comparisons. Given a prompt <span class="math-inline">x</span> and two responses <span class="math-inline">y<sub>1</sub></span>, <span class="math-inline">y<sub>2</sub></span>, a human annotator indicates which is preferred. The Bradley-Terry model assumes:</p>
+        <div class="code-block">P(y_1 > y_2) = exp(R(x,y_1)) / (exp(R(x,y_1)) + exp(R(x,y_2)))
+             = sigmoid(R(x,y_1) - R(x,y_2))</div>
+        <p>The reward model is trained to minimise the negative log-likelihood of the observed preferences:</p>
+        <div class="code-block">L = -E[ log sigmoid(R(x, y_w) - R(x, y_l)) ]</div>
+      </div>
+
+      <div class="theory-module" id="theory-kl-reward-hacking">
+        <h3>KL Divergence &amp; Reward Hacking</h3>
+        <p>Without constraints, the policy would learn to exploit weaknesses in the reward model — producing outputs that receive high reward but are actually low quality (e.g., repetitive phrases that the reward model rates highly). The KL divergence penalty <span class="math-inline">KL(&pi; || &pi;<sub>ref</sub>)</span> keeps the policy close to the SFT model:</p>
+        <div class="code-block">KL(&pi; || &pi;_ref) = E_&pi;[ log(&pi;(y|x) / &pi;_ref(y|x)) ]</div>
+        <div class="warning-box">
+          <div class="wb-title">Reward Hacking</div>
+          If <span class="math-inline">&beta;</span> is too small, the model can "hack" the reward model by finding adversarial outputs that score high but aren't actually good. If <span class="math-inline">&beta;</span> is too large, the model barely changes from the SFT baseline and doesn't improve. Finding the right <span class="math-inline">&beta;</span> is critical.
+        </div>
+      </div>
+
+      <div class="theory-module" id="theory-dpo">
+        <h3>DPO: A Simpler Alternative</h3>
+        <p>Direct Preference Optimisation (DPO) is a newer approach that skips the reward model entirely. It reparameterises the RLHF objective into a classification loss directly on the preference pairs:</p>
+        <div class="code-block">L_DPO = -E[ log sigmoid(&beta;(log &pi;(y_w|x)/&pi;_ref(y_w|x)
+                           - log &pi;(y_l|x)/&pi;_ref(y_l|x))) ]</div>
+        <p>DPO is simpler to implement (no separate reward model, no RL loop), but RLHF with PPO can be more powerful when you have a strong reward model and want to optimise over diverse responses.</p>
+      </div>
+
+      <div class="theory-module" id="theory-rlhf-vs-dpo">
+        <div class="key-concept">
+          <div class="kc-title">RLHF vs DPO at a Glance</div>
+          <strong>RLHF:</strong> SFT &rarr; Reward Model &rarr; PPO &nbsp;|&nbsp; More flexible, harder to train<br>
+          <strong>DPO:</strong> SFT &rarr; Direct preference loss &nbsp;|&nbsp; Simpler, single training stage
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- MAIN INTERACTIVE AREA                                    -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="wrap">
+
+  <!-- LEFT PANEL: Controls -->
+  <div class="card">
+    <div class="tabBar" id="tabBar">
+      <button class="tab active" data-mod="0">Pipeline</button>
+      <button class="tab" data-mod="1">Reward Model</button>
+      <button class="tab" data-mod="2">PPO</button>
+      <button class="tab" data-mod="3">KL Divergence</button>
+      <button class="tab" data-mod="4">DPO vs RLHF</button>
+    </div>
+
+    <!-- Module 0: Pipeline -->
+    <div class="modulePanel" data-mod="0">
+      <div class="controls">
+        <label>Click a stage in the pipeline to learn more</label>
+        <div class="phase-bar" id="pipelineInfo" style="border-color:rgba(106,169,255,0.35)">
+          <div class="phaseTitle" style="color:#6aa9ff">RLHF Pipeline Overview</div>
+          <div id="pipelineDesc">The RLHF process takes a pre-trained LLM through three stages: supervised fine-tuning, reward model training, and RL optimisation. Click any stage on the right to explore it in detail.</div>
+        </div>
+        <div class="stat">
+          <div class="pill wide"><span>Stage</span><b id="pipelineStageName">Overview</b></div>
+          <div class="pill"><span>Input</span><b id="pipelineInput">Pre-trained LLM</b></div>
+          <div class="pill"><span>Output</span><b id="pipelineOutput">Aligned Model</b></div>
+          <div class="pill"><span>Data Needed</span><b id="pipelineData">Varies by stage</b></div>
+          <div class="pill"><span>Method</span><b id="pipelineMethod">Multi-stage</b></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 1: Reward Model -->
+    <div class="modulePanel hidden" data-mod="1">
+      <div class="controls">
+        <label>Prompt</label>
+        <select id="rmPromptSel" onchange="loadRMPrompt()">
+          <option value="0">Explain quantum computing simply</option>
+          <option value="1">Write a poem about the ocean</option>
+          <option value="2">How do I make pasta?</option>
+          <option value="3">What is machine learning?</option>
+        </select>
+        <div class="mb10"></div>
+        <label>Click the response you prefer (simulates human annotation)</label>
+        <div id="rmResponses"></div>
+        <div class="stat" id="rmStats" style="display:none">
+          <div class="pill wide"><span>Comparisons made</span><b id="rmCount">0</b></div>
+          <div class="pill"><span>R(chosen)</span><b id="rmChosenR">—</b></div>
+          <div class="pill"><span>R(rejected)</span><b id="rmRejectedR">—</b></div>
+          <div class="pill"><span>P(chosen wins)</span><b id="rmProb">—</b></div>
+          <div class="pill"><span>Loss</span><b id="rmLoss">—</b></div>
+        </div>
+        <div class="btnRow" style="grid-template-columns:1fr 1fr;margin-top:12px">
+          <button class="secondary" onclick="resetRM()">Reset Reward Model</button>
+          <button onclick="newRMPair()">New Pair</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 2: PPO -->
+    <div class="modulePanel hidden" data-mod="2">
+      <div class="controls">
+        <label>KL Penalty Coefficient (&beta;) — <span class="slider-val" id="betaVal">0.20</span></label>
+        <input type="range" id="betaSlider" min="0" max="100" value="20" oninput="updatePPO()">
+
+        <label>Learning Rate — <span class="slider-val" id="lrVal">0.010</span></label>
+        <input type="range" id="lrSlider" min="1" max="50" value="10" oninput="updatePPO()">
+
+        <label>Training Steps — <span class="slider-val" id="stepsVal">50</span></label>
+        <input type="range" id="stepsSlider" min="10" max="200" value="50" oninput="updatePPO()">
+
+        <div class="btnRow" style="grid-template-columns:1fr 1fr 1fr;margin-top:12px">
+          <button onclick="runPPO()">Run PPO</button>
+          <button class="secondary" onclick="stepPPO()">Step</button>
+          <button class="danger" onclick="resetPPO()">Reset</button>
+        </div>
+
+        <div class="stat">
+          <div class="pill"><span>Step</span><b id="ppoStep">0</b></div>
+          <div class="pill"><span>Reward</span><b id="ppoReward">0.00</b></div>
+          <div class="pill"><span>KL Penalty</span><b id="ppoKL">0.00</b></div>
+          <div class="pill"><span>Net Objective</span><b id="ppoObj">0.00</b></div>
+        </div>
+
+        <div class="phase-bar" id="ppoPhase" style="margin-top:12px;border-color:rgba(106,169,255,0.35)">
+          <div class="phaseTitle" style="color:#6aa9ff">Waiting</div>
+          <div id="ppoPhaseDesc">Adjust parameters and click Run PPO to simulate the optimisation loop.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 3: KL Divergence -->
+    <div class="modulePanel hidden" data-mod="3">
+      <div class="controls">
+        <label>Reference Distribution &pi;<sub>ref</sub> (fixed SFT model)</label>
+        <div class="graph-wrap" style="margin-bottom:10px">
+          <div class="strip-label">Reference Policy &pi;<sub>ref</sub></div>
+          <div class="dist-bars" id="klRefBars"></div>
+        </div>
+
+        <label>Drag the bars below to modify the policy distribution &pi;</label>
+        <div class="graph-wrap" style="margin-bottom:10px">
+          <div class="strip-label">Current Policy &pi; (drag to adjust)</div>
+          <div class="dist-bars" id="klPolicyBars"></div>
+        </div>
+
+        <div class="stat">
+          <div class="pill wide"><span>KL(&pi; || &pi;<sub>ref</sub>)</span><b id="klValue">0.000</b></div>
+          <div class="pill"><span>&beta; &middot; KL</span><b id="klPenalty">0.000</b></div>
+          <div class="pill"><span>&beta;</span><b id="klBeta">0.20</b></div>
+        </div>
+
+        <label style="margin-top:10px">KL Penalty &beta; — <span class="slider-val" id="klBetaVal">0.20</span></label>
+        <input type="range" id="klBetaSlider" min="0" max="100" value="20" oninput="updateKL()">
+
+        <button class="secondary" onclick="resetKL()" style="margin-top:10px">Reset to Reference</button>
+      </div>
+    </div>
+
+    <!-- Module 4: DPO vs RLHF -->
+    <div class="modulePanel hidden" data-mod="4">
+      <div class="controls">
+        <label>Compare the two approaches side by side</label>
+
+        <div class="phase-bar" style="border-color:rgba(106,169,255,0.35);margin-bottom:10px">
+          <div class="phaseTitle" style="color:#6aa9ff">RLHF (PPO-based)</div>
+          <div>Three separate stages: SFT &rarr; train reward model &rarr; PPO optimisation. Requires running RL during training.</div>
+        </div>
+
+        <div class="phase-bar" style="border-color:rgba(100,240,200,0.35);margin-bottom:10px">
+          <div class="phaseTitle" style="color:#64f0c8">DPO (Direct)</div>
+          <div>Two stages: SFT &rarr; direct preference optimisation. No reward model or RL loop needed.</div>
+        </div>
+
+        <label style="margin-top:6px">Adjust implicit reward gap &mdash; <span class="slider-val" id="dpoGapVal">1.50</span></label>
+        <input type="range" id="dpoGapSlider" min="0" max="50" value="15" oninput="updateDPO()">
+
+        <label>&beta; for DPO — <span class="slider-val" id="dpoBetaVal">0.10</span></label>
+        <input type="range" id="dpoBetaSlider" min="1" max="50" value="10" oninput="updateDPO()">
+
+        <div class="stat">
+          <div class="pill"><span>DPO Loss</span><b id="dpoLoss">—</b></div>
+          <div class="pill"><span>P(preferred)</span><b id="dpoProb">—</b></div>
+          <div class="pill"><span>Implicit R(y<sub>w</sub>)</span><b id="dpoRW">—</b></div>
+          <div class="pill"><span>Implicit R(y<sub>l</sub>)</span><b id="dpoRL">—</b></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end left panel -->
+
+  <!-- RIGHT PANEL: Visualizations -->
+  <div class="card">
+
+    <!-- Mod 0: Pipeline Viz -->
+    <div class="moduleViz" data-mod="0">
+      <h2>RLHF Pipeline</h2>
+      <div class="viz">
+        <div class="legend">
+          <span><span class="dot" style="background:#6aa9ff"></span>Stage 1: SFT</span>
+          <span><span class="dot" style="background:#ffd166"></span>Stage 2: Reward Model</span>
+          <span><span class="dot" style="background:#64f0c8"></span>Stage 3: PPO</span>
+        </div>
+        <div class="pipeline-grid" id="pipelineViz">
+          <div class="pipeline-node" style="border-color:rgba(106,169,255,0.4);background:rgba(106,169,255,0.06)" onclick="selectStage(0)">
+            <div class="node-title" style="color:#6aa9ff">Stage 1: SFT</div>
+            <div class="node-desc">Supervised Fine-Tuning on demonstration data</div>
+            <div style="margin-top:8px"><span class="tag tag-blue">Pre-trained LLM &rarr; SFT Model</span></div>
+          </div>
+          <div class="pipeline-arrow">&rarr;</div>
+          <div class="pipeline-node" style="border-color:rgba(255,209,102,0.4);background:rgba(255,209,102,0.06)" onclick="selectStage(1)">
+            <div class="node-title" style="color:#ffd166">Stage 2: Reward Model</div>
+            <div class="node-desc">Train reward from human pairwise comparisons</div>
+            <div style="margin-top:8px"><span class="tag tag-yellow">Preferences &rarr; R(x,y)</span></div>
+          </div>
+          <div class="pipeline-arrow">&rarr;</div>
+          <div class="pipeline-node" style="border-color:rgba(100,240,200,0.4);background:rgba(100,240,200,0.06)" onclick="selectStage(2)">
+            <div class="node-title" style="color:#64f0c8">Stage 3: PPO</div>
+            <div class="node-desc">RL fine-tuning with reward &amp; KL penalty</div>
+            <div style="margin-top:8px"><span class="tag tag-green">SFT + R &rarr; Aligned Model</span></div>
+          </div>
+        </div>
+
+        <!-- Detailed diagrams per stage -->
+        <div class="graph-wrap" id="pipelineDetail">
+          <div class="strip-label" id="pipelineDetailTitle">Pipeline Overview</div>
+          <svg id="pipelineSvg" viewBox="0 0 800 280" style="height:340px"></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mod 1: Reward Model Viz -->
+    <div class="moduleViz hidden" data-mod="1">
+      <h2>Reward Model Training</h2>
+      <div class="viz">
+        <div class="legend">
+          <span><span class="dot" style="background:#64f0c8"></span>Chosen reward</span>
+          <span><span class="dot" style="background:#ff5c7a"></span>Rejected reward</span>
+          <span><span class="dot" style="background:#ffd166"></span>Reward gap</span>
+        </div>
+
+        <div class="graph-wrap">
+          <div class="strip-label">Reward Scores Over Comparisons</div>
+          <svg id="rmSvg" viewBox="0 0 800 240" style="height:290px"></svg>
+        </div>
+
+        <div class="graph-wrap">
+          <div class="strip-label">Bradley-Terry Probability</div>
+          <div style="padding:10px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <div style="flex:1;height:28px;border-radius:8px;overflow:hidden;display:flex;background:rgba(0,0,0,0.3)">
+                <div id="btBarWin" style="height:100%;background:rgba(100,240,200,0.5);transition:width .3s;width:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">50%</div>
+                <div id="btBarLose" style="height:100%;background:rgba(255,92,122,0.4);transition:width .3s;width:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">50%</div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted-soft)">
+              <span>P(chosen wins)</span><span>P(rejected wins)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="phase-bar" id="rmPhase" style="border-color:rgba(100,240,200,0.35)">
+          <div class="phaseTitle" style="color:#64f0c8">Instructions</div>
+          <div id="rmPhaseDesc">Select a prompt and click the response you prefer. The reward model learns from your preferences. Watch the reward scores diverge as you provide more comparisons.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mod 2: PPO Viz -->
+    <div class="moduleViz hidden" data-mod="2">
+      <h2>PPO Optimisation</h2>
+      <div class="viz">
+        <div class="legend">
+          <span><span class="dot" style="background:#6aa9ff"></span>Reward</span>
+          <span><span class="dot" style="background:#ff5c7a"></span>KL Penalty</span>
+          <span><span class="dot" style="background:#64f0c8"></span>Net Objective (R - &beta;&middot;KL)</span>
+        </div>
+        <div class="graph-wrap">
+          <div class="strip-label">Training Dynamics</div>
+          <svg id="ppoSvg" viewBox="0 0 800 280" style="height:340px"></svg>
+        </div>
+        <div class="graph-wrap">
+          <div class="strip-label">Reward vs KL Trade-off Frontier</div>
+          <svg id="ppoFrontierSvg" viewBox="0 0 800 220" style="height:270px"></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mod 3: KL Divergence Viz -->
+    <div class="moduleViz hidden" data-mod="3">
+      <h2>KL Divergence Explorer</h2>
+      <div class="viz">
+        <div class="legend">
+          <span><span class="dot" style="background:#6aa9ff"></span>&pi;<sub>ref</sub> (reference)</span>
+          <span><span class="dot" style="background:#c77dff"></span>&pi; (current policy)</span>
+          <span><span class="dot" style="background:#ffd166"></span>KL contribution per token</span>
+        </div>
+        <div class="graph-wrap">
+          <div class="strip-label">Overlay: Reference vs Policy Distributions</div>
+          <svg id="klOverlaySvg" viewBox="0 0 800 220" style="height:270px"></svg>
+        </div>
+        <div class="graph-wrap">
+          <div class="strip-label">Per-Token KL Contribution: &pi;(x) &middot; log(&pi;(x)/&pi;<sub>ref</sub>(x))</div>
+          <svg id="klContribSvg" viewBox="0 0 800 160" style="height:210px"></svg>
+        </div>
+        <div class="phase-bar" style="border-color:rgba(199,125,255,0.35)">
+          <div class="phaseTitle" style="color:#c77dff">How KL Divergence Works</div>
+          <div>KL divergence measures how different the current policy &pi; is from the reference &pi;<sub>ref</sub>. It's always &ge; 0 and equals 0 only when the distributions are identical. Drag the purple bars in the left panel to see how the KL changes as you shift probability mass.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mod 4: DPO vs RLHF Viz -->
+    <div class="moduleViz hidden" data-mod="4">
+      <h2>DPO vs RLHF</h2>
+      <div class="viz">
+        <div class="legend">
+          <span><span class="dot" style="background:#6aa9ff"></span>RLHF</span>
+          <span><span class="dot" style="background:#64f0c8"></span>DPO</span>
+        </div>
+
+        <div class="graph-wrap">
+          <div class="strip-label">DPO Loss Landscape</div>
+          <svg id="dpoSvg" viewBox="0 0 800 220" style="height:270px"></svg>
+        </div>
+
+        <table class="cmp-table">
+          <thead>
+            <tr><th>Aspect</th><th>RLHF (PPO)</th><th>DPO</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Reward Model</td><td><span class="tag tag-yellow">Required</span></td><td><span class="tag tag-green">Not needed</span></td></tr>
+            <tr><td>RL Loop</td><td><span class="tag tag-yellow">PPO with clipping</span></td><td><span class="tag tag-green">Classification loss</span></td></tr>
+            <tr><td>Training Stability</td><td><span class="tag tag-red">Can be unstable</span></td><td><span class="tag tag-green">More stable</span></td></tr>
+            <tr><td>Flexibility</td><td><span class="tag tag-green">High</span></td><td><span class="tag tag-yellow">Moderate</span></td></tr>
+            <tr><td>Compute Cost</td><td><span class="tag tag-red">4 models in memory</span></td><td><span class="tag tag-green">2 models</span></td></tr>
+            <tr><td>Online Exploration</td><td><span class="tag tag-green">Yes (generates new)</span></td><td><span class="tag tag-yellow">No (offline data)</span></td></tr>
+          </tbody>
+        </table>
+
+        <div class="phase-bar" style="border-color:rgba(100,240,200,0.35)">
+          <div class="phaseTitle" style="color:#64f0c8">Key Insight</div>
+          <div>DPO shows that the optimal policy under the RLHF objective has a closed-form solution. This lets us rewrite the reward-model loss directly as a policy loss — collapsing three stages into two. Adjust the sliders to see how the implicit reward gap and &beta; affect the DPO loss.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end right panel -->
+</div><!-- end wrap -->
+
+<script>
+/* ═══════════════════════════════════════════════════ */
+/* GLOBAL STATE                                        */
+/* ═══════════════════════════════════════════════════ */
+
+let currentMod = 0;
+
+/* Tab switching */
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    const mod = +t.dataset.mod;
+    currentMod = mod;
+    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', +b.dataset.mod === mod));
+    document.querySelectorAll('.modulePanel').forEach(p => p.classList.toggle('hidden', +p.dataset.mod !== mod));
+    document.querySelectorAll('.moduleViz').forEach(v => v.classList.toggle('hidden', +v.dataset.mod !== mod));
+    if (mod === 1) loadRMPrompt();
+    if (mod === 3) { initKL(); updateKL(); }
+    if (mod === 4) updateDPO();
+    if (mod === 0) drawPipelineOverview();
+  });
+});
+
+function toggleIntro() {
+  const body = document.getElementById('introBody');
+  const btn = document.getElementById('introBtn');
+  body.classList.toggle('collapsed');
+  btn.textContent = body.classList.contains('collapsed') ? 'Expand' : 'Collapse';
+}
+
+const SVG_AUDIT_BG = { r: 8, g: 16, b: 31, a: 1 };
+
+function parseSvgColor(input) {
+  const text = String(input || '').trim();
+  if (!text || text === 'none') return null;
+
+  if (text.startsWith('#')) {
+    const hex = text.slice(1);
+    if (hex.length === 3 || hex.length === 4) {
+      const [r, g, b, a = 'f'] = hex.split('');
+      return {
+        r: parseInt(r + r, 16),
+        g: parseInt(g + g, 16),
+        b: parseInt(b + b, 16),
+        a: parseInt(a + a, 16) / 255
+      };
+    }
+    if (hex.length === 6 || hex.length === 8) {
+      return {
+        r: parseInt(hex.slice(0, 2), 16),
+        g: parseInt(hex.slice(2, 4), 16),
+        b: parseInt(hex.slice(4, 6), 16),
+        a: hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1
+      };
+    }
+  }
+
+  const rgba = text.match(/rgba?\(([^)]+)\)/i);
+  if (rgba) {
+    const parts = rgba[1].split(',').map(part => parseFloat(part.trim()));
+    const [r = 0, g = 0, b = 0, a = 1] = parts;
+    return { r, g, b, a: Number.isFinite(a) ? a : 1 };
+  }
+
+  return null;
+}
+
+function mixColor(base, target, ratio) {
+  return {
+    r: Math.round(base.r + (target.r - base.r) * ratio),
+    g: Math.round(base.g + (target.g - base.g) * ratio),
+    b: Math.round(base.b + (target.b - base.b) * ratio),
+    a: 1
+  };
+}
+
+function blendOnBackground(fg, bg = SVG_AUDIT_BG) {
+  const alpha = fg?.a ?? 1;
+  return {
+    r: Math.round((fg.r * alpha) + (bg.r * (1 - alpha))),
+    g: Math.round((fg.g * alpha) + (bg.g * (1 - alpha))),
+    b: Math.round((fg.b * alpha) + (bg.b * (1 - alpha))),
+    a: 1
+  };
+}
+
+function luminance(color) {
+  const convert = (channel) => {
+    const normalized = channel / 255;
+    return normalized <= 0.03928
+      ? normalized / 12.92
+      : ((normalized + 0.055) / 1.055) ** 2.4;
+  };
+  return (0.2126 * convert(color.r)) + (0.7152 * convert(color.g)) + (0.0722 * convert(color.b));
+}
+
+function contrastRatio(fg, bg = SVG_AUDIT_BG) {
+  const light = Math.max(luminance(fg), luminance(bg));
+  const dark = Math.min(luminance(fg), luminance(bg));
+  return (light + 0.05) / (dark + 0.05);
+}
+
+function ensureReadableSvgColor(color, targetContrast = 4.5) {
+  if (!color) return null;
+
+  const flattened = blendOnBackground(color);
+  if (contrastRatio(flattened) >= targetContrast) return flattened;
+
+  const white = { r: 255, g: 255, b: 255, a: 1 };
+  let best = flattened;
+  let bestContrast = contrastRatio(flattened);
+
+  for (let ratio = 0.1; ratio <= 1.0; ratio += 0.05) {
+    const candidate = mixColor(flattened, white, ratio);
+    const candidateContrast = contrastRatio(candidate);
+    if (candidateContrast > bestContrast) {
+      best = candidate;
+      bestContrast = candidateContrast;
+    }
+    if (candidateContrast >= targetContrast) return candidate;
+  }
+
+  return best;
+}
+
+function formatRgb(color) {
+  return `rgb(${color.r}, ${color.g}, ${color.b})`;
+}
+
+function polishSvgText(svg, options = {}) {
+  if (!svg) return;
+  const minFont = options.minFont ?? 16.5;
+  const strongFont = options.strongFont ?? 18.5;
+  const formulaRegex = /(?:=|σ\(|π(?:_ref)?|β|∇|KL\s*\(|R\s*\(|P\s*\(|L\s*=|log\b|max\b|y_[wl1-9]|x\s*,\s*y)/i;
+
+  svg.querySelectorAll('text').forEach(node => {
+    const text = String(node.textContent || '').trim();
+    const currentSize = parseFloat(node.getAttribute('font-size') || '0') || 0;
+    const weight = parseInt(node.getAttribute('font-weight') || '400', 10) || 400;
+    const formulaLike = formulaRegex.test(text);
+    const annotationLike = /(?:stage\s+\d|demo data|human prefs|prompts \+ r|comparison #|training step|reward score|kl divergence|log-ratio gap|reward-kl trade-off|policy update|comparison\s+#|loss\s*=|loss\b|β=|ideal:|ground truth|generated response|expert-written response|pre-trained llm|aligned model|response [ab]|reward model|cross-entropy)/i.test(text);
+    const boostedSize = formulaLike
+      ? Math.max(currentSize || strongFont, 17)
+      : weight >= 700
+      ? Math.max(currentSize || strongFont, strongFont)
+      : Math.max(currentSize || minFont, minFont);
+    node.setAttribute('font-size', Number(boostedSize.toFixed(1)).toString());
+    if (formulaLike || annotationLike || boostedSize < 17) node.setAttribute('font-weight', '700');
+
+    const currentFill = parseSvgColor(node.getAttribute('fill') || '#e8ecff');
+    const targetContrast = formulaLike ? 8.5 : (annotationLike ? 7.8 : ((boostedSize >= 16 || weight >= 700) ? 6.4 : 5.8));
+    const readableFill = ensureReadableSvgColor(currentFill, targetContrast);
+    if (readableFill) node.setAttribute('fill', formatRgb(readableFill));
+
+    if (formulaLike || annotationLike || boostedSize < 16.5) {
+      node.setAttribute('paint-order', 'stroke');
+      node.setAttribute('stroke', 'rgba(2, 6, 16, 0.92)');
+      node.setAttribute('stroke-width', formulaLike ? '1.2' : '0.8');
+      node.setAttribute('stroke-linejoin', 'round');
+    }
+  });
+}
+
+function setSvgContent(svg, html, options = {}) {
+  svg.innerHTML = html;
+  polishSvgText(svg, options);
+}
+
+/* ═══════════════════════════════════════════════════ */
+/* MODULE 0: PIPELINE                                  */
+/* ═══════════════════════════════════════════════════ */
+
+const stageInfo = [
+  {
+    name: 'Stage 1: SFT', color: '#6aa9ff',
+    input: 'Pre-trained LLM', output: 'SFT Model',
+    data: 'Demonstration pairs', method: 'Cross-entropy loss',
+    desc: 'Supervised Fine-Tuning (SFT) uses high-quality (prompt, response) pairs written by human experts. The model is fine-tuned with standard cross-entropy loss, learning to generate helpful, well-structured responses. This creates the baseline policy \u03C0_ref that RLHF builds upon.'
+  },
+  {
+    name: 'Stage 2: Reward Model', color: '#ffd166',
+    input: 'Comparison pairs', output: 'Reward model R(x,y)',
+    data: 'Human preferences', method: 'Bradley-Terry loss',
+    desc: 'Human annotators compare pairs of model responses and indicate which is better. These preference pairs train the reward model using the Bradley-Terry framework. The trained reward model can then score any (prompt, response) pair with a scalar reward.'
+  },
+  {
+    name: 'Stage 3: PPO', color: '#64f0c8',
+    input: 'SFT model + R(x,y)', output: 'Aligned model',
+    data: 'Prompts (online)', method: 'PPO + KL penalty',
+    desc: 'Proximal Policy Optimisation (PPO) fine-tunes the SFT model to maximise the reward while staying close to the reference policy. For each prompt, the model generates responses, receives reward scores, and updates its parameters. The KL penalty prevents reward hacking.'
+  }
+];
+
+function selectStage(i) {
+  const s = stageInfo[i];
+  document.getElementById('pipelineStageName').textContent = s.name;
+  document.getElementById('pipelineInput').textContent = s.input;
+  document.getElementById('pipelineOutput').textContent = s.output;
+  document.getElementById('pipelineData').textContent = s.data;
+  document.getElementById('pipelineMethod').textContent = s.method;
+
+  const info = document.getElementById('pipelineInfo');
+  info.style.borderColor = s.color.replace(')', ',0.35)').replace('rgb', 'rgba').replace('#', '');
+  info.style.borderColor = `${s.color}55`;
+  info.querySelector('.phaseTitle').style.color = s.color;
+  info.querySelector('.phaseTitle').textContent = s.name;
+  document.getElementById('pipelineDesc').textContent = s.desc;
+
+  document.querySelectorAll('.pipeline-node').forEach((n, j) => {
+    n.style.borderWidth = j === i ? '2px' : '1px';
+    n.style.transform = j === i ? 'scale(1.02)' : 'scale(1)';
+  });
+
+  drawStageDetail(i);
+}
+
+function drawPipelineOverview() {
+  const svg = document.getElementById('pipelineSvg');
+  const W = 800, H = 280;
+  let html = '';
+
+  // Draw the full pipeline flow
+  const stages = [
+    { x: 60, label: 'Pre-trained\nLLM', color: '#b7c0ff' },
+    { x: 220, label: 'SFT\nModel', color: '#6aa9ff' },
+    { x: 400, label: 'Reward\nModel', color: '#ffd166' },
+    { x: 580, label: 'PPO\nOptimisation', color: '#64f0c8' },
+    { x: 740, label: 'Aligned\nModel', color: '#c77dff' }
+  ];
+
+  stages.forEach((s, i) => {
+    html += `<rect x="${s.x - 50}" y="100" width="100" height="60" rx="12" fill="${s.color}18" stroke="${s.color}55" stroke-width="1.5"/>`;
+    const lines = s.label.split('\n');
+    lines.forEach((l, li) => {
+      html += `<text x="${s.x}" y="${130 + li * 16}" text-anchor="middle" fill="${s.color}" font-size="12" font-weight="700" font-family="system-ui">${l}</text>`;
+    });
+    if (i < stages.length - 1) {
+      const nx = stages[i + 1].x;
+      html += `<line x1="${s.x + 50}" y1="130" x2="${nx - 55}" y2="130" stroke="${s.color}55" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+      html += `<polygon points="${nx - 55},125 ${nx - 45},130 ${nx - 55},135" fill="${s.color}88"/>`;
+    }
+  });
+
+  // Data annotations
+  const annots = [
+    { x: 140, y: 75, label: 'Demo data', color: '#6aa9ff' },
+    { x: 310, y: 75, label: 'Human prefs', color: '#ffd166' },
+    { x: 490, y: 75, label: 'Prompts + R(x,y)', color: '#64f0c8' }
+  ];
+  annots.forEach(a => {
+    html += `<text x="${a.x}" y="${a.y}" text-anchor="middle" fill="${a.color}99" font-size="10" font-family="system-ui">${a.label}</text>`;
+    html += `<line x1="${a.x}" y1="${a.y + 4}" x2="${a.x}" y2="98" stroke="${a.color}44" stroke-width="1" stroke-dasharray="3,2"/>`;
+  });
+
+  // Title
+  html += `<text x="400" y="30" text-anchor="middle" fill="${'#e8ecff'}" font-size="14" font-weight="700" font-family="system-ui">The RLHF Pipeline</text>`;
+
+  // Bottom labels
+  html += `<text x="140" y="200" text-anchor="middle" fill="#6aa9ff88" font-size="10" font-family="system-ui">Stage 1</text>`;
+  html += `<text x="310" y="200" text-anchor="middle" fill="#ffd16688" font-size="10" font-family="system-ui">Stage 2</text>`;
+  html += `<text x="490" y="200" text-anchor="middle" fill="#64f0c888" font-size="10" font-family="system-ui">Stage 3</text>`;
+
+  // Loss formulas
+  html += `<text x="140" y="220" text-anchor="middle" fill="#6aa9ff66" font-size="9" font-family="Courier New">L = -log P(y|x)</text>`;
+  html += `<text x="310" y="220" text-anchor="middle" fill="#ffd16666" font-size="9" font-family="Courier New">L = -log \u03C3(R_w - R_l)</text>`;
+  html += `<text x="490" y="220" text-anchor="middle" fill="#64f0c866" font-size="9" font-family="Courier New">max R - \u03B2\u00B7KL</text>`;
+
+  setSvgContent(svg, html);
+}
+
+function drawStageDetail(stage) {
+  const svg = document.getElementById('pipelineSvg');
+  const title = document.getElementById('pipelineDetailTitle');
+  const W = 800, H = 280;
+  let html = '';
+
+  if (stage === 0) {
+    title.textContent = 'Stage 1: Supervised Fine-Tuning';
+    // Show data flow: prompt -> model -> response, with loss
+    html += `<text x="400" y="25" text-anchor="middle" fill="#6aa9ff" font-size="13" font-weight="700" font-family="system-ui">Supervised Fine-Tuning (Cross-Entropy)</text>`;
+
+    // Training pair
+    html += `<rect x="40" y="60" width="160" height="50" rx="10" fill="rgba(106,169,255,0.08)" stroke="rgba(106,169,255,0.3)" stroke-width="1"/>`;
+    html += `<text x="120" y="82" text-anchor="middle" fill="#6aa9ff" font-size="11" font-weight="600" font-family="system-ui">Prompt x</text>`;
+    html += `<text x="120" y="100" text-anchor="middle" fill="#b7c0ff" font-size="9" font-family="system-ui">"Explain quantum computing"</text>`;
+
+    html += `<line x1="200" y1="85" x2="270" y2="85" stroke="rgba(106,169,255,0.4)" stroke-width="1.5"/>`;
+    html += `<polygon points="270,80 280,85 270,90" fill="rgba(106,169,255,0.6)"/>`;
+
+    // Model
+    html += `<rect x="280" y="55" width="140" height="60" rx="12" fill="rgba(106,169,255,0.1)" stroke="rgba(106,169,255,0.4)" stroke-width="1.5"/>`;
+    html += `<text x="350" y="80" text-anchor="middle" fill="#6aa9ff" font-size="12" font-weight="700" font-family="system-ui">LLM</text>`;
+    html += `<text x="350" y="100" text-anchor="middle" fill="#b7c0ff" font-size="9" font-family="system-ui">P(token | context)</text>`;
+
+    html += `<line x1="420" y1="85" x2="490" y2="85" stroke="rgba(106,169,255,0.4)" stroke-width="1.5"/>`;
+    html += `<polygon points="490,80 500,85 490,90" fill="rgba(106,169,255,0.6)"/>`;
+
+    // Output
+    html += `<rect x="500" y="60" width="160" height="50" rx="10" fill="rgba(106,169,255,0.08)" stroke="rgba(106,169,255,0.3)" stroke-width="1"/>`;
+    html += `<text x="580" y="82" text-anchor="middle" fill="#6aa9ff" font-size="11" font-weight="600" font-family="system-ui">Predicted y\u0302</text>`;
+    html += `<text x="580" y="100" text-anchor="middle" fill="#b7c0ff" font-size="9" font-family="system-ui">Generated response</text>`;
+
+    // Ground truth
+    html += `<rect x="500" y="150" width="160" height="50" rx="10" fill="rgba(100,240,200,0.08)" stroke="rgba(100,240,200,0.3)" stroke-width="1"/>`;
+    html += `<text x="580" y="172" text-anchor="middle" fill="#64f0c8" font-size="11" font-weight="600" font-family="system-ui">Ground Truth y</text>`;
+    html += `<text x="580" y="190" text-anchor="middle" fill="#b7c0ff" font-size="9" font-family="system-ui">Expert-written response</text>`;
+
+    // Loss
+    html += `<line x1="580" y1="110" x2="580" y2="148" stroke="rgba(255,209,102,0.4)" stroke-width="1.5"/>`;
+    html += `<rect x="690" y="120" width="100" height="40" rx="8" fill="rgba(255,209,102,0.1)" stroke="rgba(255,209,102,0.4)" stroke-width="1.5"/>`;
+    html += `<text x="740" y="140" text-anchor="middle" fill="#ffd166" font-size="10" font-weight="700" font-family="system-ui">Cross-Entropy</text>`;
+    html += `<text x="740" y="154" text-anchor="middle" fill="#ffd166" font-size="9" font-family="Courier New">-log P(y|x)</text>`;
+    html += `<line x1="660" y1="140" x2="690" y2="140" stroke="rgba(255,209,102,0.4)" stroke-width="1"/>`;
+
+    // Gradient arrow back
+    html += `<line x1="700" y1="160" x2="420" y2="200" stroke="rgba(255,92,122,0.35)" stroke-width="1" stroke-dasharray="4,3"/>`;
+    html += `<text x="540" y="200" text-anchor="middle" fill="#ff5c7a88" font-size="9" font-family="system-ui">\u2207 Backpropagation</text>`;
+
+  } else if (stage === 1) {
+    title.textContent = 'Stage 2: Reward Model Training';
+    html += `<text x="400" y="25" text-anchor="middle" fill="#ffd166" font-size="13" font-weight="700" font-family="system-ui">Reward Model (Bradley-Terry)</text>`;
+
+    // Two responses
+    html += `<rect x="30" y="50" width="170" height="75" rx="10" fill="rgba(100,240,200,0.08)" stroke="rgba(100,240,200,0.3)" stroke-width="1"/>`;
+    html += `<text x="115" y="70" text-anchor="middle" fill="#64f0c8" font-size="11" font-weight="600">Response A (winner)</text>`;
+    html += `<text x="115" y="88" text-anchor="middle" fill="#b7c0ff" font-size="9">"Quantum computing uses"</text>`;
+    html += `<text x="115" y="102" text-anchor="middle" fill="#b7c0ff" font-size="9">"qubits that can be 0, 1,"</text>`;
+    html += `<text x="115" y="116" text-anchor="middle" fill="#b7c0ff" font-size="9">"or both simultaneously..."</text>`;
+
+    html += `<rect x="30" y="145" width="170" height="75" rx="10" fill="rgba(255,92,122,0.08)" stroke="rgba(255,92,122,0.3)" stroke-width="1"/>`;
+    html += `<text x="115" y="165" text-anchor="middle" fill="#ff5c7a" font-size="11" font-weight="600">Response B (loser)</text>`;
+    html += `<text x="115" y="183" text-anchor="middle" fill="#b7c0ff" font-size="9">"Quantum computing is a</text>`;
+    html += `<text x="115" y="197" text-anchor="middle" fill="#b7c0ff" font-size="9">"type of computing that is</text>`;
+    html += `<text x="115" y="211" text-anchor="middle" fill="#b7c0ff" font-size="9">"very complex and fast..."</text>`;
+
+    // Reward model
+    html += `<line x1="200" y1="88" x2="310" y2="120" stroke="rgba(100,240,200,0.3)" stroke-width="1.5"/>`;
+    html += `<line x1="200" y1="180" x2="310" y2="150" stroke="rgba(255,92,122,0.3)" stroke-width="1.5"/>`;
+    html += `<rect x="310" y="105" width="140" height="60" rx="12" fill="rgba(255,209,102,0.1)" stroke="rgba(255,209,102,0.4)" stroke-width="1.5"/>`;
+    html += `<text x="380" y="130" text-anchor="middle" fill="#ffd166" font-size="12" font-weight="700">Reward Model</text>`;
+    html += `<text x="380" y="150" text-anchor="middle" fill="#b7c0ff" font-size="9">R(x, y) \u2192 scalar</text>`;
+
+    // Scores
+    html += `<line x1="450" y1="120" x2="530" y2="90" stroke="rgba(100,240,200,0.3)" stroke-width="1.5"/>`;
+    html += `<line x1="450" y1="150" x2="530" y2="180" stroke="rgba(255,92,122,0.3)" stroke-width="1.5"/>`;
+
+    html += `<rect x="530" y="70" width="100" height="35" rx="8" fill="rgba(100,240,200,0.1)" stroke="rgba(100,240,200,0.3)"/>`;
+    html += `<text x="580" y="92" text-anchor="middle" fill="#64f0c8" font-size="12" font-weight="700">R = 2.3</text>`;
+
+    html += `<rect x="530" y="165" width="100" height="35" rx="8" fill="rgba(255,92,122,0.1)" stroke="rgba(255,92,122,0.3)"/>`;
+    html += `<text x="580" y="187" text-anchor="middle" fill="#ff5c7a" font-size="12" font-weight="700">R = 0.8</text>`;
+
+    // Loss
+    html += `<line x1="630" y1="88" x2="680" y2="130" stroke="rgba(255,209,102,0.3)" stroke-width="1"/>`;
+    html += `<line x1="630" y1="182" x2="680" y2="140" stroke="rgba(255,209,102,0.3)" stroke-width="1"/>`;
+    html += `<rect x="680" y="115" width="110" height="45" rx="8" fill="rgba(255,209,102,0.1)" stroke="rgba(255,209,102,0.4)"/>`;
+    html += `<text x="735" y="133" text-anchor="middle" fill="#ffd166" font-size="9" font-weight="700">Bradley-Terry</text>`;
+    html += `<text x="735" y="148" text-anchor="middle" fill="#ffd166" font-size="8" font-family="Courier New">-log \u03C3(2.3-0.8)</text>`;
+
+  } else if (stage === 2) {
+    title.textContent = 'Stage 3: PPO with KL Penalty';
+    html += `<text x="400" y="25" text-anchor="middle" fill="#64f0c8" font-size="13" font-weight="700" font-family="system-ui">PPO Optimisation Loop</text>`;
+
+    // Prompt sampling
+    html += `<rect x="30" y="80" width="110" height="45" rx="10" fill="rgba(106,169,255,0.08)" stroke="rgba(106,169,255,0.3)"/>`;
+    html += `<text x="85" y="100" text-anchor="middle" fill="#6aa9ff" font-size="10" font-weight="600">Prompt x</text>`;
+    html += `<text x="85" y="115" text-anchor="middle" fill="#b7c0ff" font-size="8">Sampled from dataset</text>`;
+
+    // Policy generates
+    html += `<line x1="140" y1="102" x2="185" y2="102" stroke="rgba(106,169,255,0.3)" stroke-width="1.5"/>`;
+    html += `<polygon points="185,97 195,102 185,107" fill="rgba(106,169,255,0.5)"/>`;
+    html += `<rect x="195" y="72" width="120" height="60" rx="12" fill="rgba(199,125,255,0.1)" stroke="rgba(199,125,255,0.4)" stroke-width="1.5"/>`;
+    html += `<text x="255" y="97" text-anchor="middle" fill="#c77dff" font-size="11" font-weight="700">Policy \u03C0</text>`;
+    html += `<text x="255" y="115" text-anchor="middle" fill="#b7c0ff" font-size="8">Generate y ~ \u03C0(|x)</text>`;
+
+    // Response
+    html += `<line x1="315" y1="102" x2="360" y2="102" stroke="rgba(199,125,255,0.3)" stroke-width="1.5"/>`;
+    html += `<polygon points="360,97 370,102 360,107" fill="rgba(199,125,255,0.5)"/>`;
+
+    // Reward model scores
+    html += `<rect x="370" y="72" width="120" height="60" rx="12" fill="rgba(255,209,102,0.1)" stroke="rgba(255,209,102,0.4)" stroke-width="1.5"/>`;
+    html += `<text x="430" y="97" text-anchor="middle" fill="#ffd166" font-size="11" font-weight="700">Reward R</text>`;
+    html += `<text x="430" y="115" text-anchor="middle" fill="#b7c0ff" font-size="8">Score: R(x, y)</text>`;
+
+    // KL computation
+    html += `<rect x="195" y="170" width="120" height="50" rx="10" fill="rgba(255,92,122,0.08)" stroke="rgba(255,92,122,0.3)"/>`;
+    html += `<text x="255" y="193" text-anchor="middle" fill="#ff5c7a" font-size="10" font-weight="600">KL Penalty</text>`;
+    html += `<text x="255" y="210" text-anchor="middle" fill="#b7c0ff" font-size="8">KL(\u03C0 || \u03C0_ref)</text>`;
+
+    // Ref model
+    html += `<rect x="30" y="170" width="110" height="50" rx="10" fill="rgba(106,169,255,0.08)" stroke="rgba(106,169,255,0.3)"/>`;
+    html += `<text x="85" y="193" text-anchor="middle" fill="#6aa9ff" font-size="10" font-weight="600">\u03C0_ref (frozen)</text>`;
+    html += `<text x="85" y="210" text-anchor="middle" fill="#b7c0ff" font-size="8">SFT baseline</text>`;
+
+    html += `<line x1="140" y1="195" x2="193" y2="195" stroke="rgba(106,169,255,0.3)" stroke-width="1"/>`;
+    html += `<line x1="255" y1="132" x2="255" y2="168" stroke="rgba(199,125,255,0.3)" stroke-width="1" stroke-dasharray="3,2"/>`;
+
+    // Objective
+    html += `<line x1="490" y1="102" x2="540" y2="130" stroke="rgba(255,209,102,0.3)" stroke-width="1.5"/>`;
+    html += `<line x1="315" y1="195" x2="540" y2="145" stroke="rgba(255,92,122,0.3)" stroke-width="1"/>`;
+
+    html += `<rect x="540" y="115" width="140" height="55" rx="12" fill="rgba(100,240,200,0.1)" stroke="rgba(100,240,200,0.4)" stroke-width="1.5"/>`;
+    html += `<text x="610" y="138" text-anchor="middle" fill="#64f0c8" font-size="11" font-weight="700">Objective</text>`;
+    html += `<text x="610" y="156" text-anchor="middle" fill="#64f0c8" font-size="9" font-family="Courier New">R - \u03B2\u00B7KL</text>`;
+
+    // Update arrow
+    html += `<path d="M680,142 Q740,142 740,102 Q740,50 610,50 Q400,50 255,68" fill="none" stroke="rgba(100,240,200,0.3)" stroke-width="1.5" stroke-dasharray="5,3"/>`;
+    html += `<polygon points="260,63 250,68 260,73" fill="rgba(100,240,200,0.5)"/>`;
+    html += `<text x="620" y="42" text-anchor="middle" fill="#64f0c888" font-size="9">\u2207 Policy Update</text>`;
+  }
+
+  svg.innerHTML = html;
+}
+
+drawPipelineOverview();
+
+/* ═══════════════════════════════════════════════════ */
+/* MODULE 1: REWARD MODEL                              */
+/* ═══════════════════════════════════════════════════ */
+
+const rmData = [
+  {
+    prompt: "Explain quantum computing simply",
+    pairs: [
+      {
+        a: "Quantum computing uses qubits that can exist in a superposition of 0 and 1 simultaneously, unlike classical bits. This allows quantum computers to explore many solutions at once, making them powerful for specific problems like cryptography and drug discovery.",
+        b: "Quantum computing is when computers use quantum mechanics. It's a type of computing that uses quantum bits. Quantum computers are very fast and powerful. They can solve many problems that regular computers can't solve.",
+        better: 0
+      },
+      {
+        a: "Think of a coin spinning in the air — it's both heads and tails until it lands. Quantum computers use 'qubits' that work similarly: they can be 0, 1, or both until measured. This lets them test millions of possibilities simultaneously.",
+        b: "Quantum computing was developed by many physicists. Richard Feynman proposed the idea in 1982. IBM, Google, and many companies are working on it. It uses principles from quantum mechanics such as superposition and entanglement.",
+        better: 0
+      }
+    ]
+  },
+  {
+    prompt: "Write a poem about the ocean",
+    pairs: [
+      {
+        a: "Beneath the endless, rolling blue,\nWhere ancient secrets drift and brew,\nThe waves compose their timeless song,\nA rhythm deep, both fierce and long.",
+        b: "The ocean is very big and blue.\nIt has a lot of water too.\nFish swim around all day and night.\nThe ocean is a pretty sight.",
+        better: 0
+      },
+      {
+        a: "Salt-kissed wind across my face,\nThe tide pulls me to a deeper place,\nWhere light dissolves in liquid jade,\nAnd memories of shore will fade.",
+        b: "Ocean, ocean, vast and wide,\nWaves are crashing, feel the tide.\nOcean, ocean, deep and blue,\nI really like to look at you.",
+        better: 0
+      }
+    ]
+  },
+  {
+    prompt: "How do I make pasta?",
+    pairs: [
+      {
+        a: "Boil a large pot of salted water (1 tbsp salt per litre). Add dried pasta and cook for 8-12 minutes (check the packet), stirring occasionally. Reserve a cup of pasta water before draining. Toss with your sauce, adding pasta water to help it coat evenly. Serve immediately.",
+        b: "Making pasta is easy. First, you need to get some water. Then you boil the water. Put the pasta in. Wait for a while until it's done. Take it out and put sauce on it. Eat the pasta.",
+        better: 0
+      },
+      {
+        a: "Start by bringing 4-5 litres of water to a rolling boil with a generous pinch of salt. Drop in the pasta, stir immediately to prevent sticking, and cook 1-2 minutes less than the package says (al dente). Before draining, scoop out 200ml of the starchy cooking water — it's the secret to silky sauces.",
+        b: "Pasta originated in Italy and has been eaten for centuries. There are many types of pasta including spaghetti, penne, fusilli, and lasagna. Italians take their pasta very seriously and there are many regional variations.",
+        better: 0
+      }
+    ]
+  },
+  {
+    prompt: "What is machine learning?",
+    pairs: [
+      {
+        a: "Machine learning is a subset of AI where algorithms learn patterns from data rather than being explicitly programmed. Given training examples, the model discovers rules and relationships automatically. For instance, a spam filter learns to identify spam by studying thousands of labelled emails.",
+        b: "Machine learning is AI. It's when computers learn things. Computers use data to learn. Machine learning is used in many applications today. It is very popular and many companies use it.",
+        better: 0
+      },
+      {
+        a: "Imagine teaching a child to recognise dogs: you don't list rules ('four legs, fur, tail'), you show them many examples until they get it. ML works similarly — instead of coding explicit rules, we feed an algorithm data and let it discover patterns. The three main types are supervised (labelled data), unsupervised (finding structure), and reinforcement learning (learning from rewards).",
+        b: "Machine learning was first proposed by Arthur Samuel in 1959. It has evolved significantly over the decades with advances in computing power and data availability. Today, deep learning, a subset of ML, has achieved remarkable results in image recognition and natural language processing.",
+        better: 0
+      }
+    ]
+  }
+];
+
+let rmState = { rewards: [], pairIdx: 0, promptIdx: 0, count: 0, chosenRewards: [], rejectedRewards: [] };
+
+function loadRMPrompt() {
+  rmState.promptIdx = +document.getElementById('rmPromptSel').value;
+  rmState.pairIdx = 0;
+  showRMPair();
+}
+
+function showRMPair() {
+  const d = rmData[rmState.promptIdx];
+  const pair = d.pairs[rmState.pairIdx % d.pairs.length];
+  const container = document.getElementById('rmResponses');
+
+  container.innerHTML = `
+    <div class="response-card" id="rmA" onclick="chooseRM(0)" style="margin-bottom:10px">
+      <div class="response-label" style="color:#6aa9ff">Response A</div>
+      <div style="white-space:pre-wrap">${pair.a}</div>
+    </div>
+    <div class="response-card" id="rmB" onclick="chooseRM(1)">
+      <div class="response-label" style="color:#c77dff">Response B</div>
+      <div style="white-space:pre-wrap">${pair.b}</div>
+    </div>
+  `;
+}
+
+function chooseRM(choice) {
+  const pair = rmData[rmState.promptIdx].pairs[rmState.pairIdx % rmData[rmState.promptIdx].pairs.length];
+  const winner = choice;
+  const loser = 1 - choice;
+
+  // Simulate reward scores — "better" response gets higher reward
+  const betterResponse = pair.better;
+  const rWin = 1.5 + rmState.count * 0.15 + Math.random() * 0.5;
+  const rLose = 0.3 + Math.random() * 0.4;
+
+  rmState.chosenRewards.push(rWin);
+  rmState.rejectedRewards.push(rLose);
+  rmState.count++;
+
+  // Show selection
+  const cardA = document.getElementById('rmA');
+  const cardB = document.getElementById('rmB');
+  if (choice === 0) {
+    cardA.classList.add('selected-win');
+    cardB.classList.add('selected-lose');
+  } else {
+    cardB.classList.add('selected-win');
+    cardA.classList.add('selected-lose');
+  }
+
+  // Update stats
+  document.getElementById('rmStats').style.display = '';
+  document.getElementById('rmCount').textContent = rmState.count;
+  document.getElementById('rmChosenR').textContent = rWin.toFixed(2);
+  document.getElementById('rmRejectedR').textContent = rLose.toFixed(2);
+
+  const gap = rWin - rLose;
+  const prob = 1 / (1 + Math.exp(-gap));
+  document.getElementById('rmProb').textContent = (prob * 100).toFixed(1) + '%';
+  const loss = -Math.log(prob);
+  document.getElementById('rmLoss').textContent = loss.toFixed(4);
+
+  // Update BT bar
+  document.getElementById('btBarWin').style.width = (prob * 100) + '%';
+  document.getElementById('btBarWin').textContent = (prob * 100).toFixed(0) + '%';
+  document.getElementById('btBarLose').style.width = ((1 - prob) * 100) + '%';
+  document.getElementById('btBarLose').textContent = ((1 - prob) * 100).toFixed(0) + '%';
+
+  // Update phase
+  document.getElementById('rmPhase').querySelector('.phaseTitle').textContent = `Comparison #${rmState.count}`;
+  document.getElementById('rmPhaseDesc').textContent = `You chose Response ${choice === 0 ? 'A' : 'B'}. Reward gap = ${gap.toFixed(2)}, P(chosen wins) = ${(prob * 100).toFixed(1)}%, Loss = ${loss.toFixed(4)}. The wider the reward gap, the more confident the model is.`;
+
+  drawRMChart();
+
+  // Advance pair
+  rmState.pairIdx++;
+}
+
+function newRMPair() {
+  showRMPair();
+}
+
+function resetRM() {
+  rmState = { rewards: [], pairIdx: 0, promptIdx: rmState.promptIdx, count: 0, chosenRewards: [], rejectedRewards: [] };
+  document.getElementById('rmStats').style.display = 'none';
+  document.getElementById('btBarWin').style.width = '50%';
+  document.getElementById('btBarWin').textContent = '50%';
+  document.getElementById('btBarLose').style.width = '50%';
+  document.getElementById('btBarLose').textContent = '50%';
+  document.getElementById('rmPhase').querySelector('.phaseTitle').textContent = 'Instructions';
+  document.getElementById('rmPhaseDesc').textContent = 'Select a prompt and click the response you prefer. The reward model learns from your preferences.';
+  drawRMChart();
+  showRMPair();
+}
+
+function drawRMChart() {
+  const svg = document.getElementById('rmSvg');
+  const W = 800, H = 240, pad = { t: 30, r: 30, b: 30, l: 50 };
+  const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
+  let html = '';
+
+  const n = rmState.chosenRewards.length;
+  if (n === 0) {
+    html += `<text x="400" y="130" text-anchor="middle" fill="#b7c0ff66" font-size="13" font-family="system-ui">Make comparisons to see reward scores plotted here</text>`;
+    setSvgContent(svg, html);
+    return;
+  }
+
+  const allR = [...rmState.chosenRewards, ...rmState.rejectedRewards];
+  const maxR = Math.max(...allR, 3);
+  const minR = Math.min(0, ...allR);
+  const range = maxR - minR || 1;
+
+  // Axes
+  html += `<line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${H - pad.b}" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>`;
+  html += `<line x1="${pad.l}" y1="${H - pad.b}" x2="${W - pad.r}" y2="${H - pad.b}" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>`;
+
+  // Grid lines
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + (ch * i / 4);
+    const val = maxR - (range * i / 4);
+    html += `<line x1="${pad.l}" y1="${y}" x2="${W - pad.r}" y2="${y}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`;
+    html += `<text x="${pad.l - 8}" y="${y + 4}" text-anchor="end" fill="#dbe6ff" font-size="10" font-family="Courier New">${val.toFixed(1)}</text>`;
+  }
+
+  const toX = i => pad.l + (i / Math.max(n - 1, 1)) * cw;
+  const toY = v => pad.t + ((maxR - v) / range) * ch;
+
+  // Chosen line
+  let pathC = `M${toX(0)},${toY(rmState.chosenRewards[0])}`;
+  for (let i = 1; i < n; i++) pathC += ` L${toX(i)},${toY(rmState.chosenRewards[i])}`;
+  html += `<path d="${pathC}" fill="none" stroke="#64f0c8" stroke-width="2" opacity="0.8"/>`;
+
+  // Rejected line
+  let pathR = `M${toX(0)},${toY(rmState.rejectedRewards[0])}`;
+  for (let i = 1; i < n; i++) pathR += ` L${toX(i)},${toY(rmState.rejectedRewards[i])}`;
+  html += `<path d="${pathR}" fill="none" stroke="#ff5c7a" stroke-width="2" opacity="0.8"/>`;
+
+  // Gap fill
+  let fillPath = pathC;
+  for (let i = n - 1; i >= 0; i--) fillPath += ` L${toX(i)},${toY(rmState.rejectedRewards[i])}`;
+  fillPath += ' Z';
+  html += `<path d="${fillPath}" fill="rgba(255,209,102,0.06)" stroke="none"/>`;
+
+  // Dots
+  for (let i = 0; i < n; i++) {
+    html += `<circle cx="${toX(i)}" cy="${toY(rmState.chosenRewards[i])}" r="4" fill="#64f0c8" opacity="0.9"/>`;
+    html += `<circle cx="${toX(i)}" cy="${toY(rmState.rejectedRewards[i])}" r="4" fill="#ff5c7a" opacity="0.9"/>`;
+  }
+
+  // Labels
+  html += `<text x="${pad.l + 5}" y="${pad.t - 8}" fill="#dbe6ff" font-size="11" font-family="system-ui">Reward Score</text>`;
+  html += `<text x="${W - pad.r}" y="${H - pad.b + 18}" text-anchor="end" fill="#dbe6ff" font-size="11" font-family="system-ui">Comparison #</text>`;
+
+  setSvgContent(svg, html);
+}
+
+loadRMPrompt();
+
+/* ═══════════════════════════════════════════════════ */
+/* MODULE 2: PPO                                       */
+/* ═══════════════════════════════════════════════════ */
+
+let ppoState = { step: 0, history: [], running: false, timer: null };
+
+function updatePPO() {
+  document.getElementById('betaVal').textContent = (+document.getElementById('betaSlider').value / 100).toFixed(2);
+  document.getElementById('lrVal').textContent = (+document.getElementById('lrSlider').value / 1000).toFixed(3);
+  document.getElementById('stepsVal').textContent = document.getElementById('stepsSlider').value;
+}
+
+function simulatePPOStep(step, beta, lr) {
+  // Simulate reward increasing with diminishing returns, KL growing
+  const t = step;
+  const maxReward = 3.5 + (1.0 / (beta + 0.05));
+  const reward = maxReward * (1 - Math.exp(-lr * t * 0.8)) + (Math.random() - 0.5) * 0.15;
+  const kl = 0.02 * t * t * lr * (1 / (beta + 0.01)) * 0.01 + Math.random() * 0.05;
+  const obj = reward - beta * kl;
+  return { step: t, reward, kl, obj, penalty: beta * kl };
+}
+
+function stepPPO() {
+  const beta = +document.getElementById('betaSlider').value / 100;
+  const lr = +document.getElementById('lrSlider').value / 1000;
+  ppoState.step++;
+  const data = simulatePPOStep(ppoState.step, beta, lr);
+  ppoState.history.push(data);
+
+  document.getElementById('ppoStep').textContent = ppoState.step;
+  document.getElementById('ppoReward').textContent = data.reward.toFixed(2);
+  document.getElementById('ppoKL').textContent = data.penalty.toFixed(3);
+  document.getElementById('ppoObj').textContent = data.obj.toFixed(2);
+
+  updatePPOPhase(data, beta);
+  drawPPOChart();
+  drawPPOFrontier();
+}
+
+function runPPO() {
+  if (ppoState.running) return;
+  resetPPO();
+  ppoState.running = true;
+
+  const totalSteps = +document.getElementById('stepsSlider').value;
+  const beta = +document.getElementById('betaSlider').value / 100;
+  const lr = +document.getElementById('lrSlider').value / 1000;
+
+  let i = 0;
+  ppoState.timer = setInterval(() => {
+    i++;
+    ppoState.step = i;
+    const data = simulatePPOStep(i, beta, lr);
+    ppoState.history.push(data);
+
+    document.getElementById('ppoStep').textContent = i;
+    document.getElementById('ppoReward').textContent = data.reward.toFixed(2);
+    document.getElementById('ppoKL').textContent = data.penalty.toFixed(3);
+    document.getElementById('ppoObj').textContent = data.obj.toFixed(2);
+
+    updatePPOPhase(data, beta);
+    drawPPOChart();
+    drawPPOFrontier();
+
+    if (i >= totalSteps) {
+      clearInterval(ppoState.timer);
+      ppoState.running = false;
+      const ph = document.getElementById('ppoPhase');
+      ph.querySelector('.phaseTitle').textContent = 'Training Complete';
+      ph.querySelector('.phaseTitle').style.color = '#64f0c8';
+      ph.style.borderColor = 'rgba(100,240,200,0.35)';
+    }
+  }, 60);
+}
+
+function resetPPO() {
+  if (ppoState.timer) clearInterval(ppoState.timer);
+  ppoState = { step: 0, history: [], running: false, timer: null };
+  document.getElementById('ppoStep').textContent = '0';
+  document.getElementById('ppoReward').textContent = '0.00';
+  document.getElementById('ppoKL').textContent = '0.00';
+  document.getElementById('ppoObj').textContent = '0.00';
+  const ph = document.getElementById('ppoPhase');
+  ph.querySelector('.phaseTitle').textContent = 'Waiting';
+  ph.querySelector('.phaseTitle').style.color = '#6aa9ff';
+  ph.style.borderColor = 'rgba(106,169,255,0.35)';
+  document.getElementById('ppoPhaseDesc').textContent = 'Adjust parameters and click Run PPO to simulate the optimisation loop.';
+  drawPPOChart();
+  drawPPOFrontier();
+}
+
+function updatePPOPhase(data, beta) {
+  const ph = document.getElementById('ppoPhase');
+  if (data.penalty > data.reward * 0.5) {
+    ph.querySelector('.phaseTitle').textContent = 'High KL Penalty';
+    ph.querySelector('.phaseTitle').style.color = '#ff5c7a';
+    ph.style.borderColor = 'rgba(255,92,122,0.35)';
+    document.getElementById('ppoPhaseDesc').textContent = `KL penalty (${data.penalty.toFixed(2)}) is consuming more than half the reward. Consider reducing \u03B2 or the learning rate to allow more exploration.`;
+  } else if (data.obj > 2) {
+    ph.querySelector('.phaseTitle').textContent = 'Good Progress';
+    ph.querySelector('.phaseTitle').style.color = '#64f0c8';
+    ph.style.borderColor = 'rgba(100,240,200,0.35)';
+    document.getElementById('ppoPhaseDesc').textContent = `Net objective is ${data.obj.toFixed(2)}. The policy is improving while staying close to the reference model.`;
+  } else {
+    ph.querySelector('.phaseTitle').textContent = 'Optimising...';
+    ph.querySelector('.phaseTitle').style.color = '#ffd166';
+    ph.style.borderColor = 'rgba(255,209,102,0.35)';
+    document.getElementById('ppoPhaseDesc').textContent = `Step ${data.step}: Reward = ${data.reward.toFixed(2)}, KL penalty = ${data.penalty.toFixed(3)}. The policy is learning to maximise reward while the KL constraint keeps it grounded.`;
+  }
+}
+
+function drawPPOChart() {
+  const svg = document.getElementById('ppoSvg');
+  const W = 800, H = 280, pad = { t: 30, r: 30, b: 30, l: 55 };
+  const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
+  let html = '';
+
+  const n = ppoState.history.length;
+  if (n === 0) {
+    html += `<text x="400" y="145" text-anchor="middle" fill="#b7c0ff66" font-size="13" font-family="system-ui">Click "Run PPO" or "Step" to see training dynamics</text>`;
+    setSvgContent(svg, html);
+    return;
+  }
+
+  const allVals = ppoState.history.flatMap(d => [d.reward, d.obj, -d.penalty]);
+  const maxV = Math.max(...allVals, 1);
+  const minV = Math.min(...allVals, -0.5);
+  const range = maxV - minV || 1;
+
+  // Axes
+  html += `<line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${H - pad.b}" stroke="rgba(255,255,255,0.15)"/>`;
+  html += `<line x1="${pad.l}" y1="${H - pad.b}" x2="${W - pad.r}" y2="${H - pad.b}" stroke="rgba(255,255,255,0.15)"/>`;
+
+  // Grid
+  for (let i = 0; i <= 5; i++) {
+    const y = pad.t + (ch * i / 5);
+    const val = maxV - (range * i / 5);
+    html += `<line x1="${pad.l}" y1="${y}" x2="${W - pad.r}" y2="${y}" stroke="rgba(255,255,255,0.05)"/>`;
+    html += `<text x="${pad.l - 8}" y="${y + 4}" text-anchor="end" fill="#dbe6ff" font-size="10" font-family="Courier New">${val.toFixed(1)}</text>`;
+  }
+
+  // Zero line
+  const zeroY = pad.t + ((maxV - 0) / range) * ch;
+  html += `<line x1="${pad.l}" y1="${zeroY}" x2="${W - pad.r}" y2="${zeroY}" stroke="rgba(255,255,255,0.12)" stroke-dasharray="4,3"/>`;
+
+  const toX = i => pad.l + (i / Math.max(n - 1, 1)) * cw;
+  const toY = v => pad.t + ((maxV - v) / range) * ch;
+
+  // Draw lines
+  const series = [
+    { key: 'reward', color: '#6aa9ff', label: 'Reward' },
+    { key: 'obj', color: '#64f0c8', label: 'Net Objective' },
+    { key: 'penalty', color: '#ff5c7a', label: 'KL Penalty', negate: true }
+  ];
+
+  series.forEach(s => {
+    let path = '';
+    for (let i = 0; i < n; i++) {
+      const v = s.negate ? -ppoState.history[i][s.key] : ppoState.history[i][s.key];
+      path += i === 0 ? `M${toX(i)},${toY(v)}` : ` L${toX(i)},${toY(v)}`;
+    }
+    html += `<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2" opacity="0.8"/>`;
+
+    // End dot
+    const lastV = s.negate ? -ppoState.history[n - 1][s.key] : ppoState.history[n - 1][s.key];
+    html += `<circle cx="${toX(n - 1)}" cy="${toY(lastV)}" r="4" fill="${s.color}"/>`;
+    html += `<text x="${toX(n - 1) + 8}" y="${toY(lastV) + 4}" fill="${s.color}" font-size="11" font-weight="700" font-family="system-ui">${(s.negate ? -ppoState.history[n - 1][s.key] : ppoState.history[n - 1][s.key]).toFixed(2)}</text>`;
+  });
+
+  // Labels
+  html += `<text x="${W / 2}" y="${H - 6}" text-anchor="middle" fill="#dbe6ff" font-size="11">Training Step</text>`;
+
+  setSvgContent(svg, html);
+}
+
+function drawPPOFrontier() {
+  const svg = document.getElementById('ppoFrontierSvg');
+  const W = 800, H = 220, pad = { t: 25, r: 30, b: 35, l: 55 };
+  const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
+  let html = '';
+
+  const n = ppoState.history.length;
+  if (n === 0) {
+    html += `<text x="400" y="115" text-anchor="middle" fill="#b7c0ff66" font-size="13" font-family="system-ui">Reward-KL trade-off will appear here</text>`;
+    setSvgContent(svg, html);
+    return;
+  }
+
+  const maxKL = Math.max(...ppoState.history.map(d => d.kl), 0.5);
+  const maxR = Math.max(...ppoState.history.map(d => d.reward), 2);
+
+  html += `<line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${H - pad.b}" stroke="rgba(255,255,255,0.15)"/>`;
+  html += `<line x1="${pad.l}" y1="${H - pad.b}" x2="${W - pad.r}" y2="${H - pad.b}" stroke="rgba(255,255,255,0.15)"/>`;
+
+  html += `<text x="${W / 2}" y="${H - 6}" text-anchor="middle" fill="#dbe6ff" font-size="11">KL Divergence</text>`;
+  html += `<text x="${pad.l - 8}" y="${pad.t - 8}" fill="#dbe6ff" font-size="11">Reward</text>`;
+
+  // Points
+  let path = '';
+  ppoState.history.forEach((d, i) => {
+    const x = pad.l + (d.kl / maxKL) * cw;
+    const y = pad.t + ((maxR - d.reward) / maxR) * ch;
+    const alpha = 0.3 + 0.7 * (i / n);
+    html += `<circle cx="${x}" cy="${y}" r="3.5" fill="#c77dff" opacity="${alpha}"/>`;
+    if (i === 0) path = `M${x},${y}`;
+    else path += ` L${x},${y}`;
+  });
+  html += `<path d="${path}" fill="none" stroke="rgba(199,125,255,0.3)" stroke-width="1"/>`;
+
+  // Current point
+  const last = ppoState.history[n - 1];
+  const lx = pad.l + (last.kl / maxKL) * cw;
+  const ly = pad.t + ((maxR - last.reward) / maxR) * ch;
+  html += `<circle cx="${lx}" cy="${ly}" r="6" fill="#c77dff" stroke="white" stroke-width="1.5"/>`;
+
+  // Ideal region label
+  html += `<text x="${pad.l + 20}" y="${pad.t + 20}" fill="#9af7df" font-size="11" font-family="system-ui">Ideal: High reward, low KL</text>`;
+
+  setSvgContent(svg, html);
+}
+
+updatePPO();
+drawPPOChart();
+drawPPOFrontier();
+
+/* ═══════════════════════════════════════════════════ */
+/* MODULE 3: KL DIVERGENCE                             */
+/* ═══════════════════════════════════════════════════ */
+
+const KL_TOKENS = ['the', 'a', 'is', 'of', 'in', 'to', 'and', 'it', 'for', 'on'];
+let klRef = [0.18, 0.12, 0.10, 0.10, 0.09, 0.08, 0.08, 0.07, 0.06, 0.12];
+let klPolicy = [...klRef];
+let klDragging = -1;
+
+function initKL() {
+  klPolicy = [...klRef];
+  renderKLBars();
+}
+
+function normalize(arr) {
+  const s = arr.reduce((a, b) => a + b, 0);
+  return arr.map(v => v / s);
+}
+
+function renderKLBars() {
+  // Reference bars (static display)
+  const refContainer = document.getElementById('klRefBars');
+  refContainer.innerHTML = '';
+  const maxRef = Math.max(...klRef);
+  klRef.forEach((v, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'dist-bar';
+    bar.style.height = (v / maxRef * 100) + '%';
+    bar.style.background = 'rgba(106,169,255,0.5)';
+    bar.innerHTML = `<span class="dval">${v.toFixed(2)}</span>`;
+    refContainer.appendChild(bar);
+  });
+
+  // Policy bars (draggable)
+  const polContainer = document.getElementById('klPolicyBars');
+  polContainer.innerHTML = '';
+  const maxPol = Math.max(...klPolicy, maxRef);
+  klPolicy.forEach((v, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'dist-bar';
+    bar.style.height = (v / maxPol * 100) + '%';
+    bar.style.background = 'rgba(199,125,255,0.5)';
+    bar.innerHTML = `<span class="dval">${v.toFixed(2)}</span>`;
+
+    bar.addEventListener('mousedown', e => { klDragging = i; e.preventDefault(); });
+    bar.addEventListener('touchstart', e => { klDragging = i; e.preventDefault(); }, { passive: false });
+
+    polContainer.appendChild(bar);
+  });
+}
+
+document.addEventListener('mousemove', e => {
+  if (klDragging < 0) return;
+  handleKLDrag(e.clientY);
+});
+document.addEventListener('touchmove', e => {
+  if (klDragging < 0) return;
+  handleKLDrag(e.touches[0].clientY);
+}, { passive: false });
+document.addEventListener('mouseup', () => { klDragging = -1; });
+document.addEventListener('touchend', () => { klDragging = -1; });
+
+function handleKLDrag(clientY) {
+  const container = document.getElementById('klPolicyBars');
+  const rect = container.getBoundingClientRect();
+  const relY = 1 - (clientY - rect.top) / rect.height;
+  const val = Math.max(0.01, Math.min(0.5, relY * 0.5));
+  klPolicy[klDragging] = val;
+  // Re-normalize
+  klPolicy = normalize(klPolicy);
+  renderKLBars();
+  updateKL();
+}
+
+function updateKL() {
+  const beta = +document.getElementById('klBetaSlider').value / 100;
+  document.getElementById('klBetaVal').textContent = beta.toFixed(2);
+
+  // Compute KL divergence
+  let kl = 0;
+  const contributions = [];
+  for (let i = 0; i < klPolicy.length; i++) {
+    const p = klPolicy[i];
+    const q = klRef[i];
+    if (p > 0 && q > 0) {
+      const c = p * Math.log(p / q);
+      kl += c;
+      contributions.push(c);
+    } else {
+      contributions.push(0);
+    }
+  }
+
+  document.getElementById('klValue').textContent = kl.toFixed(4);
+  document.getElementById('klPenalty').textContent = (beta * kl).toFixed(4);
+  document.getElementById('klBeta').textContent = beta.toFixed(2);
+
+  drawKLOverlay();
+  drawKLContrib(contributions);
+}
+
+window.__setKLTokenWeight = function(token, rawValue) {
+  const idx = KL_TOKENS.indexOf(token);
+  if (idx < 0) return { ok: false, reason: `unknown token: ${token}` };
+  klPolicy[idx] = Math.max(0.01, Number(rawValue) / 100);
+  klPolicy = normalize(klPolicy);
+  renderKLBars();
+  updateKL();
+  return { ok: true, token, idx, value: Number(klPolicy[idx].toFixed(4)) };
+};
+
+function drawKLOverlay() {
+  const svg = document.getElementById('klOverlaySvg');
+  const W = 800, H = 220, pad = { t: 20, r: 30, b: 35, l: 40 };
+  const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
+  const n = klRef.length;
+  const bw = cw / n;
+  const maxV = Math.max(...klRef, ...klPolicy) * 1.1;
+  let html = '';
+
+  // Axis
+  html += `<line x1="${pad.l}" y1="${H - pad.b}" x2="${W - pad.r}" y2="${H - pad.b}" stroke="rgba(255,255,255,0.15)"/>`;
+
+  for (let i = 0; i < n; i++) {
+    const x = pad.l + i * bw;
+    const hRef = (klRef[i] / maxV) * ch;
+    const hPol = (klPolicy[i] / maxV) * ch;
+
+    // Reference bar (blue)
+    html += `<rect x="${x + 4}" y="${H - pad.b - hRef}" width="${bw * 0.4 - 4}" height="${hRef}" rx="3" fill="rgba(106,169,255,0.35)" stroke="rgba(106,169,255,0.5)" stroke-width="1"/>`;
+
+    // Policy bar (purple)
+    html += `<rect x="${x + bw * 0.4 + 4}" y="${H - pad.b - hPol}" width="${bw * 0.4 - 4}" height="${hPol}" rx="3" fill="rgba(199,125,255,0.35)" stroke="rgba(199,125,255,0.5)" stroke-width="1"/>`;
+
+    // Token label
+    html += `<text x="${x + bw / 2}" y="${H - pad.b + 16}" text-anchor="middle" fill="#dbe6ff" font-size="11" font-family="Courier New">${KL_TOKENS[i]}</text>`;
+
+    // Values
+    html += `<text x="${x + bw * 0.2}" y="${H - pad.b - hRef - 5}" text-anchor="middle" fill="#cfe1ff" font-size="10">${klRef[i].toFixed(2)}</text>`;
+    html += `<text x="${x + bw * 0.65}" y="${H - pad.b - hPol - 5}" text-anchor="middle" fill="#ecd2ff" font-size="10">${klPolicy[i].toFixed(2)}</text>`;
+  }
+
+  setSvgContent(svg, html);
+}
+
+function drawKLContrib(contributions) {
+  const svg = document.getElementById('klContribSvg');
+  const W = 800, H = 160, pad = { t: 20, r: 30, b: 35, l: 40 };
+  const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
+  const n = contributions.length;
+  const bw = cw / n;
+  const maxC = Math.max(...contributions.map(Math.abs), 0.02);
+  let html = '';
+
+  // Zero line
+  const zeroY = pad.t + ch / 2;
+  html += `<line x1="${pad.l}" y1="${zeroY}" x2="${W - pad.r}" y2="${zeroY}" stroke="rgba(255,255,255,0.15)"/>`;
+
+  for (let i = 0; i < n; i++) {
+    const x = pad.l + i * bw;
+    const c = contributions[i];
+    const barH = (Math.abs(c) / maxC) * (ch / 2);
+    const y = c >= 0 ? zeroY - barH : zeroY;
+    const color = c >= 0 ? 'rgba(255,209,102,0.5)' : 'rgba(100,240,200,0.5)';
+    const strokeColor = c >= 0 ? 'rgba(255,209,102,0.7)' : 'rgba(100,240,200,0.7)';
+
+    html += `<rect x="${x + 8}" y="${y}" width="${bw - 16}" height="${barH}" rx="4" fill="${color}" stroke="${strokeColor}" stroke-width="1"/>`;
+    html += `<text x="${x + bw / 2}" y="${H - pad.b + 16}" text-anchor="middle" fill="#dbe6ff" font-size="11" font-family="Courier New">${KL_TOKENS[i]}</text>`;
+    html += `<text x="${x + bw / 2}" y="${(c >= 0 ? y - 5 : y + barH + 13)}" text-anchor="middle" fill="#ffe3a0" font-size="10" font-family="Courier New">${c.toFixed(3)}</text>`;
+  }
+
+  html += `<text x="${pad.l - 4}" y="${zeroY + 4}" text-anchor="end" fill="#dbe6ff" font-size="10">0</text>`;
+
+  setSvgContent(svg, html);
+}
+
+function resetKL() {
+  klPolicy = [...klRef];
+  renderKLBars();
+  updateKL();
+}
+
+/* ═══════════════════════════════════════════════════ */
+/* MODULE 4: DPO vs RLHF                               */
+/* ═══════════════════════════════════════════════════ */
+
+function updateDPO() {
+  const gap = +document.getElementById('dpoGapSlider').value / 10;
+  const beta = +document.getElementById('dpoBetaSlider').value / 100;
+  document.getElementById('dpoGapVal').textContent = gap.toFixed(2);
+  document.getElementById('dpoBetaVal').textContent = beta.toFixed(2);
+
+  // DPO reparameterises reward as: R(x,y) = beta * log(pi(y|x)/pi_ref(y|x))
+  const rW = beta * gap / 2;
+  const rL = -beta * gap / 2;
+  const logit = beta * gap;
+  const prob = 1 / (1 + Math.exp(-logit));
+  const loss = -Math.log(prob);
+
+  document.getElementById('dpoRW').textContent = rW.toFixed(3);
+  document.getElementById('dpoRL').textContent = rL.toFixed(3);
+  document.getElementById('dpoProb').textContent = (prob * 100).toFixed(1) + '%';
+  document.getElementById('dpoLoss').textContent = loss.toFixed(4);
+
+  drawDPOChart(gap, beta);
+}
+
+function drawDPOChart(currentGap, currentBeta) {
+  const svg = document.getElementById('dpoSvg');
+  const W = 800, H = 220, pad = { t: 25, r: 30, b: 35, l: 55 };
+  const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
+  let html = '';
+
+  // Plot DPO loss as a function of the log-ratio gap for different betas
+  const betas = [0.05, 0.1, 0.2, 0.5];
+  const colors = ['#6aa9ff', '#64f0c8', '#ffd166', '#ff5c7a'];
+  const gapRange = 5;
+
+  // Axes
+  html += `<line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${H - pad.b}" stroke="rgba(255,255,255,0.15)"/>`;
+  html += `<line x1="${pad.l}" y1="${H - pad.b}" x2="${W - pad.r}" y2="${H - pad.b}" stroke="rgba(255,255,255,0.15)"/>`;
+  html += `<text x="${W / 2}" y="${H - 4}" text-anchor="middle" fill="#dbe6ff" font-size="11">Log-ratio gap: log(\u03C0(y_w)/\u03C0_ref(y_w)) - log(\u03C0(y_l)/\u03C0_ref(y_l))</text>`;
+  html += `<text x="${pad.l - 8}" y="${pad.t - 5}" fill="#dbe6ff" font-size="11">Loss</text>`;
+
+  const maxLoss = 4;
+
+  // Grid
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + ch * i / 4;
+    const val = maxLoss * (1 - i / 4);
+    html += `<line x1="${pad.l}" y1="${y}" x2="${W - pad.r}" y2="${y}" stroke="rgba(255,255,255,0.04)"/>`;
+    html += `<text x="${pad.l - 8}" y="${y + 4}" text-anchor="end" fill="#dbe6ff" font-size="10" font-family="Courier New">${val.toFixed(1)}</text>`;
+  }
+
+  // X axis labels
+  for (let g = -gapRange; g <= gapRange; g++) {
+    const x = pad.l + ((g + gapRange) / (2 * gapRange)) * cw;
+    html += `<text x="${x}" y="${H - pad.b + 16}" text-anchor="middle" fill="#dbe6ff" font-size="10" font-family="Courier New">${g}</text>`;
+  }
+
+  // Curves
+  betas.forEach((b, bi) => {
+    let path = '';
+    for (let px = 0; px <= 200; px++) {
+      const gap = -gapRange + (px / 200) * 2 * gapRange;
+      const logit = b * gap;
+      const prob = 1 / (1 + Math.exp(-logit));
+      const loss = Math.min(-Math.log(Math.max(prob, 1e-10)), maxLoss);
+      const x = pad.l + (px / 200) * cw;
+      const y = pad.t + ((maxLoss - loss) / maxLoss) * ch;
+      path += px === 0 ? `M${x},${y}` : ` L${x},${y}`;
+    }
+    html += `<path d="${path}" fill="none" stroke="${colors[bi]}" stroke-width="${Math.abs(b - currentBeta) < 0.02 ? 3 : 1.5}" opacity="${Math.abs(b - currentBeta) < 0.02 ? 1 : 0.4}"/>`;
+    html += `<text x="${W - pad.r + 5}" y="${pad.t + 16 + bi * 18}" fill="${colors[bi]}" font-size="11" font-family="system-ui" opacity="${Math.abs(b - currentBeta) < 0.02 ? 1 : 0.78}">\u03B2=${b}</text>`;
+  });
+
+  // Current point
+  const curLogit = currentBeta * currentGap;
+  const curProb = 1 / (1 + Math.exp(-curLogit));
+  const curLoss = Math.min(-Math.log(Math.max(curProb, 1e-10)), maxLoss);
+  const curX = pad.l + ((currentGap + gapRange) / (2 * gapRange)) * cw;
+  const curY = pad.t + ((maxLoss - curLoss) / maxLoss) * ch;
+
+  html += `<line x1="${curX}" y1="${pad.t}" x2="${curX}" y2="${H - pad.b}" stroke="rgba(255,255,255,0.1)" stroke-dasharray="3,3"/>`;
+  html += `<circle cx="${curX}" cy="${curY}" r="6" fill="#c77dff" stroke="white" stroke-width="1.5"/>`;
+  html += `<text x="${curX + 12}" y="${curY - 10}" fill="#efd5ff" font-size="11" font-weight="700" font-family="system-ui">Loss = ${curLoss.toFixed(3)}</text>`;
+
+  setSvgContent(svg, html);
+}
+
+updateDPO();
+initKL();
+updateKL();
+</script>
+</body>
+</html>

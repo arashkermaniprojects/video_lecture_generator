@@ -1,0 +1,57 @@
+═══════════════════════════════════════════════
+  Training data mining report
+  2026-04-10T11:57:14.081Z
+═══════════════════════════════════════════════
+
+Inputs:
+  - 8 run state.json files
+  - 5 curated config files
+  - 16 passed sections across all runs
+
+Output files:
+  data/train/section_planning.jsonl
+    train: 159  validation: 17  total: 176  ✗ too few examples — base model only
+  data/train/frame_qa_verdict.jsonl
+    train: 0  validation: 0  total: 0  ✗ too few examples — base model only
+  data/train/narration_rewrite.jsonl
+    train: 0  validation: 0  total: 0  ✗ too few examples — base model only
+  data/train/tool_qa_fix.jsonl
+    train: 0  validation: 0  total: 0  ✗ too few examples — base model only
+
+═══════════════════════════════════════════════
+  How to grow each dataset
+═══════════════════════════════════════════════
+
+section_planning:
+  - Already mineable from curated config/*.json files (~150-200 examples).
+  - To grow: hand-curate more lecture configs in config/, OR run
+    `node pipeline.mjs --skip-quality-loop` (lets section-planner produce
+    real plans we can validate and add to the corpus).
+
+frame_qa_verdict:
+  - Empty because all current runs use --skip-inspection.
+  - To grow: run pipelines WITHOUT --skip-inspection. Each section
+    will produce a vision QA report saved into qaReports[].checklist.
+  - 5-10 full pipeline runs should yield ~150-300 examples.
+
+narration_rewrite:
+  - Empty because the quality loop only logs aggregate counts, not the
+    actual narration before/after pairs.
+  - To grow: patch agents/quality-loop.mjs to call
+    state.addLog("narration_rewrite", { sectionId, before, after, feedback })
+    before saving the rewritten narration. Then re-run with quality loop.
+
+tool_qa_fix:
+  - Empty because tool evolution is currently failing on the local backend
+    (max_tokens issue, now clamped) and produces no v2 backups.
+  - To grow: enable tool evolution in real lecture runs. The pipeline already
+    saves tool_v1.html backups before each evolution; we just need successful
+    evolutions to land tool_v2.html, tool_v3.html, etc.
+
+Practical first move: run 3-5 full lectures locally, tool evolution enabled,
+inspection enabled. That single set of runs will populate every category at
+once with high-quality validated data.
+
+Recommendation: any task with <200 examples should NOT be fine-tuned.
+Use the base model with strong prompts for those, then collect more data
+by running the pipeline a few more times to grow the training set.

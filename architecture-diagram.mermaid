@@ -1,0 +1,299 @@
+---
+title: "Agentic Lecture Production Pipeline — Full Architecture"
+---
+
+%% Notation: This uses a combination of standard conventions:
+%%   - Flowchart for control flow (diamond = decision, rectangle = process)
+%%   - Swim lanes (subgraphs) for agent boundaries
+%%   - Color coding: green = pass, red = fail, blue = human, orange = AI agent
+%%   - Dashed lines = optional/conditional paths
+%%   - Bold borders = entry/exit points
+
+flowchart TD
+    %% ════════════════════════════════════════════
+    %%  ENTRY
+    %% ════════════════════════════════════════════
+    START(["`**node pipeline.mjs**
+    Entry Point`"]) --> INIT
+
+    INIT["`Load config/sections.json
+    Initialize PipelineState
+    Create ConversationTracker`"]
+
+    INIT --> RESUME_CHECK{Resume mode?}
+    RESUME_CHECK -- "--resume" --> LOAD_STATE[Load saved state JSON]
+    RESUME_CHECK -- "fresh" --> NEW_STATE[Create new run dir]
+    LOAD_STATE --> STAGE_ROUTER
+    NEW_STATE --> STAGE_ROUTER
+
+    STAGE_ROUTER{Current Stage?}
+
+    %% ════════════════════════════════════════════
+    %%  STAGE 1: TOOL QA
+    %% ════════════════════════════════════════════
+    subgraph STAGE1["STAGE 1 — Tool Quality Assurance"]
+        direction TB
+        TQA_START["`**tool-qa.mjs**
+        Launch Playwright
+        Load HTML tool`"]
+        TQA_CLICK["`Click all tabs
+        Screenshot top + bottom
+        Check console errors
+        Test animations`"]
+        TQA_VERDICT{QA Verdict?}
+        TQA_FIX["`**tool-qa.mjs → fixTool()**
+        Claude reads QA report
+        Patches HTML source
+        Saves new version`"]
+        TQA_HUMAN["`**human-review.mjs**
+        Show QA issues
+        [a]pprove / [r]etry / [q]uit`"]
+
+        TQA_START --> TQA_CLICK --> TQA_VERDICT
+        TQA_VERDICT -- "pass" --> TQA_PASS([Pass])
+        TQA_VERDICT -- "fail_retry
+        (≤2 attempts)" --> TQA_FIX --> TQA_CLICK
+        TQA_VERDICT -- "fail_human" --> TQA_HUMAN
+        TQA_HUMAN -- "approve" --> TQA_PASS
+        TQA_HUMAN -- "pause" --> PAUSED
+    end
+
+    STAGE_ROUTER -- "TOOL_QA" --> TQA_START
+
+    %% ════════════════════════════════════════════
+    %%  STAGE 1.5: PEDAGOGICAL EVALUATION
+    %% ════════════════════════════════════════════
+    subgraph STAGE15["STAGE 1.5 — Pedagogical Evaluation + Tool Evolution"]
+        direction TB
+        PED_PREVIEW["`**navigator.mjs**
+        Capture preview frame
+        for each section`"]
+
+        subgraph CLASSROOM["Simulated Classroom"]
+            direction LR
+            STUDENT_STRONG["`**Sam (Strong)**
+            Catches errors
+            Demands rigor`"]
+            STUDENT_AVG["`**Jordan (Average)**
+            Needs visual-verbal
+            alignment`"]
+            STUDENT_WEAK["`**Alex (Struggling)**
+            Needs scaffolding
+            Concrete examples`"]
+        end
+
+        PED_EVAL["`**teaching-evaluator.mjs**
+        Master teacher analysis
+        Bloom's taxonomy
+        Dual coding check`"]
+
+        PED_VERDICT{Teaching Verdict?}
+
+        EVOLVE["`**tool-evolver.mjs**
+        planEvolution() → grouped changes
+        evolveTool() → Claude patches HTML
+        updateSections() → fix nav actions`"]
+
+        PED_PREVIEW --> CLASSROOM --> PED_EVAL --> PED_VERDICT
+        PED_VERDICT -- "PROCEED" --> PED_PASS([Pass])
+        PED_VERDICT -- "EVOLVE_TOOL
+        (≤3 cycles)" --> EVOLVE --> PED_PREVIEW
+        PED_VERDICT -- "REWRITE_NARRATION" --> REWRITE[Update narration text] --> PED_PASS
+    end
+
+    TQA_PASS --> PED_PREVIEW
+
+    %% ════════════════════════════════════════════
+    %%  STAGE 2: SECTION RECORDING
+    %% ════════════════════════════════════════════
+    subgraph STAGE2["STAGE 2 — Section-by-Section Recording"]
+        direction TB
+        SEC_LOOP["`**FOR each section (1..42)**`"]
+
+        subgraph SECTION_PROCESS["processSection() — Agentic Retry Loop"]
+            direction TB
+            NAV["`**navigator.mjs**
+            executeNavActions()
+            Click tabs, set sliders
+            Scroll to content`"]
+
+            RECORD["`**recorder.mjs**
+            CDP screencast (animated)
+            OR screenshot (static)
+            1920×1080 frames`"]
+
+            FRAME_QA["`**video-qa.mjs → qaFrame()**
+            Claude Vision inspects frame
+            Checks: content visible?
+            Readable? Correct layout?`"]
+
+            PEDAGOGY_QUICK["`**student-simulator.mjs**
+            quickPedagogyCheck()
+            Fast pass/fail per section`"]
+
+            FRAME_VERDICT{Frame QA?}
+
+            TTS["`**tts-agent.mjs**
+            OpenAI tts-1-hd / nova voice
+            Quality checks: duration,
+            word rate, silence, clipping`"]
+
+            TTS_VERDICT{TTS Quality?}
+
+            SEC_DONE([Section Complete])
+
+            NAV --> RECORD --> FRAME_QA --> PEDAGOGY_QUICK --> FRAME_VERDICT
+            FRAME_VERDICT -- "pass" --> TTS --> TTS_VERDICT
+            FRAME_VERDICT -- "fail_retry" --> NAV
+            FRAME_VERDICT -- "fail_human" --> HR2
+
+            TTS_VERDICT -- "pass" --> SEC_DONE
+            TTS_VERDICT -- "fail" --> NAV
+        end
+
+        subgraph HUMAN_LOOP["Human Review + Confusion Detection"]
+            direction TB
+            HR2["`**human-review.mjs**
+            Show frame + audio + QA report
+            [a]pprove [r]etry [f]eedback
+            [s]kip [e]dit [q]uit`"]
+
+            CONFUSION["`**conversation-monitor.mjs**
+            analyzeHumanResponse()
+            Quick signals + Claude deep analysis
+            Classify confusion type & strength`"]
+
+            CONF_STRENGTH{Confusion Strength?}
+
+            MID_EVOLVE["`**tool-evolver.mjs**
+            Mid-pipeline evolution!
+            Modify HTML → reload page
+            → retry section`"]
+
+            HR2 -- "feedback text" --> CONFUSION --> CONF_STRENGTH
+            CONF_STRENGTH -- "STRONG + tool can help" --> MID_EVOLVE
+            CONF_STRENGTH -- "MEDIUM" --> LOG_IT[Log for systemic analysis]
+            CONF_STRENGTH -- "WEAK" --> LOG_IT
+            MID_EVOLVE -- "evolved" --> NAV
+        end
+
+        HR2 -- "approve" --> SEC_DONE
+        HR2 -- "retry" --> NAV
+        HR2 -- "skip" --> SEC_DONE
+
+        CHECKPOINT{"`Every 10 sections:
+        Checkpoint Review`"}
+
+        SEC_LOOP --> NAV
+        SEC_DONE --> CHECKPOINT
+        CHECKPOINT -- "continue" --> SEC_LOOP
+        CHECKPOINT -- "pause" --> PAUSED
+    end
+
+    PED_PASS --> SEC_LOOP
+
+    %% ════════════════════════════════════════════
+    %%  POST-RECORDING: SYSTEMIC CONFUSION
+    %% ════════════════════════════════════════════
+    subgraph SYSTEMIC["POST-RECORDING — Systemic Confusion Analysis"]
+        direction TB
+        SYS_CHECK["`**ConversationTracker**
+        detectSystemicIssues()
+        Group recurring confusions
+        across all sections`"]
+
+        SYS_VERDICT{Systemic issues found?}
+
+        BATCH_EVOLVE["`**tool-evolver.mjs**
+        Batch evolution from
+        accumulated patterns
+        e.g. 'add notation sidebar'`"]
+
+        SYS_CHECK --> SYS_VERDICT
+        SYS_VERDICT -- "yes (human approves)" --> BATCH_EVOLVE
+        SYS_VERDICT -- "none" --> SYS_PASS([Continue])
+        BATCH_EVOLVE --> SYS_PASS
+    end
+
+    CHECKPOINT -- "all sections done" --> SYS_CHECK
+
+    %% ════════════════════════════════════════════
+    %%  STAGE 3: PRE-ASSEMBLY REVIEW
+    %% ════════════════════════════════════════════
+    subgraph STAGE3["STAGE 3 — Pre-Assembly Review"]
+        PREASM["`**human-review.mjs**
+        preAssemblyReview()
+        Show: total sections, pass/fail
+        counts, estimated duration`"]
+    end
+
+    SYS_PASS --> PREASM
+
+    %% ════════════════════════════════════════════
+    %%  STAGE 4: VIDEO ASSEMBLY
+    %% ════════════════════════════════════════════
+    subgraph STAGE4["STAGE 4 — Video Assembly"]
+        direction TB
+        ASM_STATIC["`**assembler.mjs**
+        buildStaticSegment()
+        ffmpeg -loop 1 -i img
+        -i audio -tune stillimage`"]
+
+        ASM_ANIM["`**assembler.mjs**
+        buildAnimationSegment()
+        Frame sequence + audio → MP4`"]
+
+        ASM_CONCAT["`**assembler.mjs**
+        concatenateSegments()
+        ffmpeg concat demuxer
+        → final MP4`"]
+
+        ASM_STATIC --> ASM_CONCAT
+        ASM_ANIM --> ASM_CONCAT
+    end
+
+    PREASM -- "approved" --> ASM_STATIC
+    PREASM -- "approved" --> ASM_ANIM
+
+    %% ════════════════════════════════════════════
+    %%  STAGE 5: FINAL QA
+    %% ════════════════════════════════════════════
+    subgraph STAGE5["STAGE 5 — Final Video QA"]
+        FINAL_QA["`**video-qa.mjs**
+        qaFinalVideo()
+        Sample frames at intervals
+        Check duration match
+        Verify all sections present`"]
+    end
+
+    ASM_CONCAT --> FINAL_QA
+    FINAL_QA -- "pass" --> DONE
+    FINAL_QA -- "issues" --> DONE_WARN
+
+    DONE(["`**DONE**
+    Output: lecture.mp4
+    1920×1080, 20-30 min`"])
+
+    DONE_WARN(["`**DONE with warnings**
+    Output produced but
+    has flagged issues`"])
+
+    PAUSED(["`**PAUSED**
+    State saved to JSON
+    Resume: --resume --run-dir ...`"])
+
+    %% ════════════════════════════════════════════
+    %%  STYLING
+    %% ════════════════════════════════════════════
+    classDef human fill:#4A90D9,stroke:#2C5F8A,color:#fff
+    classDef agent fill:#F5A623,stroke:#C47D0E,color:#fff
+    classDef pass fill:#7ED321,stroke:#5B9A18,color:#fff
+    classDef fail fill:#D0021B,stroke:#9B0114,color:#fff
+    classDef paused fill:#9B9B9B,stroke:#6B6B6B,color:#fff
+    classDef evolution fill:#BD10E0,stroke:#8B0CA6,color:#fff
+
+    class HR2,TQA_HUMAN,PREASM,CHECKPOINT human
+    class TQA_FIX,EVOLVE,MID_EVOLVE,BATCH_EVOLVE evolution
+    class CONFUSION,FRAME_QA,PED_EVAL,FINAL_QA,SYS_CHECK agent
+    class TQA_PASS,PED_PASS,SEC_DONE,SYS_PASS,DONE pass
+    class PAUSED paused

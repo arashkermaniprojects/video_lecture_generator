@@ -1,0 +1,1063 @@
+{
+  "lecture": {
+    "toolPath": "/Users/arash/Documents/Work/Teaching/CUD/SP_2026/Algorithm II/Lec_09/approximation_algorithms.html"
+  },
+  "sections": [
+    {
+      "id": "01_intro",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#introBody > div:first-child"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#introBody > div:first-child",
+          "label": "Lecture Notes — Start Here"
+        }
+      ],
+      "narration": "Welcome to the world of approximation algorithms! Today, we embark on a journey to tackle some of the most challenging problems in computer science—problems so complex that finding the perfect answer quickly is often impossible. Instead, we’ll learn how to design algorithms that find solutions close to the best, and do so efficiently. This approach is not just a compromise—it's a powerful strategy that enables us to solve real-world problems that would otherwise be out of reach.",
+      "expectedElements": [
+        "#introBody > div:first-child"
+      ],
+      "focusTarget": "#introBody > div:first-child",
+      "isAnimated": false
+    },
+    {
+      "id": "02_why_approximation",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#sec1"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#sec1",
+          "label": "Why Approximation Algorithms?"
+        }
+      ],
+      "narration": "Why do we need approximation algorithms? Many important problems—like finding the smallest set of network nodes to cover all connections, or the shortest route visiting every city—are NP-hard. This means that, as the problem size grows, finding the exact solution becomes computationally infeasible. Approximation algorithms give us a way to get answers that are guaranteed to be close to optimal, but in a fraction of the time.",
+      "expectedElements": [
+        "#sec1"
+      ],
+      "focusTarget": "#sec1",
+      "isAnimated": false
+    },
+    {
+      "id": "03_key_terminology",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#sec1 + .key-concept"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#sec1 + .key-concept",
+          "label": "Key Terminology: Polynomial Time and NP-Hardness"
+        }
+      ],
+      "narration": "Let's clarify two crucial terms: polynomial time and NP-hardness. An algorithm runs in polynomial time if its steps grow at most as a polynomial function of the input size—think O(n^2) or O(n^3). NP-hard problems, on the other hand, are so tough that no polynomial-time solution is known. For these, approximation algorithms are our best hope for practical solutions.",
+      "expectedElements": [
+        "#sec1 + .key-concept"
+      ],
+      "focusTarget": "#sec1 + .key-concept",
+      "isAnimated": false
+    },
+    {
+      "id": "04_classic_nphard_examples",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#sec1 + .key-concept + p + .example-box"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#sec1 + .key-concept + p + .example-box",
+          "label": "Classic NP-Hard Problems at a Glance"
+        }
+      ],
+      "narration": "Some classic NP-hard problems include Vertex Cover—finding the smallest set of vertices that touches every edge in a graph—and the Traveling Salesman Problem, where the goal is to find the shortest route visiting every city exactly once. These problems are not just theoretical; they appear in network design, logistics, and many other fields.",
+      "expectedElements": [
+        "#sec1 + .key-concept + p + .example-box"
+      ],
+      "focusTarget": "#sec1 + .key-concept + p + .example-box",
+      "isAnimated": false
+    },
+    {
+      "id": "05_strategies_for_nphard",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box",
+          "label": "Three Strategies for NP-Hard Problems"
+        }
+      ],
+      "narration": "When facing NP-hard problems, we have three main strategies. First, exact algorithms guarantee the perfect answer, but often require exponential time. Second, heuristics are fast and can work well in practice, but offer no guarantees. Third, and most importantly for us, approximation algorithms strike a balance: they run quickly and provide provable guarantees on how close their solutions are to optimal.",
+      "expectedElements": [
+        "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box"
+      ],
+      "focusTarget": "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box",
+      "isAnimated": false
+    },
+    {
+      "id": "06_same_problem_diff_answer",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box + .key-concept"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box + .key-concept",
+          "label": "Same Problem, Different Answer — Why \"Approximation\"?"
+        }
+      ],
+      "narration": "It's vital to understand that approximation algorithms do not change the problem itself. The question remains the same—find the smallest vertex cover, or the shortest tour. What changes is our willingness to accept a solution that's close to optimal, rather than insisting on perfection.",
+      "expectedElements": [
+        "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box + .key-concept"
+      ],
+      "focusTarget": "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box + .key-concept",
+      "isAnimated": false
+    },
+    {
+      "id": "07_common_misconception",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box + .key-concept + .warning-box"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box + .key-concept + .warning-box",
+          "label": "A Common Misconception"
+        }
+      ],
+      "narration": "A common misconception is that approximation algorithms give 'wrong' answers. In reality, a 2-approximation for vertex cover, for example, always produces a valid cover—it just might use up to twice as many vertices as the smallest possible cover. The solution is correct, just not always optimal.",
+      "expectedElements": [
+        "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box + .key-concept + .warning-box"
+      ],
+      "focusTarget": "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box + .key-concept + .warning-box",
+      "isAnimated": false
+    },
+    {
+      "id": "08_real_world_applications",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box + .key-concept + .warning-box + .example-box"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box + .key-concept + .warning-box + .example-box",
+          "label": "Real-World Applications"
+        }
+      ],
+      "narration": "Approximation algorithms are not just academic curiosities—they power real-world systems. For example, network design often relies on finding minimum-cost ways to connect all nodes, which is closely related to the Traveling Salesman and Steiner tree problems. These algorithms make large-scale logistics and communications possible.",
+      "expectedElements": [
+        "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box + .key-concept + .warning-box + .example-box"
+      ],
+      "focusTarget": "#sec1 + .key-concept + p + .example-box + .key-concept + p + .example-box + .key-concept + .warning-box + .example-box",
+      "isAnimated": false
+    },
+    {
+      "id": "09_min_vs_max",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#sec2 + p + .example-box"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#sec2 + p + .example-box",
+          "label": "Minimization vs. Maximization Problems"
+        }
+      ],
+      "narration": "Problems come in two flavors: minimization and maximization. In minimization, like vertex cover, we want the smallest possible solution. In maximization, such as finding the largest independent set, we want the biggest. The definition of approximation ratio changes slightly depending on which type we're dealing with.",
+      "expectedElements": [
+        "#sec2 + p + .example-box"
+      ],
+      "focusTarget": "#sec2 + p + .example-box",
+      "isAnimated": false
+    },
+    {
+      "id": "10_approx_ratio_intro",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#sec2 + p + .example-box + p + .code-block + p + .example-box"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#sec2 + p + .example-box + p + .code-block + p + .example-box",
+          "label": "Approximation Ratio Examples"
+        }
+      ],
+      "narration": "The approximation ratio is the heart of these algorithms. For minimization problems, it's the ratio of the algorithm's solution cost to the optimal cost. For maximization, it's the optimal value divided by the algorithm's value. A 2-approximation for vertex cover, for instance, means our solution is guaranteed to be at most twice as large as the best possible.",
+      "expectedElements": [
+        "#sec2 + p + .example-box + p + .code-block + p + .example-box"
+      ],
+      "focusTarget": "#sec2 + p + .example-box + p + .code-block + p + .example-box",
+      "isAnimated": false
+    },
+    {
+      "id": "11_approx_ratio_math",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#sec2 + p + .example-box + p + .code-block"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#sec2 + p + .example-box + p + .code-block",
+          "label": "Approximation Ratio Table"
+        }
+      ],
+      "narration": "Let's formalize the approximation ratio. For minimization, we write C over C star is less than or equal to rho of n, meaning our solution is at most rho times the optimal. For maximization, it's the other way around: C star over C is at most rho. This table summarizes the best-known ratios for classic problems.",
+      "expectedElements": [
+        "#sec2 + p + .example-box + p + .code-block"
+      ],
+      "focusTarget": "#sec2 + p + .example-box + p + .code-block",
+      "isAnimated": false
+    },
+    {
+      "id": "12_what_is_2approx",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#sec2 + p + .example-box + p + .code-block + p + .example-box + .key-concept"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#sec2 + p + .example-box + p + .code-block + p + .example-box + .key-concept",
+          "label": "What Does \"2-Approximation\" Mean?"
+        }
+      ],
+      "narration": "A 2-approximation algorithm guarantees that the solution it finds is no worse than twice the optimal. For example, if the smallest possible vertex cover has 5 vertices, a 2-approximation algorithm will never return a cover with more than 10 vertices. This guarantee is powerful—it means we always know how far from optimal we might be.",
+      "expectedElements": [
+        "#sec2 + p + .example-box + p + .code-block + p + .example-box + .key-concept"
+      ],
+      "focusTarget": "#sec2 + p + .example-box + p + .code-block + p + .example-box + .key-concept",
+      "isAnimated": false
+    },
+    {
+      "id": "13_algo_selector_vertex_cover",
+      "navActions": [
+        {
+          "action": "set_select",
+          "selector": "#algo",
+          "index": 0
+        },
+        {
+          "action": "wait",
+          "ms": 500
+        },
+        {
+          "action": "zoom_to",
+          "target": "#algo"
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#algo",
+          "label": "Algorithm selector: Vertex Cover"
+        }
+      ],
+      "narration": "Let's dive into our first example: the Vertex Cover problem. We'll explore a simple yet powerful 2-approximation algorithm that always finds a valid cover, and never uses more than twice as many vertices as the optimal solution.",
+      "expectedElements": [
+        "#algo"
+      ],
+      "focusTarget": "#algo",
+      "isAnimated": false
+    },
+    {
+      "id": "14_preset_path_graph",
+      "navActions": [
+        {
+          "action": "click_button",
+          "text": "Path 1-2-3-4-5"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "zoom_to",
+          "target": "#vizArea"
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#vizArea",
+          "label": "Path Graph Visualization"
+        }
+      ],
+      "narration": "Consider a simple path graph with five vertices in a line. The goal is to select as few vertices as possible so that every edge is covered. This structure is easy to visualize and helps us understand how the approximation algorithm operates step by step.",
+      "expectedElements": [
+        "#vizArea"
+      ],
+      "focusTarget": "#vizArea",
+      "isAnimated": false
+    },
+    {
+      "id": "15_build_steps_vertex_cover",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#vizArea"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "click_button",
+          "text": "Build Steps"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#vizArea",
+          "label": "Vertex Cover Step Visualization"
+        }
+      ],
+      "narration": "The 2-approximation algorithm for vertex cover works by repeatedly picking an uncovered edge and adding both its endpoints to the cover. This greedy approach ensures that every edge is covered, and the process continues until no uncovered edges remain.",
+      "expectedElements": [
+        "#vizArea"
+      ],
+      "focusTarget": "#vizArea",
+      "isAnimated": false
+    },
+    {
+      "id": "16_step_vertex_cover",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#vizArea"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "click_button",
+          "text": "Step"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#vizArea",
+          "label": "Vertex Cover Step"
+        }
+      ],
+      "narration": "At each step, we select an uncovered edge and add both vertices to our cover. This may seem wasteful, but it guarantees that every edge is covered quickly. In our path graph, after a few steps, all edges will be covered, and the process will stop.",
+      "expectedElements": [
+        "#vizArea"
+      ],
+      "focusTarget": "#vizArea",
+      "isAnimated": false
+    },
+    {
+      "id": "17_vertex_cover_house_graph",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#vizArea"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "click_button",
+          "text": "House graph"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#vizArea",
+          "label": "House Graph Visualization"
+        }
+      ],
+      "narration": "Now, let's consider the house graph—a classic example with a more complex structure. The same 2-approximation algorithm applies: pick an uncovered edge, add both endpoints, and repeat until all edges are covered. This approach is robust, regardless of the graph's shape.",
+      "expectedElements": [
+        "#vizArea"
+      ],
+      "focusTarget": "#vizArea",
+      "isAnimated": false
+    },
+    {
+      "id": "18_vertex_cover_star_graph",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#vizArea"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "click_button",
+          "text": "Star (center = A)"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#vizArea",
+          "label": "Star Graph Visualization"
+        }
+      ],
+      "narration": "In a star graph, where one central node connects to all others, the 2-approximation algorithm may select more vertices than necessary. However, it still guarantees a valid cover, and never more than twice the optimal number. This illustrates both the strength and the limitation of the approach.",
+      "expectedElements": [
+        "#vizArea"
+      ],
+      "focusTarget": "#vizArea",
+      "isAnimated": false
+    },
+    {
+      "id": "19_vertex_cover_complete_graph",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#vizArea"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "click_button",
+          "text": "Complete graph K₄ (all 4 vertices connected)"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#vizArea",
+          "label": "Complete Graph K₄ Visualization"
+        }
+      ],
+      "narration": "For a complete graph with four vertices, every pair is connected. The 2-approximation algorithm may select all four vertices, even though the optimal cover could be just three. This demonstrates that while the algorithm is simple and fast, it sometimes overshoots the minimum.",
+      "expectedElements": [
+        "#vizArea"
+      ],
+      "focusTarget": "#vizArea",
+      "isAnimated": false
+    },
+    {
+      "id": "20_vertex_cover_algo_code",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#pseudocode"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#pseudocode",
+          "label": "Vertex Cover pseudocode"
+        }
+      ],
+      "narration": "The pseudocode for the 2-approximation vertex cover algorithm is straightforward: while there are uncovered edges, pick one, add both endpoints to the cover, and remove all edges incident to those vertices. This greedy strategy is easy to implement and analyze.",
+      "expectedElements": [
+        "#pseudocode"
+      ],
+      "focusTarget": "#pseudocode",
+      "isAnimated": false
+    },
+    {
+      "id": "21_vertex_cover_analysis",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#sec3 + p + .warning-box + p + .code-block + .key-concept"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#sec3 + p + .warning-box + p + .code-block + .key-concept",
+          "label": "Vertex Cover Comparison Table"
+        }
+      ],
+      "narration": "Comparing the exact and greedy solutions, we see that the greedy 2-approximation is always within a factor of two of the optimal. This is a powerful guarantee, especially for large graphs where finding the exact cover is computationally prohibitive.",
+      "expectedElements": [
+        "#sec3 + p + .warning-box + p + .code-block + .key-concept"
+      ],
+      "focusTarget": "#sec3 + p + .warning-box + p + .code-block + .key-concept",
+      "isAnimated": false
+    },
+    {
+      "id": "22_algo_selector_tsp",
+      "navActions": [
+        {
+          "action": "set_select",
+          "selector": "#algo",
+          "index": 1
+        },
+        {
+          "action": "wait",
+          "ms": 500
+        },
+        {
+          "action": "zoom_to",
+          "target": "#algo"
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#algo",
+          "label": "Algorithm selector: TSP"
+        }
+      ],
+      "narration": "Next, let's turn to the Traveling Salesman Problem, or TSP. This classic challenge asks for the shortest possible tour that visits every city exactly once and returns to the starting point. We'll explore a 2-approximation algorithm based on minimum spanning trees.",
+      "expectedElements": [
+        "#algo"
+      ],
+      "focusTarget": "#algo",
+      "isAnimated": false
+    },
+    {
+      "id": "23_tsp_problem_definition",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": ".key-concept:nth-of-type(4)"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": ".key-concept:nth-of-type(4)",
+          "label": "What is the Traveling Salesman Problem (TSP)?"
+        }
+      ],
+      "narration": "The Traveling Salesman Problem asks: given a set of cities and the distances between each pair, what is the shortest possible route that visits each city exactly once and returns to the start? This problem is notoriously hard, but approximation algorithms offer a practical way forward.",
+      "expectedElements": [
+        ".key-concept:nth-of-type(4)"
+      ],
+      "focusTarget": ".key-concept:nth-of-type(4)",
+      "isAnimated": false
+    },
+    {
+      "id": "24_tsp_mst_idea",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#algoOverview"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#algoOverview",
+          "label": "TSP quick reference"
+        }
+      ],
+      "narration": "The key idea behind the MST-based 2-approximation for TSP is to first compute a minimum spanning tree. This tree connects all cities with the smallest possible total edge weight, but may not form a tour. By traversing the tree cleverly, we can build a tour that's at most twice as long as the optimal.",
+      "expectedElements": [
+        "#algoOverview"
+      ],
+      "focusTarget": "#algoOverview",
+      "isAnimated": false
+    },
+    {
+      "id": "25_tsp_triangle_inequality",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#sec4 + p + .key-concept + .example-box + p + .code-block + .warning-box + .key-concept + .example-box + .warning-box"
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#sec4 + p + .key-concept + .example-box + p + .code-block + .warning-box + .key-concept + .example-box + .warning-box",
+          "label": "Triangle Inequality Explanation"
+        }
+      ],
+      "narration": "This algorithm relies on the triangle inequality: the direct path between two cities is never longer than going through a third city. This property ensures that when we shortcut repeated cities in our tour, we never increase the total distance.",
+      "expectedElements": [
+        "#sec4 + p + .key-concept + .example-box + p + .code-block + .warning-box + .key-concept + .example-box + .warning-box"
+      ],
+      "focusTarget": "#sec4 + p + .key-concept + .example-box + p + .code-block + .warning-box + .key-concept + .example-box + .warning-box",
+      "isAnimated": false
+    },
+    {
+      "id": "26_tsp_mst_steps",
+      "navActions": [
+        {
+          "action": "click_button",
+          "text": "Build Steps"
+        },
+        {
+          "action": "wait",
+          "ms": 600
+        },
+        {
+          "action": "zoom_to",
+          "target": "#vizArea"
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#vizArea",
+          "label": "TSP MST and tour visualization"
+        }
+      ],
+      "narration": "The MST-based TSP approximation algorithm works in three steps: first, compute a minimum spanning tree; second, perform a depth-first traversal of the tree, visiting each edge twice; and third, shortcut any repeated cities to form a valid tour. The result is a tour no more than twice the length of the optimal.",
+      "expectedElements": [
+        "#vizArea"
+      ],
+      "focusTarget": "#vizArea",
+      "isAnimated": false
+    },
+    {
+      "id": "27_tsp_example_path",
+      "navActions": [
+        {
+          "action": "click_button",
+          "text": "4 cities (square)"
+        },
+        {
+          "action": "wait",
+          "ms": 500
+        },
+        {
+          "action": "click_button",
+          "text": "Build Steps"
+        },
+        {
+          "action": "wait",
+          "ms": 600
+        },
+        {
+          "action": "zoom_to",
+          "target": "#vizArea"
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#vizArea",
+          "label": "Square TSP example"
+        }
+      ],
+      "narration": "Consider the square four-city example. Because the cities sit in a clean geometric layout, the minimum spanning tree is easy to see, and the shortcut tour stays very close to the best possible route. This makes the square a great first visual for understanding how the MST becomes a full tour.",
+      "expectedElements": [
+        "#vizArea"
+      ],
+      "focusTarget": "#vizArea",
+      "isAnimated": false
+    },
+    {
+      "id": "28_tsp_example_star",
+      "navActions": [
+        {
+          "action": "click_button",
+          "text": "5 cities (pentagon)"
+        },
+        {
+          "action": "wait",
+          "ms": 500
+        },
+        {
+          "action": "click_button",
+          "text": "Build Steps"
+        },
+        {
+          "action": "wait",
+          "ms": 600
+        },
+        {
+          "action": "zoom_to",
+          "target": "#vizArea"
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#vizArea",
+          "label": "Pentagon TSP example"
+        }
+      ],
+      "narration": "Now move to the five-city pentagon. The structure is slightly richer, but the same logic still holds: build the minimum spanning tree, walk it depth-first, and then shortcut repeated visits. The tour may bend differently, but the guarantee remains exactly the same.",
+      "expectedElements": [
+        "#vizArea"
+      ],
+      "focusTarget": "#vizArea",
+      "isAnimated": false
+    },
+    {
+      "id": "29_tsp_example_complete",
+      "navActions": [
+        {
+          "action": "click_button",
+          "text": "7 cities (clustered)"
+        },
+        {
+          "action": "wait",
+          "ms": 500
+        },
+        {
+          "action": "click_button",
+          "text": "Build Steps"
+        },
+        {
+          "action": "wait",
+          "ms": 600
+        },
+        {
+          "action": "zoom_to",
+          "target": "#vizArea"
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#vizArea",
+          "label": "Clustered TSP example"
+        }
+      ],
+      "narration": "In the clustered seven-city example, the approximation becomes more realistic. Some cities naturally group together, so the minimum spanning tree captures the local structure first, and the final shortcut tour connects those groups efficiently. This is where the visual intuition behind the algorithm really becomes powerful.",
+      "expectedElements": [
+        "#vizArea"
+      ],
+      "focusTarget": "#vizArea",
+      "isAnimated": false
+    },
+    {
+      "id": "30_tsp_algo_code",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#pseudocode"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#pseudocode",
+          "label": "TSP pseudocode"
+        }
+      ],
+      "narration": "The pseudocode for the MST-based TSP approximation is elegant: compute the minimum spanning tree, perform a depth-first walk, and shortcut repeated cities. This simple process yields a tour that's never more than twice as long as the best possible.",
+      "expectedElements": [
+        "#pseudocode"
+      ],
+      "focusTarget": "#pseudocode",
+      "isAnimated": false
+    },
+    {
+      "id": "31_algo_selector_set_cover",
+      "navActions": [
+        {
+          "action": "set_select",
+          "selector": "#algo",
+          "index": 2
+        },
+        {
+          "action": "wait",
+          "ms": 500
+        },
+        {
+          "action": "zoom_to",
+          "target": "#algo"
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#algo",
+          "label": "Algorithm selector: Set Cover"
+        }
+      ],
+      "narration": "Now, let's explore the Set Cover problem. Here, the goal is to cover all elements of a universe using as few sets as possible. The greedy algorithm for set cover is a classic approximation algorithm, and it achieves a logarithmic approximation ratio.",
+      "expectedElements": [
+        "#algo"
+      ],
+      "focusTarget": "#algo",
+      "isAnimated": false
+    },
+    {
+      "id": "32_set_cover_greedy_idea",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#algoOverview"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#algoOverview",
+          "label": "Set Cover quick reference"
+        }
+      ],
+      "narration": "The greedy set cover algorithm works by repeatedly choosing the set that covers the largest number of uncovered elements. This process continues until all elements are covered. While it may not always find the smallest possible cover, it guarantees a solution within a logarithmic factor of the optimal.",
+      "expectedElements": [
+        "#algoOverview"
+      ],
+      "focusTarget": "#algoOverview",
+      "isAnimated": false
+    },
+    {
+      "id": "33_set_cover_example",
+      "navActions": [
+        {
+          "action": "click_button",
+          "text": "Greedy suboptimal"
+        },
+        {
+          "action": "wait",
+          "ms": 500
+        },
+        {
+          "action": "click_button",
+          "text": "Build Steps"
+        },
+        {
+          "action": "wait",
+          "ms": 600
+        },
+        {
+          "action": "zoom_to",
+          "target": "#vizArea"
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#vizArea",
+          "label": "Set Cover visualization"
+        }
+      ],
+      "narration": "Let's use the greedy-suboptimal preset to see why Set Cover is more subtle than Vertex Cover or MST-based TSP. Greedy still makes a sensible local choice at every step, but a locally best set can force an extra selection later. That is exactly why the approximation guarantee is logarithmic rather than a constant factor of two.",
+      "expectedElements": [
+        "#vizArea"
+      ],
+      "focusTarget": "#vizArea",
+      "isAnimated": false
+    },
+    {
+      "id": "34_set_cover_analysis",
+      "navActions": [
+        {
+          "action": "zoom_to",
+          "target": "#sec5 + p + .code-block + .key-concept"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#sec5 + p + .code-block + .key-concept",
+          "label": "Set Cover Comparison Table"
+        }
+      ],
+      "narration": "The greedy set cover algorithm achieves an approximation ratio of log n, where n is the number of elements. This means that, in the worst case, the solution may be up to log n times larger than the optimal. Despite this, the algorithm is widely used because of its simplicity and efficiency.",
+      "expectedElements": [
+        "#sec5 + p + .code-block + .key-concept"
+      ],
+      "focusTarget": "#sec5 + p + .code-block + .key-concept",
+      "isAnimated": false
+    },
+    {
+      "id": "36_pause_play_reset",
+      "navActions": [
+        {
+          "action": "click_button",
+          "text": "Play"
+        },
+        {
+          "action": "wait",
+          "ms": 500
+        },
+        {
+          "action": "click_button",
+          "text": "Pause"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "click_button",
+          "text": "Reset"
+        },
+        {
+          "action": "wait",
+          "ms": 500
+        },
+        {
+          "action": "zoom_to",
+          "target": ".btnRow"
+        },
+        {
+          "action": "move_cursor_to",
+          "target": ".btnRow",
+          "label": "Playback controls"
+        }
+      ],
+      "narration": "Controlling the pace of algorithm execution allows us to observe each decision and understand the underlying logic. Pausing and resetting helps us analyze specific steps and see how the algorithm adapts to different problem instances.",
+      "expectedElements": [
+        ".btnRow"
+      ],
+      "focusTarget": ".btnRow",
+      "isAnimated": false
+    },
+    {
+      "id": "37_appendix_intro",
+      "navActions": [
+        {
+          "action": "scroll_to",
+          "target": "#appendixToggleBtn"
+        },
+        {
+          "action": "zoom_to",
+          "target": "#appendixToggleBtn"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#appendixToggleBtn",
+          "label": "Appendix overview"
+        }
+      ],
+      "narration": "To appreciate the power of approximation algorithms, it's helpful to compare them with exact algorithms. Exact solutions, like those found by exhaustive search, guarantee optimality but often require exponential time. Approximation algorithms, in contrast, trade a small loss in quality for a dramatic gain in speed.",
+      "expectedElements": [
+        "#appendixToggleBtn"
+      ],
+      "focusTarget": "#appendixToggleBtn",
+      "isAnimated": false
+    },
+    {
+      "id": "38_appendix_prims_mst",
+      "navActions": [
+        {
+          "action": "scroll_to",
+          "target": "#appendixBody > h3:nth-of-type(1)"
+        },
+        {
+          "action": "zoom_to",
+          "target": "#appendixBody > h3:nth-of-type(1)"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#appendixBody > h3:nth-of-type(1)",
+          "label": "Prim's algorithm for MST"
+        }
+      ],
+      "narration": "Prim's algorithm is a classic method for finding a minimum spanning tree. It starts from an arbitrary vertex and grows the tree by repeatedly adding the cheapest edge that connects a new vertex. This process continues until all vertices are included, ensuring the total edge weight is minimized.",
+      "expectedElements": [
+        "#appendixBody > h3:nth-of-type(1)"
+      ],
+      "focusTarget": "#appendixBody > h3:nth-of-type(1)",
+      "isAnimated": false
+    },
+    {
+      "id": "39_appendix_exact_vs_approx",
+      "navActions": [
+        {
+          "action": "scroll_to",
+          "target": "#appendixBody .mini-table"
+        },
+        {
+          "action": "zoom_to",
+          "target": "#appendixBody .mini-table"
+        },
+        {
+          "action": "wait",
+          "ms": 400
+        },
+        {
+          "action": "move_cursor_to",
+          "target": "#appendixBody .mini-table",
+          "label": "Exact versus approximation trade-off"
+        }
+      ],
+      "narration": "This table contrasts exact algorithms, which often require exponential time, with approximation algorithms that run in polynomial time. For problems like vertex cover, TSP, and set cover, the difference in running time is dramatic, making approximation the only feasible approach for large instances.",
+      "expectedElements": [
+        "#appendixBody .mini-table"
+      ],
+      "focusTarget": "#appendixBody .mini-table",
+      "isAnimated": false
+    }
+  ],
+  "defaults": {
+    "ttsVoice": "nova",
+    "ttsModel": "tts-1-hd",
+    "ttsSpeed": 1.02
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "verdict": "evolve_tool",
+  "confidence": 95,
+  "reasoning": "The narration makes a compelling concrete comparison between two specific functions (3n² + 5n + 2 vs 2n log n + 100) but the tool cannot show this comparison visually. Students are left hearing about domination without seeing it happen. This violates the core principle of visual-verbal alignment - the tool must support the narrative claim with direct visual evidence.",
+  "bloomLevel": "understand",
+  "pedagogyScore": 40,
+  "narrationFeedback": {
+    "strengths": [
+      "Uses concrete, specific functions instead of abstract examples",
+      "Connects to real-world scenario (sorting algorithms)",
+      "Builds intuition about large input behavior",
+      "Appropriate level of technical detail for undergraduates"
+    ],
+    "weaknesses": [
+      "References visual evidence ('that n² term will absolutely dominate') that the tool cannot provide",
+      "Doesn't explain the c and n₀ symbols mentioned in formal definition",
+      "Claims 'every single time' without showing the mathematical proof"
+    ],
+    "rewrite": null
+  },
+  "toolEvolution": {
+    "needed": true,
+    "priority": "critical",
+    "requirements": [
+      {
+        "type": "add_feature",
+        "description": "Function comparison mode that plots both 3n² + 5n + 2 and 2n log n + 100 on the same axes with different colors",
+        "reason": "Students need to see the specific functions being compared, not abstract curves",
+        "studentNeed": "Jordan (Average Student)"
+      },
+      {
+        "type": "add_interaction",
+        "description": "Crossover point highlighter that shows where n log n stops winning and n² takes over permanently",
+        "reason": "Makes the 'domination' concept visually concrete rather than just asserted",
+        "studentNeed": "Alex (Strong Student)"
+      },
+      {
+        "type": "add_animation",
+        "description": "Animated slider that grows n from small values to large (1 to 10,000) showing the gap between functions increase",
+        "reason": "Dynamic visualization of how asymptotic behavior emerges as n grows",
+        "studentNeed": "Jordan (Average Student)"
+      },
+      {
+        "type": "add_feature",
+        "description": "Numerical table showing concrete millisecond values at key n values (10, 100, 1000, 10000)",
+        "reason": "Provides concrete numbers that make the abstract concept tangible",
+        "studentNeed": "Sam (Struggling Student)"
+      }
+    ]
+  },
+  "teachingSequence": {
+    "prerequisitesMetBy": ["01_intro"],
+    "shouldPrecede": ["big_o_definition", "common_complexities"],
+    "missingPrerequisite": null
+  }
+}

@@ -1,0 +1,101 @@
+================================================================================
+  ACT 1: RECURSION TREE — BASICS (10 minutes)
+  State: Intro collapsed. Recursion Tree tab ACTIVE.
+  Covers: Binary Search, Merge Sort
+================================================================================
+
+
+RECURSION TREE TAB COMPONENTS (LEFT PANEL)
+-------------------------------------------
+  1. Algorithm Preset dropdown — selects algorithm
+  2. Algorithm Info card — shows name, complexity badge, description, SVG
+     diagram, "Why O(...)?" explanation, level description
+  3. Parameters row: a (branches), b (divisor), k (work exponent), n (size)
+  4. Recurrence display pill — shows the recurrence formula
+  5. Speed slider — controls animation pace
+  6. Button row: Play, Pause, Step, Reset
+  7. Stats: Levels, Total Nodes, Branching, Leaf Nodes, Complexity
+
+RIGHT PANEL:
+  - Module banner (brief explanation of recursion trees)
+  - Algorithm Simulation (hidden for some presets; shows for Binary Search etc.)
+  - Tree SVG — animated recursion tree with level-by-level reveal
+  - Tree Summary table — work per level, grand total
+  - Insight box — dynamically generated pedagogical commentary
+
+
+TEACHING STEPS — BINARY SEARCH
+-------------------------------
+1. The Recursion Tree tab should already be active. Select "Binary Search"
+   from the Algorithm Preset dropdown.
+
+2. Point out the Algorithm Info card that appears:
+   "Binary Search has the recurrence T(n) = T(n/2) + O(1). We make ONE
+   recursive call on HALF the input, doing constant work each time."
+
+3. Show the SVG diagram in the info card — the array with the middle element
+   highlighted and the right half crossed out:
+   "Each step, we compare the target against the middle element and discard
+   the half that can't contain it."
+
+4. Point out the parameters: a=1, b=2, k=0, and the recurrence display
+   showing T(n) = T(n/2) + 1.
+
+5. Set n to 16 if not already set.
+
+6. Click "Play" to animate the tree. The tree builds level by level:
+   "Watch — each level has just ONE node. The tree is a straight line.
+   That's because a=1: only one recursive call per step."
+
+7. After the animation completes, point out the stats:
+   "We have log_2(16) = 4 levels. Each level does 1 unit of work.
+   Total work = 4 = log_2(n). That's why Binary Search is O(log n)."
+
+8. Point out the Tree Summary table showing work per level:
+   "Level 0: 1 node, work=1. Level 1: 1 node, work=1. ... Every level
+   is the same. The total is just the number of levels: log n."
+
+9. Point out the Insight box:
+   "The insight tells us this is a 'skinny' tree — no branching at all."
+
+
+TEACHING STEPS — MERGE SORT
+----------------------------
+10. Click "Reset" to clear the tree.
+
+11. Select "Merge Sort" from the preset dropdown.
+
+12. Point out the updated Algorithm Info card:
+    "Now we have T(n) = 2T(n/2) + O(n). We split the array into TWO halves,
+    recursively sort each, then merge in O(n) time."
+
+13. Show the merge sort SVG diagram:
+    "Split the unsorted array, recursively sort each half, then merge back."
+
+14. Point out the parameters: a=2, b=2, k=1, and the recurrence T(n) = 2T(n/2) + n.
+
+15. Keep n=16. Click "Play" to animate.
+
+16. As the tree builds:
+    "Now each node branches into TWO children. Level 0 has 1 node doing n=16
+    work. Level 1 has 2 nodes each doing 8. Level 2 has 4 nodes each doing 4."
+
+17. After animation completes, emphasize the KEY INSIGHT:
+    "Look at the total work per level in the summary table — every level does
+    exactly 16 total work! 1x16, 2x8, 4x4, 8x2, 16x1. The work is perfectly
+    balanced across levels."
+
+18. Point to the stats:
+    "4 levels, each doing n=16 total work. So total = n * log(n) = 16 * 4 = 64.
+    That's O(n log n)."
+
+19. Contrast with Binary Search:
+    "Binary Search was a skinny chain — one branch. Merge Sort is a fat,
+    balanced tree — two branches. But the total work per level stays constant
+    at n, so we just multiply by the number of levels."
+
+
+>> Transition: Stay on the Recursion Tree tab. Load
+   03_module_recursion_tree_exp.txt for Act 2.
+
+================================================================================

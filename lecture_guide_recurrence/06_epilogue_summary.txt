@@ -1,0 +1,39 @@
+================================================================================
+  EPILOGUE: SUMMARY & CONNECTIONS (3 minutes)
+  State: Any tab. Wrap-up overview.
+================================================================================
+
+
+TEACHING STEPS
+--------------
+1. Switch back to the Recursion Tree tab. Select Merge Sort as the final
+   visual anchor.
+
+2. Summarize the three methods:
+   "Today we learned three ways to solve recurrence relations:
+    - Recursion Trees: VISUALIZE the work at each level
+    - Master Theorem: COMPUTE the answer from a, b, k in seconds
+    - Substitution Method: PROVE the answer is correct with induction"
+
+3. Emphasize when to use each:
+   "Use the recursion tree for INTUITION — it shows you why an algorithm
+   is fast or slow. Use the Master Theorem for QUICK ANSWERS on exams.
+   Use substitution for FORMAL PROOFS when the theorem doesn't apply."
+
+4. Highlight the key takeaway — memoization:
+   "The most dramatic moment today was Fibonacci: from O(2^n) to O(n)
+   just by storing results. That's dynamic programming. If you take one
+   thing away from this lecture, it's that REMEMBERING prevents REDUNDANCY."
+
+5. Connect to what's next:
+   "Next, we'll study Dynamic Programming formally — building on exactly
+   this idea of transforming exponential recursion into polynomial time
+   by storing subproblem results."
+
+6. End with the complexity comparison reference:
+   "Remember our complexity table from the intro? The difference between
+   O(log n) and O(2^n) at n=100 is the difference between 7 operations
+   and a number with 30 digits. Solving recurrences tells you which side
+   your algorithm is on."
+
+================================================================================

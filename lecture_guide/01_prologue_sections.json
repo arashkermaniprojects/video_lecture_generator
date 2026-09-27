@@ -1,0 +1,76 @@
+{
+  "sections": [
+    {
+      "id": "01_prologue_motivation",
+      "group": "prologue",
+      "navActions": [
+        { "action": "click_tab", "target": "0" },
+        { "action": "wait", "ms": 1200 },
+        { "action": "zoom_to", "target": ".intro-section > p:first-of-type" },
+        { "action": "move_cursor_to", "target": ".intro-section > p:first-of-type", "label": "What is RLHF?" }
+      ],
+      "narration": "Suppose you have trained a language model on hundreds of billions of tokens from the internet. It can predict the next word remarkably well — but prediction accuracy is not the same as helpfulness, honesty, or safety. A model that maximizes log-likelihood might produce fluent text that is confidently wrong, evasive about harmful requests, or just not what anyone actually wanted. Reinforcement Learning from Human Feedback, or RLHF, is the technique used to close this gap: instead of optimizing for token prediction, we optimize for human approval, using a learned reward signal derived from preference comparisons.",
+      "expectedElements": [".intro-section", ".intro-header"],
+      "focusTarget": ".intro-section > p:first-of-type",
+      "isAnimated": false
+    },
+    {
+      "id": "01_prologue_core_equation",
+      "group": "prologue",
+      "navActions": [
+        { "action": "click_tab", "target": "0" },
+        { "action": "wait", "ms": 1200 },
+        { "action": "zoom_to", "target": ".key-concept" },
+        { "action": "move_cursor_to", "target": ".key-concept", "label": "Core Idea: RLHF objective vs traditional training" }
+      ],
+      "narration": "Here are the two objectives side by side. Traditional training maximizes the log probability of the next token given context — the model learns to imitate text, nothing more. RLHF replaces this with maximizing expected reward minus a penalty: beta times the Kullback-Leibler divergence, or KL divergence, between the fine-tuned policy and a fixed reference policy. The reward R measures how much a human would prefer this response; the KL term prevents the model from drifting too far from its original behavior; and beta is the knob that balances exploitation of the reward signal against staying grounded. Every symbol in this equation will be concrete and intuitive by the end of this lecture.",
+      "expectedElements": [".key-concept"],
+      "focusTarget": ".key-concept",
+      "isAnimated": false
+    },
+    {
+      "id": "01_prologue_why_not_supervised",
+      "group": "prologue",
+      "navActions": [
+        { "action": "click_tab", "target": "0" },
+        { "action": "wait", "ms": 1200 },
+        { "action": "zoom_to", "target": ".example-box" },
+        { "action": "move_cursor_to", "target": ".example-box", "label": "Why not just collect more supervised data?" }
+      ],
+      "narration": "A natural objection: why not simply gather more supervised examples and fine-tune directly? The difficulty is that writing the ideal response to an open-ended question is genuinely hard — the annotator must know exactly what quality looks like and produce it on demand, token by token. Judging between two candidate responses is a far easier cognitive task, and humans perform it consistently even across different annotators and cultures. This asymmetry — evaluation is cheaper and more reliable than generation — is precisely why preference data is so valuable, and why RLHF can outperform purely supervised approaches on tasks where perfect demonstrations are costly or ambiguous.",
+      "expectedElements": [".example-box"],
+      "focusTarget": ".example-box",
+      "isAnimated": false
+    },
+    {
+      "id": "01_prologue_three_stages",
+      "group": "prologue",
+      "navActions": [
+        { "action": "click_tab", "target": "0" },
+        { "action": "wait", "ms": 1200 },
+        { "action": "zoom_to", "target": "h3:first-of-type" },
+        { "action": "move_cursor_to", "target": "h3:first-of-type", "label": "The Three Stages of RLHF" }
+      ],
+      "narration": "The RLHF pipeline has three sequential stages, each with a distinct purpose. Stage one is Supervised Fine-Tuning, or SFT: we take a pretrained base model and fine-tune it on high-quality human demonstrations so it learns to follow instructions at all. Stage two trains the reward model from human preference data — pairs of responses where a human annotator chose which one they preferred. Stage three runs Proximal Policy Optimization, known as PPO, treating the reward model as an environment and the language model as the agent; the model is updated to generate responses that score higher, while the KL constraint keeps it from degenerating. We will now explore each stage interactively.",
+      "expectedElements": ["h3"],
+      "focusTarget": "h3:first-of-type",
+      "isAnimated": false
+    },
+    {
+      "id": "01_prologue_collapse",
+      "group": "prologue",
+      "navActions": [
+        { "action": "click_tab", "target": "0" },
+        { "action": "wait", "ms": 1200 },
+        { "action": "click_button", "text": "Collapse" },
+        { "action": "wait_for_animation", "timeout": 1000 },
+        { "action": "zoom_to", "target": "#pipelineSvg" },
+        { "action": "move_cursor_to", "target": "#pipelineSvg", "label": "Pipeline visualization" }
+      ],
+      "narration": "With the theoretical foundation in place, we will now work through the concepts interactively. We will start with the full three-stage pipeline as a visual diagram, tracing how data flows from human annotations through reward model training and into policy optimization. From there we will zoom into the reward model's Bradley-Terry formulation, then watch PPO update the policy in real time, then examine the KL divergence penalty and what happens when it is too weak or too strong. Let the exploration begin.",
+      "expectedElements": ["#pipelineSvg"],
+      "focusTarget": "#pipelineSvg",
+      "isAnimated": false
+    }
+  ]
+}

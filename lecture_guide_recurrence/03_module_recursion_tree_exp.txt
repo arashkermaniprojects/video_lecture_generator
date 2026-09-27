@@ -1,0 +1,105 @@
+================================================================================
+  ACT 2: RECURSION TREE — EXPONENTIAL & MEMOIZATION (10 minutes)
+  State: Recursion Tree tab ACTIVE. Continuing from Act 1.
+  Covers: Fibonacci (naive), Tower of Hanoi, Fibonacci (memoized)
+================================================================================
+
+
+TEACHING STEPS — FIBONACCI (NAIVE)
+------------------------------------
+1. Click "Reset" to clear the previous tree.
+
+2. Select "Fibonacci (naive)" from the preset dropdown.
+
+3. IMPORTANT: The tool will cap n to 7 for Fibonacci to prevent explosion.
+   Verify n is set to 7.
+
+4. Point out the Algorithm Info card:
+   "Fibonacci has T(n) = T(n-1) + T(n-2) + O(1). This is NOT divide-and-conquer
+   — we subtract instead of divide. And we make TWO calls that barely reduce
+   the problem size."
+
+5. Show the Fibonacci SVG diagram with red dashed duplicate nodes:
+   "See the red dashed boxes? Those are DUPLICATE calls. fib(3) gets computed
+   twice, fib(2) three times. The redundancy grows exponentially."
+
+6. Click "Play" to animate the tree.
+
+7. As the tree builds, narrate:
+   "Watch how the tree EXPLODES. It's wildly unbalanced — the left branch
+   goes much deeper than the right. And look at all those duplicate labels
+   highlighted in red."
+
+8. After animation completes, point to the stats:
+   "Total nodes is massive for such a small n=7. The branching is 1-2,
+   and the complexity is O(2^n). For n=40, that's over a billion calls!"
+
+9. Point to the tree summary:
+   "The work per level GROWS as we go deeper, because the number of nodes
+   roughly doubles each level. This is the hallmark of exponential growth."
+
+
+TEACHING STEPS — TOWER OF HANOI
+---------------------------------
+10. Click "Reset".
+
+11. Select "Tower of Hanoi" from the preset dropdown. n will be capped to 4.
+
+12. Point out the Algorithm Info card:
+    "Tower of Hanoi has T(n) = 2T(n-1) + 1. Move n-1 disks to auxiliary,
+    move the biggest disk, move n-1 disks to destination. Two recursive calls
+    on n-1 — the problem barely shrinks!"
+
+13. Show the Hanoi SVG with the three pegs and disks:
+    "Four disks need 2^4 - 1 = 15 moves. The recurrence proves this."
+
+14. Click "Play" to animate.
+
+15. After animation:
+    "This tree is perfectly symmetric — both branches are identical. Each level
+    has exactly 2^i nodes. Total = 1 + 2 + 4 + ... + 2^(n-1) = 2^n - 1."
+
+16. Compare with naive Fibonacci:
+    "Both Fibonacci and Hanoi are O(2^n), but for different reasons. Fibonacci
+    has redundant computation. Hanoi genuinely needs all those moves — the
+    exponential is inherent to the problem."
+
+
+TEACHING STEPS — FIBONACCI (MEMOIZED)
+---------------------------------------
+17. Click "Reset".
+
+18. Select "Fibonacci (memoized)" from the preset dropdown.
+
+19. Set n to 10 to show the contrast clearly.
+
+20. Point out the Algorithm Info card:
+    "Now we STORE each computed value. Before computing fib(k), we check the
+    memo table. If it's there, we return it in O(1). Each value computed
+    only once."
+
+21. Show the memoization SVG:
+    "The memo table fills left to right. Each entry is computed once, then
+    every subsequent call is a free O(1) lookup."
+
+22. Click "Play" to animate.
+
+23. As the tree builds:
+    "Look — the tree is now a CHAIN, not a bush! Each node has one real child
+    and one green 'memo hit' node. The green nodes are O(1) lookups, not
+    real recursion."
+
+24. After animation, point to the stats:
+    "Complexity: O(n). We went from 2^n to n by just remembering what we
+    already computed. For n=40, that's 40 steps instead of over a billion."
+
+25. Emphasize:
+    "This is the power of dynamic programming. Same problem, same recurrence,
+    but memoization transforms exponential into linear. The recursion tree
+    went from a massive bush to a simple chain."
+
+
+>> Transition: Click the "Master Theorem" tab.
+   Load 04_module_master_theorem.txt for Act 3.
+
+================================================================================

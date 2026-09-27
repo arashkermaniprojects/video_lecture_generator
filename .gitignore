@@ -1,0 +1,34 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Python venv / local model weights
+local_models/venv/
+*.safetensors
+*.gguf
+*.bin
+
+# Generated artifacts
+runs/
+output/
+docs/audiobook_segments/
+*.mp4
+*.mp3
+*.wav
+
+# Logs
+*.log
+
+# macOS cruft
+.DS_Store
+._*
+
+# Local Claude Code settings (may contain secrets)
+.claude/settings.local.json
+
+# Manuscript drafts (kept outside the public repository)
+paper/

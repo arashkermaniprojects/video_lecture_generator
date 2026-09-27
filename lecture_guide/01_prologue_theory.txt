@@ -1,0 +1,70 @@
+================================================================================
+  PROLOGUE: MOTIVATION & THEORY (5 minutes)
+  State: Theory section EXPANDED. No tab interaction yet.
+================================================================================
+
+
+THEORY SECTION COMPONENTS
+-------------------------
+The collapsible theory section sits at the top of the page. It contains these
+sub-components (top to bottom):
+
+  1. "What is RLHF?" paragraph
+     Defines RLHF as aligning LLM outputs with human preferences via a learned
+     reward signal instead of raw likelihood.
+
+  2. "Core Idea" key-concept box (green border)
+     Two equations side by side:
+       Traditional:  max log P(token | context)
+       RLHF:         max E[R(response)] - beta * KL(pi || pi_ref)
+     This is THE equation of the lecture. You will return to it in the Epilogue.
+
+  3. "The Three Stages of RLHF" paragraphs
+     Three numbered descriptions: SFT, Reward Model, PPO. Establishes the
+     mental model before the Pipeline tab provides the visual.
+
+  4. "Why Not Just Use More Supervised Data?" example box (blue border)
+     Comparisons are easier for humans than writing perfect outputs.
+
+  5. "The Reward Model (Bradley-Terry)" subsection
+     Formulas: P(y1 > y2) = sigmoid(R(x,y1) - R(x,y2))
+     Loss: L = -E[ log sigmoid(R(x, y_w) - R(x, y_l)) ]
+
+  6. "KL Divergence & Reward Hacking" subsection + warning box (red border)
+     Explains unconstrained optimisation failure. Warning: beta too small =
+     hacking, beta too large = no learning.
+
+  7. "DPO: A Simpler Alternative" subsection
+     DPO loss formula and brief comparison.
+
+  8. "RLHF vs DPO at a Glance" key-concept box (green border)
+     One-line summaries of both pipelines.
+
+
+TEACHING STEPS
+--------------
+1. Open the tool in a browser. The theory section is expanded by default.
+
+2. Read/paraphrase component 1 ("What is RLHF?"). Frame the problem:
+   "We trained a language model on internet text. It can predict the next token
+   well, but can it follow instructions helpfully? Can it refuse harmful
+   requests? Next-token prediction doesn't optimise for these things."
+
+3. Show component 2 (Core Idea box). Read both equations aloud. Say:
+   "Today we'll unpack every symbol in this equation. By the end of the
+   lecture, you'll understand what R, beta, KL, pi, and pi_ref are, and why
+   each one matters."
+
+4. Briefly mention component 4 ("Why Not Just Use More Supervised Data?").
+   Ask the class: "Why is it hard to write the 'perfect' response to an
+   open-ended question?" Take 1-2 answers. Then read the example box.
+
+5. Tell students: "We'll now walk through the three-stage pipeline. I'll show
+   you each stage first as a diagram, then let you interact with it."
+
+6. Click the "Collapse" button to hide the theory section. This reveals the
+   main interactive area cleanly.
+
+>> Transition: Click the "Pipeline" tab. Load 02_module_pipeline.txt.
+
+================================================================================

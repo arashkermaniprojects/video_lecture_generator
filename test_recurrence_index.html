@@ -1,0 +1,2483 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Recurrence Relations Explorer — BCS 309</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:rgba(255,255,255,0.05);
+      --stroke:rgba(255,255,255,0.12);
+      --text:#e8ecff;
+      --muted:#b7c0ff;
+      --c1:#6aa9ff;
+      --c2:#64f0c8;
+      --c3:#ffd166;
+      --c4:#ff9f43;
+      --c5:#ff5c7a;
+      --c6:#c77dff;
+      --c7:#ff6b6b;
+      --green:rgba(100,240,200,0.65);
+      --yellow:rgba(255,209,102,0.78);
+      --red:rgba(255,92,122,0.82);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:radial-gradient(1200px 800px at 20% 0%, #14204a 0%, var(--bg) 45%, #070a14 100%);
+      color:var(--text);
+      min-height:100vh;
+    }
+    h1{text-align:center;font-size:22px;font-weight:700;margin:18px 0 4px;letter-spacing:-.3px;}
+    .subtitle{text-align:center;font-size:12px;color:var(--muted);margin:0 0 14px;}
+    .wrap{max-width:1280px;margin:0 auto;padding:0 14px 18px;display:grid;grid-template-columns:420px 1fr;gap:14px;}
+    @media(max-width:980px){.wrap{grid-template-columns:1fr;}}
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03));
+      border:1px solid rgba(255,255,255,0.10);border-radius:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);overflow:hidden;
+    }
+    .card h2{margin:0;padding:14px 14px 10px;font-size:16px;background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.08);}
+
+    /* Tabs */
+    .tabBar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:10px 14px 0;}
+    .tab{padding:8px 6px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);color:var(--muted);font-size:11.5px;font-weight:600;cursor:pointer;transition:all .15s ease;text-align:center;}
+    .tab:hover{background:rgba(106,169,255,0.10);color:var(--text);}
+    .tab.active{background:rgba(106,169,255,0.18);border-color:rgba(106,169,255,0.35);color:#fff;}
+
+    /* Controls */
+    .controls{padding:12px 14px 14px;}
+    .modulePanel{display:none;} .modulePanel.active{display:block;}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;}
+    select,input[type="number"],input[type="range"],button{
+      width:100%;border-radius:12px;border:1px solid rgba(255,255,255,0.12);
+      background:rgba(0,0,0,0.20);color:var(--text);padding:10px 12px;outline:none;font-size:13px;
+    }
+    input[type="range"]{padding:10px 0;}
+    input[type="number"]{-moz-appearance:textfield;}
+    input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{opacity:1;}
+    select option{background:#1a1f36;color:var(--text);}
+    button{cursor:pointer;font-weight:650;background:rgba(106,169,255,0.14);transition:transform .08s ease,background .12s ease;}
+    button:hover{background:rgba(106,169,255,0.22);}
+    button:active{transform:scale(0.99);}
+    button.secondary{background:rgba(255,255,255,0.08);}
+    button.secondary:hover{background:rgba(255,255,255,0.13);}
+    button.danger{background:rgba(255,92,122,0.18);}
+    button.danger:hover{background:rgba(255,92,122,0.26);}
+
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;}
+    .row4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:10px;}
+    .btnRow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
+    @media(max-width:980px){.btnRow{grid-template-columns:repeat(2,1fr);}}
+    .mb10{margin-bottom:10px;} .mt10{margin-top:10px;}
+
+    .stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.10);}
+    .pill{border-radius:14px;border:1px solid rgba(255,255,255,0.10);background:rgba(0,0,0,0.18);padding:10px 12px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;}
+    .pill b{color:var(--text);font-weight:750;}
+    .pill.wide{grid-column:1/-1;}
+
+    /* Algorithm Info Card */
+    .algo-info{
+      border-radius:14px;border:1px solid rgba(106,169,255,0.15);
+      background:rgba(106,169,255,0.04);padding:14px;margin-bottom:12px;
+      font-size:12.5px;line-height:1.6;
+    }
+    .algo-info-title{font-weight:700;font-size:13px;color:var(--c1);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+    .algo-info-title .complexity-badge{
+      font-size:11px;padding:2px 8px;border-radius:6px;font-weight:700;margin-left:auto;
+    }
+    .algo-info svg{display:block;margin:10px auto;border-radius:8px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.05);}
+    .algo-info .why{color:var(--c3);font-size:11.5px;margin-top:8px;font-style:italic;}
+    .algo-info .level-desc{color:var(--muted);font-size:11.5px;margin-top:4px;}
+
+    /* Viz area */
+    .viz{padding:14px;min-height:500px;position:relative;}
+    .vizPanel{display:none;width:100%;height:100%;} .vizPanel.active{display:block;}
+    svg.tree-svg{width:100%;height:500px;border-radius:12px;background:rgba(0,0,0,0.15);border:1px solid rgba(255,255,255,0.06);}
+    .tree-node rect{rx:8;ry:8;stroke-width:1.5;transition:opacity .4s ease;}
+    .tree-node text{font-family:system-ui;fill:var(--text);text-anchor:middle;}
+    .tree-edge{fill:none;stroke-width:1.5;transition:opacity .4s ease;}
+    .level-label{font-family:system-ui;font-size:11px;fill:var(--muted);}
+    .level-work{font-family:system-ui;font-size:10px;fill:var(--c3);}
+
+    /* Master Theorem */
+    .case-card{border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);padding:16px 18px;margin-bottom:12px;transition:all .25s ease;}
+    .case-card.active-case{border-color:rgba(100,240,200,0.4);background:rgba(100,240,200,0.06);box-shadow:0 0 20px rgba(100,240,200,0.08);}
+    .case-card h3{margin:0 0 8px;font-size:14px;color:var(--muted);}
+    .case-card.active-case h3{color:var(--c2);}
+    .case-card .formula{font-size:16px;font-weight:700;margin:6px 0;}
+    .case-card .explanation{font-size:12px;color:var(--muted);line-height:1.5;margin-top:8px;}
+    .case-card.active-case .explanation{color:var(--text);}
+    .comparison-bar{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:14px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.08);margin-bottom:16px;font-size:13px;}
+    .comparison-bar .val{font-weight:700;font-size:15px;min-width:50px;text-align:center;}
+    .comparison-bar .vs{color:var(--muted);font-size:11px;font-weight:600;}
+    .bar-fill{height:8px;border-radius:4px;flex:1;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;}
+    .bar-fill-inner{position:absolute;left:0;top:0;height:100%;border-radius:4px;transition:width .4s ease,background .3s ease;}
+    .result-badge{display:inline-block;padding:10px 18px;border-radius:14px;font-weight:700;font-size:18px;margin-top:8px;}
+    .na-notice{border-radius:14px;border:1px solid rgba(255,92,122,0.25);background:rgba(255,92,122,0.06);padding:16px 18px;margin-bottom:16px;font-size:13px;color:var(--c5);line-height:1.6;}
+    .na-notice b{color:var(--c7);}
+
+    /* Substitution */
+    .step-card{border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);margin-bottom:10px;overflow:hidden;transition:all .25s ease;}
+    .step-card.revealed{border-color:rgba(106,169,255,0.25);background:rgba(106,169,255,0.04);}
+    .step-header{padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;}
+    .step-num{width:24px;height:24px;border-radius:50%;background:rgba(106,169,255,0.15);color:var(--c1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+    .step-card.revealed .step-num{background:rgba(100,240,200,0.2);color:var(--c2);}
+    .step-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+    .step-card.revealed .step-body{max-height:400px;}
+    .step-content{padding:0 16px 14px;font-size:13px;line-height:1.65;color:var(--text);}
+    .step-content .math{display:inline-block;padding:2px 8px;background:rgba(106,169,255,0.08);border-radius:6px;font-family:'Courier New',Courier,monospace;font-size:13px;color:var(--c1);margin:2px 0;}
+    .step-content .math-block{display:block;padding:10px 14px;background:rgba(0,0,0,0.2);border-radius:10px;border:1px solid rgba(255,255,255,0.06);font-family:'Courier New',Courier,monospace;font-size:13px;color:var(--c1);margin:8px 0;line-height:1.7;white-space:pre-wrap;}
+
+    /* Examples table */
+    .examples-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;}
+    .examples-table th{text-align:left;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.12);color:var(--muted);font-weight:600;}
+    .examples-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .examples-table tr:hover td{background:rgba(106,169,255,0.04);}
+    .case-tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;}
+    .case-tag.c1{background:rgba(106,169,255,0.15);color:var(--c1);}
+    .case-tag.c2{background:rgba(100,240,200,0.15);color:var(--c2);}
+    .case-tag.c3{background:rgba(255,209,102,0.15);color:var(--c3);}
+    .case-tag.exp{background:rgba(255,92,122,0.15);color:var(--c5);}
+
+    .speed-display{text-align:center;font-size:11px;color:var(--muted);margin-top:2px;}
+    ::-webkit-scrollbar{width:6px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:3px;}
+
+    /* Duplicate highlight in tree */
+    .dup-highlight rect{stroke-dasharray:4 2;}
+
+    /* Memo/cached node highlight */
+    .memo-node rect{stroke-dasharray:0;}
+    .memo-hit{opacity:0.6;}
+    .memo-hit rect{fill:rgba(100,240,200,0.12)!important;stroke:rgba(100,240,200,0.5)!important;}
+
+    /* ── Tutorial: Intro Section ── */
+    .intro-section{
+      max-width:1280px;margin:0 auto 14px;padding:0 14px;
+    }
+    .intro-card{
+      background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03));
+      border:1px solid rgba(255,255,255,0.10);border-radius:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);overflow:hidden;
+    }
+    .intro-header{
+      padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
+      cursor:pointer;background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+    .intro-header h2{margin:0;font-size:16px;}
+    .intro-toggle{
+      background:rgba(106,169,255,0.14);border:1px solid rgba(106,169,255,0.25);
+      color:var(--c1);border-radius:8px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;
+      transition:background .15s;
+    }
+    .intro-toggle:hover{background:rgba(106,169,255,0.22);}
+    .intro-body{padding:18px 20px;line-height:1.7;font-size:13px;overflow:hidden;max-height:2000px;transition:max-height .4s ease,padding .4s ease;}
+    .intro-body.collapsed{max-height:0!important;padding-top:0;padding-bottom:0;}
+    .intro-body h3{font-size:14px;color:var(--c1);margin:0 0 6px;font-weight:700;}
+    .intro-body p{margin:0 0 14px;color:var(--text);}
+    .math-inline{
+      display:inline-block;padding:1px 7px;background:rgba(106,169,255,0.08);
+      border-radius:5px;font-family:'Courier New',Courier,monospace;font-size:13px;color:var(--c1);
+    }
+    .learning-path{
+      display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0 4px;
+    }
+    .learning-path .lp-step{
+      padding:5px 12px;border-radius:10px;font-size:11.5px;font-weight:600;
+      border:1px solid rgba(255,255,255,0.10);background:rgba(0,0,0,0.18);color:var(--muted);
+      cursor:pointer;transition:all .15s;
+    }
+    .learning-path .lp-step:hover{background:rgba(106,169,255,0.12);color:var(--text);border-color:rgba(106,169,255,0.3);}
+    .learning-path .lp-arrow{color:var(--muted);font-size:12px;opacity:0.5;}
+
+    /* ── Tutorial: Module Banners ── */
+    .module-banner{
+      padding:12px 16px;margin-bottom:12px;border-radius:12px;
+      background:rgba(106,169,255,0.04);border:1px solid rgba(106,169,255,0.10);
+      font-size:12px;line-height:1.6;color:var(--muted);
+    }
+    .module-banner b{color:var(--text);}
+
+    /* ── Tutorial: Insight Box ── */
+    .insight-box{
+      margin-top:14px;padding:14px 16px;border-radius:12px;
+      border-left:3px solid var(--c2);
+      background:rgba(100,240,200,0.04);
+      font-size:12.5px;line-height:1.65;color:var(--text);
+    }
+    .insight-box.exp{border-left-color:var(--c5);background:rgba(255,92,122,0.04);}
+    .insight-box.log{border-left-color:var(--c1);background:rgba(106,169,255,0.04);}
+    .insight-box.nlogn{border-left-color:var(--c3);background:rgba(255,209,102,0.04);}
+    .insight-box.linear{border-left-color:var(--c2);background:rgba(100,240,200,0.04);}
+    .insight-box strong{font-weight:700;}
+    .insight-title{font-weight:700;font-size:12px;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;}
+
+    /* ── Tutorial: Try This ── */
+    .try-this{
+      font-size:11.5px;font-style:italic;color:var(--c3);
+      margin-top:6px;line-height:1.5;opacity:0.85;
+    }
+
+    /* ── Tutorial: Complexity Comparison ── */
+    .complexity-compare{margin-top:14px;}
+    .complexity-compare table{width:100%;border-collapse:collapse;font-size:12px;}
+    .complexity-compare th{text-align:center;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.12);color:var(--muted);font-weight:600;font-size:11px;}
+    .complexity-compare td{text-align:center;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Courier New',monospace;font-size:11.5px;}
+    .complexity-compare tr:hover td{background:rgba(106,169,255,0.04);}
+    .complexity-compare .clog{color:var(--c1);}
+    .complexity-compare .clin{color:var(--c2);}
+    .complexity-compare .cnlogn{color:var(--c3);}
+    .complexity-compare .cexp{color:var(--c5);}
+
+    /* ── Tutorial: Tooltips ── */
+    .tip{
+      position:relative;border-bottom:1px dotted rgba(106,169,255,0.4);cursor:help;color:var(--c1);
+    }
+    .tip::after{
+      content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;
+      transform:translateX(-50%);padding:6px 10px;border-radius:8px;
+      background:rgba(15,20,40,0.95);border:1px solid rgba(106,169,255,0.25);
+      color:var(--text);font-size:11px;font-style:normal;font-weight:400;
+      white-space:nowrap;max-width:260px;white-space:normal;
+      pointer-events:none;opacity:0;transition:opacity .2s;z-index:100;
+      line-height:1.4;box-shadow:0 4px 12px rgba(0,0,0,0.3);
+    }
+    .tip:hover::after{opacity:1;}
+
+    /* ── Algorithm Simulation ── */
+    #simContainer{
+      margin-bottom:14px;border-radius:14px;
+      border:1px solid rgba(255,209,102,0.15);
+      background:rgba(255,209,102,0.03);overflow:hidden;
+    }
+    .sim-header{
+      padding:10px 16px;display:flex;align-items:center;justify-content:space-between;
+      cursor:pointer;background:rgba(255,209,102,0.04);
+      border-bottom:1px solid rgba(255,209,102,0.08);
+    }
+    .sim-title{font-size:13px;font-weight:700;color:var(--c3);}
+    .sim-toggle{
+      background:rgba(255,209,102,0.14);border:1px solid rgba(255,209,102,0.25);
+      color:var(--c3);border-radius:8px;padding:3px 10px;font-size:11px;font-weight:600;
+      cursor:pointer;width:auto;
+    }
+    .sim-body{padding:14px;overflow:hidden;}
+    .sim-body.collapsed{max-height:0!important;padding-top:0;padding-bottom:0;overflow:hidden;transition:max-height .4s ease,padding .4s ease;}
+    .sim-svg{width:100%;border-radius:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.06);}
+    .sim-desc{
+      margin-top:10px;padding:10px 14px;border-radius:10px;
+      background:rgba(0,0,0,0.15);border:1px solid rgba(255,255,255,0.06);
+      font-size:13px;line-height:1.6;color:var(--text);min-height:40px;
+    }
+    .sim-controls{
+      display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;margin-top:10px;align-items:center;
+    }
+    .sim-controls button{padding:8px 12px;font-size:12px;}
+    .sim-progress{font-size:12px;color:var(--muted);text-align:center;padding:8px;}
+
+    /* Simulation element transitions */
+    .sim-disk{transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
+    .sim-cell{transition:opacity 0.4s ease,fill 0.3s ease;}
+    .sim-bracket{transition:x 0.3s ease,width 0.3s ease;}
+    .sim-pointer{transition:transform 0.3s ease;}
+
+    /* ── Tutorial: Footer ── */
+    .tut-footer{
+      max-width:1280px;margin:14px auto 24px;padding:0 14px;
+      font-size:11.5px;color:var(--muted);text-align:center;line-height:1.6;
+    }
+    .tut-footer a{color:var(--c1);text-decoration:none;}
+    .tut-footer a:hover{text-decoration:underline;}
+  </style>
+</head>
+<body>
+
+<h1>Recurrence Relations Explorer</h1>
+<p class="subtitle">BCS 309 — Algorithms I &nbsp;|&nbsp; Interactive Complexity Analysis</p>
+
+<!-- ═══════════════ TUTORIAL: INTRODUCTION ═══════════════ -->
+<div class="intro-section">
+  <div class="intro-card">
+    <div class="intro-header" id="introToggleBtn">
+      <h2>Welcome — Start Here</h2>
+      <button class="intro-toggle" id="introToggleText">Collapse</button>
+    </div>
+    <div class="intro-body" id="introBody">
+
+      <h3>What is a Recurrence Relation?</h3>
+      <p>
+        A <span class="tip" data-tip="An equation that defines T(n) in terms of T on smaller inputs, capturing the cost of a recursive algorithm.">recurrence relation</span>
+        is an equation that describes the running time of a recursive algorithm in terms of the time it takes on smaller inputs.
+        For example, imagine searching for a name in a sorted list of 1,000 entries. Instead of checking all 1,000, you look at the middle entry and throw away the half that can't contain the answer. How many steps does that take?
+        The answer is captured by <span class="math-inline">T(n) = T(n/2) + 1</span> — one comparison plus a recursive search on half the list.
+      </p>
+
+      <h3>Why Do We Care?</h3>
+      <p>
+        Recurrence relations let us figure out how fast (or slow) a recursive algorithm runs <em>without actually running it</em>.
+        By solving the recurrence, we get the <span class="tip" data-tip="Big-O notation describes the upper bound on growth rate, e.g., O(n log n) means the time grows no faster than n × log(n).">Big-O complexity</span> —
+        whether the algorithm scales gracefully like O(log n), reasonably like O(n log n), or catastrophically like O(2<sup>n</sup>).
+      </p>
+
+      <h3>How to Use This Tool</h3>
+      <p>
+        This tool has three modules, each showing a different way to analyze recurrences:
+      </p>
+      <p>
+        <b style="color:var(--c1);">1. Recursion Tree</b> — <em>See</em> how the algorithm breaks down. Each node is a recursive call. Watch the tree grow level by level and observe how work accumulates.<br>
+        <b style="color:var(--c2);">2. Master Theorem</b> — A formula-based shortcut for <span class="tip" data-tip="A strategy that splits the problem into smaller subproblems, solves each recursively, then combines the results.">divide-and-conquer</span> recurrences. Compare two numbers and get the Big-O instantly.<br>
+        <b style="color:var(--c3);">3. Substitution Method</b> — A formal proof technique. Guess the answer, then prove it correct step by step using mathematical induction.
+      </p>
+
+      <h3>Suggested Learning Path</h3>
+      <p style="margin-bottom:6px;">Work through the algorithms in this order to build intuition from simple to complex:</p>
+      <div class="learning-path" id="learningPath">
+        <span class="lp-step" data-preset="binary">Binary Search</span>
+        <span class="lp-arrow">&rarr;</span>
+        <span class="lp-step" data-preset="merge">Merge Sort</span>
+        <span class="lp-arrow">&rarr;</span>
+        <span class="lp-step" data-preset="fibonacci">Fibonacci (naive)</span>
+        <span class="lp-arrow">&rarr;</span>
+        <span class="lp-step" data-preset="fibSmart">Fibonacci (memo)</span>
+        <span class="lp-arrow">&rarr;</span>
+        <span class="lp-step" data-preset="hanoi">Tower of Hanoi</span>
+      </div>
+
+      <div class="complexity-compare" style="margin-top:18px;">
+        <h3>The Big Picture: How Complexity Classes Compare</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">Same input size, vastly different running times:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>n</th>
+              <th class="clog">O(log n)</th>
+              <th class="clin">O(n)</th>
+              <th class="cnlogn">O(n log n)</th>
+              <th class="cexp">O(2<sup>n</sup>)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>10</td>
+              <td class="clog">3</td>
+              <td class="clin">10</td>
+              <td class="cnlogn">33</td>
+              <td class="cexp">1,024</td>
+            </tr>
+            <tr>
+              <td>20</td>
+              <td class="clog">4</td>
+              <td class="clin">20</td>
+              <td class="cnlogn">86</td>
+              <td class="cexp">1,048,576</td>
+            </tr>
+            <tr>
+              <td>30</td>
+              <td class="clog">5</td>
+              <td class="clin">30</td>
+              <td class="cnlogn">147</td>
+              <td class="cexp">1,073,741,824</td>
+            </tr>
+            <tr>
+              <td>50</td>
+              <td class="clog">6</td>
+              <td class="clin">50</td>
+              <td class="cnlogn">282</td>
+              <td class="cexp" style="font-size:10px;">1.13 &times; 10<sup>15</sup></td>
+            </tr>
+            <tr>
+              <td>100</td>
+              <td class="clog">7</td>
+              <td class="clin">100</td>
+              <td class="cnlogn">664</td>
+              <td class="cexp" style="font-size:10px;">1.27 &times; 10<sup>30</sup></td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:11px;color:var(--c5);margin-top:6px;text-align:center;">
+          At n=100, O(2<sup>n</sup>) is a number with 30 digits — more than the atoms in a human body.
+        </p>
+        <div id="complexityChartContainer" style="margin-top:10px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ═══════════════ LEFT PANEL ═══════════════ -->
+  <div class="card" id="controlsCard">
+    <h2>Controls</h2>
+
+    <div class="tabBar">
+      <button class="tab active" data-module="tree" data-mod="tree">Recursion Tree</button>
+      <button class="tab" data-module="master" data-mod="master">Master Theorem</button>
+      <button class="tab" data-module="sub" data-mod="sub">Substitution</button>
+    </div>
+
+    <!-- Module 1: Recursion Tree -->
+    <div class="modulePanel active" id="panel-tree">
+      <div class="controls">
+        <label>Algorithm Preset</label>
+        <select id="presetSelect" class="mb10">
+          <optgroup label="O(log n) — Logarithmic">
+            <option value="binary">Binary Search — T(n) = T(n/2) + O(1)</option>
+            <option value="fastexp">Fast Exponentiation — T(n) = T(n/2) + O(1)</option>
+          </optgroup>
+          <optgroup label="O(n log n) — Linearithmic">
+            <option value="merge" selected>Merge Sort — T(n) = 2T(n/2) + O(n)</option>
+            <option value="quick">Quick Sort (best) — T(n) = 2T(n/2) + O(n)</option>
+          </optgroup>
+          <optgroup label="O(n) — Linear">
+            <option value="fibSmart">Fibonacci (memoized) — O(n) lookups</option>
+          </optgroup>
+          <optgroup label="O(2^n) — Exponential">
+            <option value="fibonacci">Fibonacci (naive) — T(n) = T(n-1) + T(n-2) + O(1)</option>
+            <option value="hanoi">Tower of Hanoi — T(n) = 2T(n-1) + O(1)</option>
+          </optgroup>
+          <optgroup label="Custom">
+            <option value="custom">Custom Recurrence</option>
+          </optgroup>
+        </select>
+
+        <div id="algoInfoContainer"></div>
+        <div id="tryThisContainer"></div>
+
+        <div class="row4 mb10" id="paramRow">
+          <div>
+            <label>a (branches)</label>
+            <input type="number" id="inputA" value="2" min="1" max="8" />
+          </div>
+          <div>
+            <label>b (divisor)</label>
+            <input type="number" id="inputB" value="2" min="1" max="8" step="0.1" />
+          </div>
+          <div>
+            <label>k (n^k work)</label>
+            <input type="number" id="inputK" value="1" min="0" max="3" step="0.5" />
+          </div>
+          <div>
+            <label>n (size)</label>
+            <input type="number" id="inputN" value="16" min="2" max="512" />
+          </div>
+        </div>
+
+        <div id="recurrenceDisplay" class="pill wide mb10">
+          <span>Recurrence</span>
+          <b id="recurrenceText">T(n) = 2T(n/2) + n</b>
+        </div>
+
+        <label>Animation Speed</label>
+        <input type="range" id="speedSlider" min="1" max="10" value="5" />
+        <div class="speed-display" id="speedLabel">Speed: 5</div>
+
+        <div class="btnRow">
+          <button id="btnPlay">&#9654; Play</button>
+          <button id="btnPause" class="secondary">&#9646;&#9646; Pause</button>
+          <button id="btnStep" class="secondary">&#9654;| Step</button>
+          <button id="btnReset" class="danger">&#8634; Reset</button>
+        </div>
+
+        <div class="stat" id="treeStats">
+          <div class="pill"><span>Levels</span><b id="statLevels">—</b></div>
+          <div class="pill"><span>Total Nodes</span><b id="statNodes">—</b></div>
+          <div class="pill"><span>Branching</span><b id="statBranch">—</b></div>
+          <div class="pill"><span>Leaf Nodes</span><b id="statLeaves">—</b></div>
+          <div class="pill wide"><span>Complexity</span><b id="statBigO">—</b></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 2: Master Theorem -->
+    <div class="modulePanel" id="panel-master">
+      <div class="controls">
+        <label>Recurrence: T(n) = a · T(n/b) + O(n^k)</label>
+        <div class="row3 mb10">
+          <div><label>a <span style="font-size:10px;font-weight:400;">(subproblems)</span></label><input type="number" id="masterA" value="2" min="1" max="10" /></div>
+          <div><label>b <span style="font-size:10px;font-weight:400;">(divisor)</span></label><input type="number" id="masterB" value="2" min="2" max="10" /></div>
+          <div><label>k <span style="font-size:10px;font-weight:400;">(work exp.)</span></label><input type="number" id="masterK" value="1" min="0" max="4" step="0.5" /></div>
+        </div>
+        <button id="btnAnalyze">Analyze</button>
+        <div class="stat">
+          <div class="pill wide"><span>log<sub>b</sub>(a)</span><b id="masterLogBA">—</b></div>
+          <div class="pill"><span>n<sup>log<sub>b</sub>a</sup></span><b id="masterCritical">—</b></div>
+          <div class="pill"><span>f(n) = n<sup>k</sup></span><b id="masterFn">—</b></div>
+          <div class="pill wide"><span>Result</span><b id="masterResult">—</b></div>
+        </div>
+        <div class="mt10">
+          <label>Quick Examples</label>
+          <div class="btnRow">
+            <button class="secondary masterEx" data-a="1" data-b="2" data-k="0">Bin. Search</button>
+            <button class="secondary masterEx" data-a="2" data-b="2" data-k="1">Merge Sort</button>
+            <button class="secondary masterEx" data-a="4" data-b="2" data-k="1">Case 1</button>
+            <button class="secondary masterEx" data-a="2" data-b="2" data-k="2">Case 3</button>
+          </div>
+        </div>
+        <div id="masterTreeContainer" class="mt10"></div>
+      </div>
+    </div>
+
+    <!-- Module 3: Substitution -->
+    <div class="modulePanel" id="panel-sub">
+      <div class="controls">
+        <label>Select Example</label>
+        <select id="subPreset" class="mb10">
+          <option value="binary">Binary Search — T(n) = T(n/2) + 1</option>
+          <option value="merge">Merge Sort — T(n) = 2T(n/2) + n</option>
+          <option value="fibSmart">Fibonacci (memoized) — O(n)</option>
+          <option value="fibonacci">Fibonacci (naive) — T(n) = T(n-1) + T(n-2) + 1</option>
+          <option value="hanoi">Tower of Hanoi — T(n) = 2T(n-1) + 1</option>
+        </select>
+        <div class="btnRow">
+          <button id="btnSubNext">Next Step &#9654;</button>
+          <button id="btnSubPrev" class="secondary">&#9664; Prev</button>
+          <button id="btnSubAll" class="secondary">Show All</button>
+          <button id="btnSubReset" class="danger">Reset</button>
+        </div>
+        <div class="stat">
+          <div class="pill wide"><span>Progress</span><b id="subProgress">0 / 6</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ RIGHT PANEL ═══════════════ -->
+  <div class="card">
+    <h2 id="vizTitle">Recursion Tree Visualization</h2>
+    <div class="viz">
+      <div class="vizPanel active" id="viz-tree">
+        <div class="module-banner">
+          The <b>recursion tree</b> shows every recursive call as a node. Each level represents one "round" of recursion.
+          Watch how the tree grows — the <b>total work</b> is the sum across all nodes.
+          Click <b>Play</b> to reveal level by level, or <b>Step</b> to go one at a time.
+        </div>
+        <!-- Algorithm Simulation Panel -->
+        <div id="simContainer" style="display:none;">
+          <div class="sim-header" id="simToggleBtn">
+            <span class="sim-title">Algorithm Simulation</span>
+            <button class="sim-toggle" id="simToggleText">Collapse</button>
+          </div>
+          <div class="sim-body" id="simBody">
+            <svg class="sim-svg" id="simSVG"></svg>
+            <div class="sim-desc" id="simDesc">Click Play or Step to watch the algorithm solve the problem.</div>
+            <div class="sim-controls">
+              <button id="simPlayBtn">&#9654; Play</button>
+              <button id="simStepBtn" class="secondary">&#9654;| Step</button>
+              <button id="simResetBtn" class="danger">&#8634; Reset</button>
+              <span class="sim-progress" id="simProgress">Step 0 / 0</span>
+            </div>
+          </div>
+        </div>
+        <svg class="tree-svg" id="treeSVG"></svg>
+        <div id="treeSummary" style="margin-top:12px;"></div>
+        <div id="insightContainer"></div>
+      </div>
+      <div class="vizPanel" id="viz-master">
+        <div class="module-banner">
+          The <b>Master Theorem</b> gives you the Big-O for <span class="tip" data-tip="A strategy that splits the problem into smaller subproblems, solves each recursively, then combines the results.">divide-and-conquer</span>
+          recurrences <span class="math-inline" style="font-size:12px;">T(n) = aT(n/b) + O(n<sup>k</sup>)</span> instantly.
+          Compare two numbers — <b>log<sub>b</sub>(a)</b> vs <b>k</b> — and the answer falls into one of three cases.
+          Try the quick examples, then experiment with your own values.
+        </div>
+        <div id="masterViz"></div>
+      </div>
+      <div class="vizPanel" id="viz-sub">
+        <div class="module-banner">
+          The <b>substitution method</b> is a formal proof: <em>guess</em> the answer, then <em>prove</em> it by induction.
+          Click <b>Next Step</b> to reveal each part. The pattern is always the same:
+          guess &rarr; assume &rarr; substitute &rarr; simplify &rarr; verify <span class="tip" data-tip="The smallest input where we stop recursing (usually n = 1 or n = 2).">base case</span>.
+        </div>
+        <div id="subViz"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TUTORIAL: FOOTER ═══════════════ -->
+<div class="tut-footer">
+  <b>What to explore next:</b> Once you're comfortable with recurrence relations, dive into
+  <b>Dynamic Programming</b> (turning exponential recursion into polynomial by storing results) and
+  <b>Amortized Analysis</b> (averaging cost over a sequence of operations).<br>
+  Part of <b>BCS 309 — Algorithms I</b> &nbsp;|&nbsp; Canadian University Dubai
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   RECURRENCE RELATIONS EXPLORER — BCS 309
+   ═══════════════════════════════════════════════════════════ */
+
+// ─── Algorithm Presets ─────────────────────────────────────
+const PRESETS = {
+  binary: {
+    name:'Binary Search', a:1, b:2, k:0, mode:'divide',
+    complexity:'O(log n)', compClass:'log',
+    desc:'Search a sorted array by repeatedly comparing the middle element and discarding the half that cannot contain the target.',
+    why:'Each step cuts the problem in half and does O(1) work (one comparison). With log\u2082(n) levels and constant work per level, total = O(log n).',
+    levelDesc:'Level i: look at 1 element in an array of size n/2\u2071. One comparison, then throw away half.',
+    svg: function(){
+      // Array with middle highlighted, half crossed out
+      const w=380,h=80;
+      let s=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
+      const arr=[3,7,11,15,19,23,27,31];
+      const cw=40,ch=32,y=10,gap=4;
+      const sx=(w-arr.length*(cw+gap))/2;
+      for(let i=0;i<arr.length;i++){
+        const x=sx+i*(cw+gap);
+        const isMid=i===3;
+        const isRight=i>3;
+        const fill=isMid?'rgba(100,240,200,0.25)':isRight?'rgba(255,92,122,0.08)':'rgba(106,169,255,0.12)';
+        const stroke=isMid?'#64f0c8':isRight?'rgba(255,92,122,0.3)':'rgba(106,169,255,0.3)';
+        s+=`<rect x="${x}" y="${y}" width="${cw}" height="${ch}" rx="6" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
+        s+=`<text x="${x+cw/2}" y="${y+20}" text-anchor="middle" fill="${isRight?'#555':'#e8ecff'}" font-size="12" font-weight="${isMid?'700':'400'}">${arr[i]}</text>`;
+        if(isRight) s+=`<line x1="${x+4}" y1="${y+4}" x2="${x+cw-4}" y2="${y+ch-4}" stroke="#ff5c7a" stroke-width="1.5" opacity="0.5"/>`;
+      }
+      s+=`<text x="${sx+3*(cw+gap)+cw/2}" y="${y+ch+16}" text-anchor="middle" fill="#64f0c8" font-size="10" font-weight="600">target \u2264 15?</text>`;
+      s+=`<text x="${sx+6*(cw+gap)+cw/2}" y="${y+ch+16}" text-anchor="middle" fill="#ff5c7a" font-size="9" opacity="0.7">discard</text>`;
+      s+='</svg>';
+      return s;
+    }
+  },
+  fastexp: {
+    name:'Fast Exponentiation', a:1, b:2, k:0, mode:'divide',
+    complexity:'O(log n)', compClass:'log',
+    desc:'Compute x\u207F by repeated squaring. Instead of n multiplications, use the identity: x\u207F = (x\u207F\u00B2)\u00B2 if n is even.',
+    why:'The exponent halves each step with O(1) work (one multiply + one square). So depth = log\u2082(n) and total = O(log n).',
+    levelDesc:'Level i: compute x^(n/2\u2071) by squaring the result from the level below and multiplying once if odd.',
+    svg: function(){
+      const w=380,h=90;
+      let s=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
+      const steps=[{t:'x\u2078',sub:'= (x\u2074)\u00B2'},{t:'x\u2074',sub:'= (x\u00B2)\u00B2'},{t:'x\u00B2',sub:'= x \u00D7 x'},{t:'x',sub:'base'}];
+      const bw=75,bh=30,gap=12;
+      const sx=(w-steps.length*(bw+gap))/2;
+      for(let i=0;i<steps.length;i++){
+        const x=sx+i*(bw+gap);
+        const c=i===0?'#64f0c8':i===steps.length-1?'#ffd166':'#6aa9ff';
+        s+=`<rect x="${x}" y="10" width="${bw}" height="${bh}" rx="8" fill="${c}18" stroke="${c}" stroke-width="1.5"/>`;
+        s+=`<text x="${x+bw/2}" y="30" text-anchor="middle" fill="${c}" font-size="13" font-weight="700">${steps[i].t}</text>`;
+        s+=`<text x="${x+bw/2}" y="56" text-anchor="middle" fill="#b7c0ff" font-size="10">${steps[i].sub}</text>`;
+        if(i<steps.length-1){
+          s+=`<line x1="${x+bw}" y1="25" x2="${x+bw+gap}" y2="25" stroke="${c}" stroke-width="1" opacity="0.4" stroke-dasharray="3 2"/>`;
+        }
+      }
+      s+=`<text x="${w/2}" y="78" text-anchor="middle" fill="#b7c0ff" font-size="10">Only log\u2082(8) = 3 multiplications instead of 8!</text>`;
+      s+='</svg>';
+      return s;
+    }
+  },
+  merge: {
+    name:'Merge Sort', a:2, b:2, k:1, mode:'divide',
+    complexity:'O(n log n)', compClass:'nlogn',
+    desc:'Divide the array in half, recursively sort each half, then merge the two sorted halves back together. The merge step does O(n) comparisons.',
+    why:'Each level splits into 2 halves (log\u2082 n levels). At every level, the merge work across all subproblems totals O(n). So total = O(n) \u00D7 O(log n) = O(n log n).',
+    levelDesc:'Level i: there are 2\u2071 sub-arrays each of size n/2\u2071. Merging all of them takes n total comparisons.',
+    svg: function(){
+      const w=380,h=140;
+      let s=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
+      const arr=[38,27,43,3,9,82,10];
+      const cw=32,ch=20,gap=3;
+      const sx=(w-arr.length*(cw+gap))/2;
+      // Row 1: unsorted
+      const r1=6;
+      s+=`<text x="${sx-4}" y="${r1+13}" text-anchor="end" fill="#b7c0ff" font-size="8.5">unsorted</text>`;
+      for(let i=0;i<arr.length;i++){
+        s+=`<rect x="${sx+i*(cw+gap)}" y="${r1}" width="${cw}" height="${ch}" rx="4" fill="rgba(255,92,122,0.12)" stroke="rgba(255,92,122,0.3)" stroke-width="1"/>`;
+        s+=`<text x="${sx+i*(cw+gap)+cw/2}" y="${r1+14}" text-anchor="middle" fill="#e8ecff" font-size="10">${arr[i]}</text>`;
+      }
+      // Arrow
+      const a1=r1+ch+12;
+      s+=`<text x="${w/2}" y="${a1}" text-anchor="middle" fill="#6aa9ff" font-size="10">\u2193 split \u2193</text>`;
+      // Row 2: two halves — centered with clear gap
+      const r2=a1+8;
+      const left=[38,27,43,3],right=[9,82,10];
+      const leftW=left.length*(cw+gap)-gap;
+      const rightW=right.length*(cw+gap)-gap;
+      const totalSplitW=leftW+30+rightW;
+      const splitStart=(w-totalSplitW)/2;
+      for(let i=0;i<left.length;i++){
+        const x=splitStart+i*(cw+gap);
+        s+=`<rect x="${x}" y="${r2}" width="${cw}" height="${ch}" rx="4" fill="rgba(106,169,255,0.12)" stroke="rgba(106,169,255,0.3)" stroke-width="1"/>`;
+        s+=`<text x="${x+cw/2}" y="${r2+14}" text-anchor="middle" fill="#e8ecff" font-size="10">${left[i]}</text>`;
+      }
+      const rightStart=splitStart+leftW+30;
+      for(let i=0;i<right.length;i++){
+        const x=rightStart+i*(cw+gap);
+        s+=`<rect x="${x}" y="${r2}" width="${cw}" height="${ch}" rx="4" fill="rgba(199,125,255,0.12)" stroke="rgba(199,125,255,0.3)" stroke-width="1"/>`;
+        s+=`<text x="${x+cw/2}" y="${r2+14}" text-anchor="middle" fill="#e8ecff" font-size="10">${right[i]}</text>`;
+      }
+      // Arrow
+      const a2=r2+ch+12;
+      s+=`<text x="${w/2}" y="${a2}" text-anchor="middle" fill="#64f0c8" font-size="10">\u2193 merge \u2193</text>`;
+      // Row 3: sorted
+      const r3=a2+8;
+      const sorted=[3,9,10,27,38,43,82];
+      s+=`<text x="${sx-4}" y="${r3+13}" text-anchor="end" fill="#64f0c8" font-size="8.5">sorted</text>`;
+      for(let i=0;i<sorted.length;i++){
+        s+=`<rect x="${sx+i*(cw+gap)}" y="${r3}" width="${cw}" height="${ch}" rx="4" fill="rgba(100,240,200,0.12)" stroke="rgba(100,240,200,0.3)" stroke-width="1"/>`;
+        s+=`<text x="${sx+i*(cw+gap)+cw/2}" y="${r3+14}" text-anchor="middle" fill="#64f0c8" font-size="10" font-weight="600">${sorted[i]}</text>`;
+      }
+      s+='</svg>';
+      return s;
+    }
+  },
+  quick: {
+    name:'Quick Sort (best case)', a:2, b:2, k:1, mode:'divide',
+    complexity:'O(n log n)', compClass:'nlogn',
+    desc:'Pick a pivot, partition the array so smaller elements go left, larger go right. Recursively sort each side. Best case: pivot splits evenly.',
+    why:'Same recurrence as Merge Sort when the pivot splits evenly: 2 subproblems of size n/2 with O(n) partition work. Total = O(n log n). Worst case (bad pivot) is O(n\u00B2)!',
+    levelDesc:'Level i: partition 2\u2071 sub-arrays. All partitions at level i collectively scan all n elements \u2192 O(n) total work per level.',
+    svg: function(){
+      const w=380,h=90;
+      let s=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
+      const arr=[8,3,1,5,9,2,7];
+      const cw=34,ch=22,gap=3;
+      const sx=(w-arr.length*(cw+gap))/2;
+      for(let i=0;i<arr.length;i++){
+        const isPivot=i===3;
+        const isLeft=!isPivot&&arr[i]<arr[3];
+        const fill=isPivot?'rgba(255,209,102,0.2)':isLeft?'rgba(106,169,255,0.12)':'rgba(199,125,255,0.12)';
+        const stroke=isPivot?'#ffd166':isLeft?'rgba(106,169,255,0.3)':'rgba(199,125,255,0.3)';
+        s+=`<rect x="${sx+i*(cw+gap)}" y="8" width="${cw}" height="${ch}" rx="4" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
+        s+=`<text x="${sx+i*(cw+gap)+cw/2}" y="23" text-anchor="middle" fill="${isPivot?'#ffd166':'#e8ecff'}" font-size="10" font-weight="${isPivot?'700':'400'}">${arr[i]}</text>`;
+      }
+      s+=`<text x="${sx+3*(cw+gap)+cw/2}" y="44" text-anchor="middle" fill="#ffd166" font-size="9" font-weight="600">\u2191 pivot</text>`;
+      // After partition
+      const after=[[3,1,2],[5],[8,9,7]];
+      const labels=[{c:'#6aa9ff',t:'\u2264 pivot'},{c:'#ffd166',t:'pivot'},{c:'#c77dff',t:'> pivot'}];
+      let px=30;
+      s+=`<text x="${w/2}" y="57" text-anchor="middle" fill="#b7c0ff" font-size="10">\u2193 partition \u2193</text>`;
+      for(let g=0;g<3;g++){
+        const gx=g===0?40:g===1?w/2-cw/2:w-after[2].length*(cw+gap)-40;
+        for(let i=0;i<after[g].length;i++){
+          s+=`<rect x="${gx+i*(cw+gap)}" y="64" width="${cw}" height="${ch}" rx="4" fill="${labels[g].c}18" stroke="${labels[g].c}55" stroke-width="1"/>`;
+          s+=`<text x="${gx+i*(cw+gap)+cw/2}" y="79" text-anchor="middle" fill="${labels[g].c}" font-size="10">${after[g][i]}</text>`;
+        }
+        const tx=gx+(after[g].length*(cw+gap)-gap)/2;
+      }
+      s+='</svg>';
+      return s;
+    }
+  },
+  fibonacci: {
+    name:'Fibonacci (naive)', a:2, b:1, k:0, mode:'fibonacci',
+    complexity:'O(2\u207F)', compClass:'exp',
+    desc:'Compute fib(n) by recursively computing fib(n-1) + fib(n-2). This creates massive redundancy — the same values are computed over and over again.',
+    why:'Each call spawns two more calls (branching factor \u2248 2), and the tree depth is n. So total calls \u2248 2\u207F. The explosion comes from redundant computation — fib(2) alone gets computed exponentially many times!',
+    levelDesc:'Level i: up to 2\u2071 calls, many of them duplicates. The tree is wildly unbalanced — the left branch goes deeper than the right.',
+    svg: function(){
+      const w=380,h=130;
+      let s=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
+      // Mini Fibonacci tree for fib(5) — wider spacing to avoid overlap
+      const nodes=[
+        {t:'fib(5)',x:190,y:8,dup:false},
+        {t:'fib(4)',x:115,y:38,dup:false},{t:'fib(3)',x:265,y:38,dup:true},
+        {t:'fib(3)',x:60,y:68,dup:true},{t:'fib(2)',x:155,y:68,dup:true},
+        {t:'fib(2)',x:230,y:68,dup:true},{t:'fib(1)',x:310,y:68,dup:false},
+      ];
+      const edges=[[0,1],[0,2],[1,3],[1,4],[2,5],[2,6]];
+      edges.forEach(([a,b])=>{
+        s+=`<line x1="${nodes[a].x}" y1="${nodes[a].y+14}" x2="${nodes[b].x}" y2="${nodes[b].y}" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>`;
+      });
+      nodes.forEach(n=>{
+        const c=n.dup?'#ff5c7a':'#6aa9ff';
+        const fill=n.dup?'rgba(255,92,122,0.15)':'rgba(106,169,255,0.12)';
+        const tw=n.t.length*7+12;
+        s+=`<rect x="${n.x-tw/2}" y="${n.y}" width="${tw}" height="16" rx="6" fill="${fill}" stroke="${c}" stroke-width="1" ${n.dup?'stroke-dasharray="3 2"':''}/>`;
+        s+=`<text x="${n.x}" y="${n.y+12}" text-anchor="middle" fill="${c}" font-size="9.5" font-weight="600">${n.t}</text>`;
+      });
+      // "duplicates" label well below the bottom nodes
+      s+=`<rect x="100" y="92" width="180" height="16" rx="8" fill="rgba(255,92,122,0.08)" stroke="rgba(255,92,122,0.2)" stroke-width="1"/>`;
+      s+=`<text x="190" y="103" text-anchor="middle" fill="#ff5c7a" font-size="9" font-weight="600">red dashed = duplicate calls!</text>`;
+      s+=`<text x="${w/2}" y="122" text-anchor="middle" fill="#b7c0ff" font-size="9">fib(3) computed 2\u00D7, fib(2) computed 3\u00D7 \u2014 grows exponentially!</text>`;
+      s+='</svg>';
+      return s;
+    }
+  },
+  hanoi: {
+    name:'Tower of Hanoi', a:2, b:1, k:0, mode:'hanoi',
+    complexity:'O(2\u207F)', compClass:'exp',
+    desc:'Move n disks from peg A to peg C using peg B as auxiliary. Rules: (1) move only one disk at a time, (2) never place a larger disk on a smaller one.<pre style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px 10px;margin:8px 0 4px;font-size:11px;line-height:1.5;color:#e8ecff;font-family:monospace;white-space:pre;overflow-x:auto;">Hanoi(n, src, dst, aux):\n  if n == 1:\n    move disk 1: src \u2192 dst    \u2190 1 move\n  else:\n    Hanoi(n-1, src, aux, dst) \u2190 T(n-1)\n    move disk n: src \u2192 dst    \u2190 1 move\n    Hanoi(n-1, aux, dst, src) \u2190 T(n-1)</pre>',
+    why:'The algorithm makes <b>2 recursive calls</b> each on <b>n\u22121</b> disks, plus <b>1 move</b> of the largest disk. This gives:<br>T(n) = T(n\u22121) + 1 + T(n\u22121) = <b>2T(n\u22121) + 1</b>.<br>Solving: T(n) = 2\u207F \u2212 1. Even for n=20, that\'s over a million moves!',
+    levelDesc:'Level i: 2\u2071 recursive calls, each handling n\u2212i disks. Each call does 1 move of its bottom disk. Total moves at level i = 2\u2071, summing to 2\u207F\u22121.',
+    svg: function(){
+      const w=380,h=100;
+      let s=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
+      // Three pegs
+      const pegs=[{x:80,l:'A'},{x:190,l:'B'},{x:300,l:'C'}];
+      const ph=55,pw=4;
+      pegs.forEach(p=>{
+        s+=`<rect x="${p.x-pw/2}" y="20" width="${pw}" height="${ph}" rx="2" fill="rgba(255,255,255,0.15)"/>`;
+        s+=`<rect x="${p.x-50}" y="${20+ph}" width="100" height="4" rx="2" fill="rgba(255,255,255,0.1)"/>`;
+        s+=`<text x="${p.x}" y="90" text-anchor="middle" fill="#b7c0ff" font-size="11" font-weight="600">${p.l}</text>`;
+      });
+      // Disks on peg A
+      const diskW=[80,64,48,32];
+      const diskC=['#6aa9ff','#64f0c8','#ffd166','#ff9f43'];
+      const dh=10;
+      for(let i=0;i<diskW.length;i++){
+        const dy=20+ph-dh*(i+1);
+        s+=`<rect x="${80-diskW[i]/2}" y="${dy}" width="${diskW[i]}" height="${dh-2}" rx="4" fill="${diskC[i]}33" stroke="${diskC[i]}" stroke-width="1"/>`;
+      }
+      // Arrow
+      s+=`<text x="190" y="14" text-anchor="middle" fill="#ff5c7a" font-size="10">Move all to C: 2\u2074-1 = 15 moves!</text>`;
+      s+=`<path d="M120,50 C150,35 230,35 260,50" fill="none" stroke="#ffd166" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#arrowHead)"/>`;
+      s+=`<defs><marker id="arrowHead" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><path d="M0,0 L6,2 L0,4" fill="#ffd166"/></marker></defs>`;
+      s+='</svg>';
+      return s;
+    }
+  },
+  fibSmart: {
+    name:'Fibonacci (memoized)', a:1, b:1, k:0, mode:'fibSmart',
+    complexity:'O(n)', compClass:'linear',
+    desc:'Compute fib(n) by storing previously computed values in a table (memoization). Each fib(k) is computed only once; subsequent calls are O(1) lookups. This turns the exponential tree into a simple linear chain.',
+    why:'With memoization, each of the n subproblems is solved exactly once with O(1) work. No branching, no redundancy. Total = n \u00D7 O(1) = O(n). Compare with the naive version\'s O(2\u207F) \u2014 for n=40, that\'s 40 vs 1,099,511,627,775!',
+    levelDesc:'Step i: compute fib(i) = fib(i-1) + fib(i-2). Both values already in the memo table \u2192 O(1) lookup each.',
+    svg: function(){
+      const w=380,h=110;
+      let s=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
+      // Show memo table
+      const vals=[{k:'0',v:'0'},{k:'1',v:'1'},{k:'2',v:'1'},{k:'3',v:'2'},{k:'4',v:'3'},{k:'5',v:'5'},{k:'6',v:'8'},{k:'7',v:'13'}];
+      const cw=38,ch=38,gap=4;
+      const sx=(w-vals.length*(cw+gap))/2;
+      s+=`<text x="${w/2}" y="12" text-anchor="middle" fill="#b7c0ff" font-size="10">Memo Table (each value computed once, then reused)</text>`;
+      for(let i=0;i<vals.length;i++){
+        const x=sx+i*(cw+gap);
+        const computed=i<=5;
+        const current=i===5;
+        const fill=current?'rgba(100,240,200,0.2)':computed?'rgba(106,169,255,0.1)':'rgba(255,255,255,0.04)';
+        const stroke=current?'#64f0c8':computed?'rgba(106,169,255,0.3)':'rgba(255,255,255,0.1)';
+        s+=`<rect x="${x}" y="20" width="${cw}" height="${ch}" rx="6" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
+        s+=`<text x="${x+cw/2}" y="34" text-anchor="middle" fill="#b7c0ff" font-size="9">f(${vals[i].k})</text>`;
+        s+=`<text x="${x+cw/2}" y="50" text-anchor="middle" fill="${current?'#64f0c8':computed?'#6aa9ff':'#555'}" font-size="13" font-weight="700">${computed?vals[i].v:'?'}</text>`;
+      }
+      // Arrow showing lookup
+      const x4=sx+3*(cw+gap)+cw/2, x5=sx+4*(cw+gap)+cw/2, x6=sx+5*(cw+gap)+cw/2;
+      s+=`<path d="M${x4},60 C${x4},72 ${x6},72 ${x6},60" fill="none" stroke="#64f0c8" stroke-width="1" stroke-dasharray="3 2"/>`;
+      s+=`<path d="M${x5},60 C${x5},68 ${x6},68 ${x6},60" fill="none" stroke="#64f0c8" stroke-width="1" stroke-dasharray="3 2"/>`;
+      s+=`<text x="${x6}" y="82" text-anchor="middle" fill="#64f0c8" font-size="9">f(5) = f(4) + f(3)</text>`;
+      s+=`<text x="${x6}" y="93" text-anchor="middle" fill="#64f0c8" font-size="9">= 3 + 2 = 5 \u2713</text>`;
+      // Comparison — two separate labels with clear spacing
+      s+=`<text x="${w/2-8}" y="108" text-anchor="end" fill="#ff5c7a" font-size="9">Naive: 2\u207F calls \u2192 exponential</text>`;
+      s+=`<text x="${w/2}" y="108" text-anchor="middle" fill="#555" font-size="9">|</text>`;
+      s+=`<text x="${w/2+8}" y="108" text-anchor="start" fill="#64f0c8" font-size="9" font-weight="600">Memoized: n steps \u2192 linear</text>`;
+      s+='</svg>';
+      return s;
+    }
+  },
+  custom: {
+    name:'Custom', a:2, b:2, k:1, mode:'divide',
+    complexity:'varies', compClass:'custom',
+    desc:'Define your own recurrence T(n) = a\u00B7T(n/b) + O(n\u1D4F) by setting a, b, and k below.',
+    why:'Use the Master Theorem tab to determine the complexity class.',
+    levelDesc:'Depends on the parameters you choose.',
+    svg: function(){ return ''; }
+  }
+};
+
+// ─── State ─────────────────────────────────────────────────
+const S = {
+  module:'tree', preset:'merge',
+  a:2, b:2, k:1, n:16,
+  mode:'divide',
+  tree:null, maxLevel:0, revealedLevel:-1,
+  animating:false, animTimer:null, speed:5,
+  subStep:0, subPreset:'merge'
+};
+
+const $ = id => document.getElementById(id);
+
+// ─── Tab Navigation ────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    const mod=tab.dataset.module;
+    S.module=mod;
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.modulePanel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.vizPanel').forEach(p=>p.classList.remove('active'));
+    $('panel-'+mod).classList.add('active');
+    $('viz-'+mod).classList.add('active');
+    const titles={tree:'Recursion Tree Visualization',master:'Master Theorem Analysis',sub:'Substitution Method'};
+    $('vizTitle').textContent=titles[mod];
+    if(mod==='master') renderMaster();
+    if(mod==='sub') renderSubstitution();
+  });
+});
+
+// ─── Preset Selection ──────────────────────────────────────
+$('presetSelect').addEventListener('change',e=>{
+  S.preset=e.target.value;
+  const p=PRESETS[S.preset];
+  if(S.preset!=='custom'){
+    S.a=p.a; S.b=p.b; S.k=p.k; S.mode=p.mode;
+    $('inputA').value=p.a; $('inputB').value=p.b; $('inputK').value=p.k;
+    // Cap n for exponential algorithms
+    if(p.mode==='fibonacci'){
+      if(S.n>10){ S.n=7; $('inputN').value=7; }
+    } else if(p.mode==='hanoi'){
+      if(S.n>5){ S.n=4; $('inputN').value=4; }
+    } else if(p.mode==='fibSmart'){
+      if(S.n>30){ S.n=10; $('inputN').value=10; }
+    }
+  }
+  renderAlgoInfo();
+  renderTryThis();
+  updateRecurrenceDisplay();
+  resetTree();
+});
+
+// ─── Parameter Inputs ──────────────────────────────────────
+['inputA','inputB','inputK','inputN'].forEach(id=>{
+  $(id).addEventListener('change',()=>{
+    S.a=parseFloat($('inputA').value)||2;
+    S.b=parseFloat($('inputB').value)||2;
+    S.k=parseFloat($('inputK').value)||0;
+    S.n=parseInt($('inputN').value)||16;
+    if(S.a<1){S.a=1;$('inputA').value=1;}
+    if(S.b<1){S.b=2;$('inputB').value=2;}
+    if(S.n<2){S.n=2;$('inputN').value=2;}
+    if(S.preset!=='custom'){$('presetSelect').value='custom';S.preset='custom';S.mode='divide';}
+    renderAlgoInfo();
+    renderTryThis();
+    updateRecurrenceDisplay();
+    resetTree();
+  });
+});
+
+$('speedSlider').addEventListener('input',e=>{
+  S.speed=parseInt(e.target.value);
+  $('speedLabel').textContent='Speed: '+S.speed;
+});
+
+function updateRecurrenceDisplay(){
+  const p=PRESETS[S.preset];
+  if(S.mode==='fibSmart'){
+    $('recurrenceText').textContent='T(n) = T(n\u22121) + O(1) [memo lookup]';
+  } else if(S.mode==='fibonacci'){
+    $('recurrenceText').textContent='T(n) = T(n\u22121) + T(n\u22122) + 1';
+  } else if(S.mode==='hanoi'){
+    $('recurrenceText').textContent='T(n) = 2T(n\u22121) + 1';
+  } else {
+    const kStr=S.k===0?'1':S.k===1?'n':'n'+sup(S.k);
+    const bStr=Number.isInteger(S.b)?S.b:S.b.toFixed(1);
+    const aStr=S.a===1?'':''+S.a;
+    $('recurrenceText').textContent=`T(n) = ${aStr}T(n/${bStr}) + ${kStr}`;
+  }
+}
+
+function sup(v){
+  const m={'0':'\u2070','1':'\xB9','2':'\xB2','3':'\xB3','4':'\u2074','5':'\u2075','6':'\u2076','7':'\u2077','8':'\u2078','9':'\u2079','.':'\u00B7'};
+  return String(v).split('').map(c=>m[c]||c).join('');
+}
+
+// ─── Algorithm Info Panel ──────────────────────────────────
+function renderAlgoInfo(){
+  const p=PRESETS[S.preset];
+  const container=$('algoInfoContainer');
+  if(S.preset==='custom'&&!p.svg()){
+    container.innerHTML='';
+    return;
+  }
+  const badgeColors={log:'var(--c2)',linear:'var(--c3)',nlogn:'var(--c1)',exp:'var(--c5)',custom:'var(--muted)'};
+  const svgHTML=p.svg();
+  container.innerHTML=`
+    <div class="algo-info">
+      <div class="algo-info-title">
+        ${p.name}
+        <span class="complexity-badge" style="background:${badgeColors[p.compClass]||'var(--muted)'}22;color:${badgeColors[p.compClass]||'var(--muted)'};border:1px solid ${badgeColors[p.compClass]||'var(--muted)'}44;">${p.complexity}</span>
+      </div>
+      <div style="color:var(--text);">${p.desc}</div>
+      ${svgHTML}
+      <div class="why">\u25B8 Why ${p.complexity}? ${p.why}</div>
+      <div class="level-desc">\u25B8 At each level: ${p.levelDesc}</div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// MODULE 1: RECURSION TREE
+// ═══════════════════════════════════════════════════════════
+
+function buildTree(n, level, counter){
+  if(counter.c>3000) return null;
+  counter.c++;
+  const work=S.mode==='divide'?Math.pow(n,S.k):1;
+  const node={size:n,work:work,level:level,children:[],x:0,y:0,subtreeWidth:0,label:''};
+
+  if(S.mode==='fibSmart'){
+    // Memoized: linear chain, each step is fib(k) computed from memo[k-1]+memo[k-2]
+    node.label='fib('+Math.round(n)+')';
+    node.memo=true;
+    if(n<=1) return node;
+    if(level>=30) return node;
+    const c1=buildTree(n-1,level+1,counter);
+    if(c1) node.children.push(c1);
+    // Second child is a "memo hit" leaf (no recursion needed)
+    const memoNode={size:n-2,work:1,level:level+1,children:[],x:0,y:0,subtreeWidth:0,label:'memo['+Math.round(n-2)+']',memoHit:true};
+    counter.c++;
+    node.children.push(memoNode);
+  } else if(S.mode==='fibonacci'){
+    node.label='fib('+Math.round(n)+')';
+    if(n<=1) return node;
+    if(level>=12) return node;
+    const c1=buildTree(n-1,level+1,counter);
+    const c2=buildTree(n-2,level+1,counter);
+    if(c1) node.children.push(c1);
+    if(c2) node.children.push(c2);
+  } else if(S.mode==='hanoi'){
+    node.label='H('+Math.round(n)+')';
+    if(n<=0) return node;
+    if(level>=8) return node;
+    const c1=buildTree(n-1,level+1,counter);
+    const c2=buildTree(n-1,level+1,counter);
+    if(c1) node.children.push(c1);
+    if(c2) node.children.push(c2);
+  } else {
+    // divide mode
+    if(n<=1||level>=20) return node;
+    const childSize=n/S.b;
+    if(childSize<1) return node;
+    for(let i=0;i<S.a;i++){
+      const child=buildTree(childSize,level+1,counter);
+      if(child) node.children.push(child);
+    }
+  }
+  return node;
+}
+
+function getMaxLevel(node){
+  if(!node||node.children.length===0) return node?node.level:0;
+  return Math.max(...node.children.map(getMaxLevel));
+}
+
+function getLevelData(node,levels){
+  if(!node) return;
+  if(!levels[node.level]) levels[node.level]={nodes:0,workPerNode:0,totalWork:0};
+  levels[node.level].nodes++;
+  levels[node.level].workPerNode=node.work;
+  levels[node.level].totalWork+=node.work;
+  node.children.forEach(c=>getLevelData(c,levels));
+}
+
+// Tree layout
+const NODE_W=72,NODE_H=36,H_GAP=10,V_GAP=56;
+
+function computeSubtreeWidth(node){
+  if(!node) return 0;
+  if(node.children.length===0){node.subtreeWidth=NODE_W;return NODE_W;}
+  let tw=0;
+  node.children.forEach(c=>{tw+=computeSubtreeWidth(c);});
+  tw+=(node.children.length-1)*H_GAP;
+  node.subtreeWidth=Math.max(NODE_W,tw);
+  return node.subtreeWidth;
+}
+
+function assignPositions(node,cx,cy){
+  if(!node) return;
+  node.x=cx; node.y=cy;
+  if(node.children.length===0) return;
+  let startX=cx-node.subtreeWidth/2;
+  node.children.forEach(child=>{
+    const childCX=startX+child.subtreeWidth/2;
+    assignPositions(child,childCX,cy+NODE_H+V_GAP);
+    startX+=child.subtreeWidth+H_GAP;
+  });
+}
+
+// Colors
+const LEVEL_COLORS=['#6aa9ff','#64d8f0','#64f0c8','#a0f064','#ffd166','#ff9f43','#ff6b6b','#c77dff'];
+function getNodeColor(level,maxLevel){
+  const t=maxLevel>0?level/maxLevel:0;
+  return LEVEL_COLORS[Math.min(Math.floor(t*LEVEL_COLORS.length),LEVEL_COLORS.length-1)];
+}
+
+// Track duplicate labels for Fibonacci
+function collectLabels(node,map){
+  if(!node) return;
+  if(node.label){
+    if(!map[node.label]) map[node.label]=0;
+    map[node.label]++;
+  }
+  node.children.forEach(c=>collectLabels(c,map));
+}
+
+function renderTree(){
+  const svg=$('treeSVG');
+  if(!S.tree){svg.innerHTML='<text x="50%" y="50%" text-anchor="middle" fill="#b7c0ff" font-size="14">Click Play or Step to build the tree</text>';return;}
+
+  computeSubtreeWidth(S.tree);
+  const totalW=S.tree.subtreeWidth+200;
+  const totalH=(S.maxLevel+1)*(NODE_H+V_GAP)+60;
+  assignPositions(S.tree,totalW/2,30);
+
+  svg.setAttribute('viewBox',`0 0 ${totalW} ${totalH}`);
+  svg.style.height=Math.min(Math.max(totalH,300),650)+'px';
+
+  // Collect duplicate labels for highlighting
+  const labelMap={};
+  if(S.mode==='fibonacci') collectLabels(S.tree,labelMap);
+
+  let edgesHTML='',nodesHTML='',levelsHTML='';
+  const levels={};
+  getLevelData(S.tree,levels);
+
+  // Level annotations
+  for(const[lvl,data] of Object.entries(levels)){
+    const l=parseInt(lvl);
+    if(l>S.revealedLevel) continue;
+    const y=30+l*(NODE_H+V_GAP)+NODE_H/2;
+    const workStr=fmtN(data.totalWork);
+    levelsHTML+=`<text class="level-label" x="12" y="${y-6}" text-anchor="start">Level ${l}</text>`;
+    levelsHTML+=`<text class="level-work" x="12" y="${y+8}" text-anchor="start">${data.nodes} nodes \u2192 ${workStr}</text>`;
+  }
+
+  // BFS render
+  const queue=[S.tree];
+  while(queue.length>0){
+    const node=queue.shift();
+    const visible=node.level<=S.revealedLevel;
+    const opacity=visible?1:0.08;
+    const color=getNodeColor(node.level,S.maxLevel);
+    const rx=node.x-NODE_W/2,ry=node.y;
+    const isLeaf=node.children.length===0;
+
+    // Check if duplicate (naive Fibonacci) or memo hit (smart Fibonacci)
+    const isDup=node.label&&labelMap[node.label]>1;
+    const isMemoHit=!!node.memoHit;
+    const dupClass=isDup&&visible?'dup-highlight':(isMemoHit&&visible?'memo-hit':'');
+
+    nodesHTML+=`<g class="tree-node ${dupClass}" style="opacity:${opacity}">`;
+
+    if(isMemoHit&&visible){
+      // Memo lookup node — green dashed
+      nodesHTML+=`<rect x="${rx}" y="${ry}" width="${NODE_W}" height="${NODE_H}" fill="rgba(100,240,200,0.1)" stroke="#64f0c8" rx="8" ry="8" stroke-dasharray="4 2" stroke-width="1.5"/>`;
+    } else if(isDup&&visible){
+      // Highlight duplicates with red dashed border
+      nodesHTML+=`<rect x="${rx}" y="${ry}" width="${NODE_W}" height="${NODE_H}" fill="rgba(255,92,122,0.08)" stroke="#ff5c7a" rx="8" ry="8" stroke-dasharray="4 2" stroke-width="1.5"/>`;
+    } else {
+      nodesHTML+=`<rect x="${rx}" y="${ry}" width="${NODE_W}" height="${NODE_H}" fill="${color}22" stroke="${color}" rx="8" ry="8"/>`;
+    }
+
+    // Labels
+    if(isMemoHit){
+      // Memo lookup node
+      nodesHTML+=`<text x="${node.x}" y="${ry+14}" font-size="10" font-weight="700" fill="#64f0c8">${node.label}</text>`;
+      nodesHTML+=`<text x="${node.x}" y="${ry+27}" font-size="8.5" fill="#64f0c8">O(1) lookup</text>`;
+    } else if(node.label){
+      // Fibonacci / Hanoi mode: show label
+      nodesHTML+=`<text x="${node.x}" y="${ry+14}" font-size="11" font-weight="700" fill="${isDup&&visible?'#ff5c7a':color}">${node.label}</text>`;
+      nodesHTML+=`<text x="${node.x}" y="${ry+27}" font-size="9" fill="${visible?'#aaa':'#444'}">work=1</text>`;
+    } else {
+      // Divide mode: show size and work
+      const sizeStr=node.size>=1?(Number.isInteger(node.size)?node.size:node.size.toFixed(1)):'1';
+      nodesHTML+=`<text x="${node.x}" y="${ry+14}" font-size="11" font-weight="700" fill="${color}">n=${sizeStr}</text>`;
+      nodesHTML+=`<text x="${node.x}" y="${ry+27}" font-size="9.5" fill="${visible?'#fff':'#555'}">${fmtN(node.work)}</text>`;
+    }
+
+    if(isLeaf&&visible){
+      nodesHTML+=`<text x="${node.x}" y="${ry+NODE_H+12}" font-size="8" fill="${color}" text-anchor="middle">base</text>`;
+    }
+    nodesHTML+='</g>';
+
+    // Edges
+    node.children.forEach(child=>{
+      const cVisible=child.level<=S.revealedLevel;
+      const eOpacity=cVisible?0.5:0.05;
+      const x1=node.x,y1=ry+NODE_H,x2=child.x,y2=child.y;
+      const my=(y1+y2)/2;
+      edgesHTML+=`<path class="tree-edge" d="M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}" stroke="${color}" style="opacity:${eOpacity}"/>`;
+      queue.push(child);
+    });
+  }
+
+  svg.innerHTML=levelsHTML+edgesHTML+nodesHTML;
+
+  // Stats
+  const totalLevels=S.maxLevel+1;
+  let totalNodes=0,leafCount=0;
+  Object.values(levels).forEach(d=>{totalNodes+=d.nodes;});
+  if(levels[S.maxLevel]) leafCount=levels[S.maxLevel].nodes;
+
+  $('statLevels').textContent=totalLevels;
+  $('statNodes').textContent=totalNodes;
+  $('statBranch').textContent=S.mode==='fibonacci'?'1\u20132':S.mode==='fibSmart'?'1 (+memo)':S.a;
+  $('statLeaves').textContent=leafCount;
+  $('statBigO').textContent=computeBigO();
+
+  renderTreeSummary(levels);
+  renderInsight();
+}
+
+function renderTreeSummary(levels){
+  const div=$('treeSummary');
+  if(S.revealedLevel<0){div.innerHTML='';return;}
+  let rows='',grandTotal=0;
+  for(let l=0;l<=Math.min(S.revealedLevel,S.maxLevel);l++){
+    const d=levels[l]; if(!d) continue;
+    grandTotal+=d.totalWork;
+    const color=getNodeColor(l,S.maxLevel);
+    rows+=`<tr><td style="color:${color};font-weight:600;">Level ${l}</td><td>${d.nodes}</td><td>${fmtN(d.totalWork)}</td></tr>`;
+  }
+  const bigO=computeBigO();
+  div.innerHTML=`
+    <table class="examples-table">
+      <thead><tr><th>Level</th><th>Nodes</th><th>Total Work</th></tr></thead>
+      <tbody>${rows}
+        <tr style="border-top:2px solid rgba(255,255,255,0.15);">
+          <td colspan="2" style="font-weight:700;color:var(--c2);">Grand Total</td>
+          <td style="font-weight:700;color:var(--c2);">${fmtN(grandTotal)}</td>
+        </tr>
+        <tr><td colspan="2" style="font-weight:700;color:var(--c3);">Complexity</td>
+          <td style="font-weight:700;color:var(--c3);">${bigO}</td></tr>
+      </tbody>
+    </table>`;
+}
+
+function computeBigO(){
+  if(S.mode==='fibSmart') return 'O(n)';
+  if(S.mode==='fibonacci') return 'O(2\u207F)';
+  if(S.mode==='hanoi') return 'O(2\u207F)';
+  const logba=Math.log(S.a)/Math.log(S.b);
+  if(Math.abs(logba-S.k)<0.01){
+    if(S.k===0) return 'O(log n)';
+    return `O(n${S.k!==1?sup(S.k):''} log n)`;
+  } else if(logba>S.k){
+    const exp=Math.round(logba*100)/100;
+    if(Math.abs(exp-Math.round(exp))<0.01){
+      const e=Math.round(exp);
+      if(e===0) return 'O(1)';
+      if(e===1) return 'O(n)';
+      return `O(n${sup(e)})`;
+    }
+    return `O(n^${exp.toFixed(2)})`;
+  } else {
+    if(S.k===0) return 'O(1)';
+    if(S.k===1) return 'O(n)';
+    return `O(n${sup(S.k)})`;
+  }
+}
+
+function fmtN(v){
+  if(v>=1e6) return v.toExponential(1);
+  if(Number.isInteger(v)) return v.toLocaleString();
+  return v.toFixed(1);
+}
+
+// ─── Animation ─────────────────────────────────────────────
+function resetTree(){
+  stopAnimation();
+  S.tree=buildTree(S.n,0,{c:0});
+  S.maxLevel=getMaxLevel(S.tree);
+  S.revealedLevel=-1;
+  renderTree();
+  if(typeof simShow==='function') simShow();
+}
+
+function stepForward(){
+  if(S.revealedLevel>=S.maxLevel){stopAnimation();return;}
+  S.revealedLevel++;
+  renderTree();
+  if(S.revealedLevel>=S.maxLevel) stopAnimation();
+}
+
+function startAnimation(){
+  if(S.animating) return;
+  if(!S.tree) resetTree();
+  if(S.revealedLevel>=S.maxLevel){S.revealedLevel=-1;}
+  S.animating=true;
+  const delay=1200-S.speed*100;
+  S.animTimer=setInterval(()=>{
+    stepForward();
+    if(S.revealedLevel>=S.maxLevel) stopAnimation();
+  },Math.max(delay,100));
+}
+
+function stopAnimation(){
+  S.animating=false;
+  if(S.animTimer){clearInterval(S.animTimer);S.animTimer=null;}
+}
+
+$('btnPlay').addEventListener('click',startAnimation);
+$('btnPause').addEventListener('click',stopAnimation);
+$('btnStep').addEventListener('click',()=>{stopAnimation();if(!S.tree) resetTree();stepForward();});
+$('btnReset').addEventListener('click',resetTree);
+
+
+// ═══════════════════════════════════════════════════════════
+// MODULE 2: MASTER THEOREM
+// ═══════════════════════════════════════════════════════════
+
+function renderMaster(){
+  const a=parseFloat($('masterA').value)||2;
+  const b=parseFloat($('masterB').value)||2;
+  const k=parseFloat($('masterK').value)||0;
+  const logba=Math.log(a)/Math.log(b);
+  const logbaR=Math.round(logba*1000)/1000;
+  $('masterLogBA').textContent=logbaR.toFixed(3);
+  $('masterCritical').textContent=logbaR===0?'1':logbaR===1?'n':`n^${logbaR.toFixed(2)}`;
+  $('masterFn').textContent=k===0?'1':k===1?'n':`n^${k}`;
+
+  let activeCase=0,result='';
+  const eps=0.001;
+  if(logba-k>eps){
+    activeCase=1;
+    if(Math.abs(logbaR-Math.round(logbaR))<0.01){
+      const e=Math.round(logbaR);
+      result=e===1?'T(n) = \u0398(n)':`T(n) = \u0398(n${sup(e)})`;
+    } else result=`T(n) = \u0398(n^${logbaR.toFixed(2)})`;
+  } else if(Math.abs(logba-k)<=eps){
+    activeCase=2;
+    if(k===0) result='T(n) = \u0398(log n)';
+    else if(k===1) result='T(n) = \u0398(n log n)';
+    else result=`T(n) = \u0398(n${sup(k)} log n)`;
+  } else {
+    activeCase=3;
+    if(k===0) result='T(n) = \u0398(1)';
+    else if(k===1) result='T(n) = \u0398(n)';
+    else result=`T(n) = \u0398(n${sup(k)})`;
+  }
+  $('masterResult').textContent=result;
+
+  const maxVal=Math.max(logba,k,0.1);
+  let leftPct=(logba/(maxVal*1.3))*100;
+  let rightPct=(k/(maxVal*1.3))*100;
+  // Fix visual bars when both values are zero (e.g. Binary Search a=1,b=2,k=0)
+  if(logba===0 && k===0){ leftPct=50; rightPct=50; }
+  else { if(leftPct>0 && leftPct<10) leftPct=10; if(rightPct>0 && rightPct<10) rightPct=10; }
+  const compSymbol=logba>k+eps?'>':(Math.abs(logba-k)<=eps?'=':'<');
+  const compColor=activeCase===1?'var(--c1)':(activeCase===2?'var(--c2)':'var(--c3)');
+
+  // --- Parameter conceptual explanations ---
+  const aExplain = a===1
+    ? `Only <b>1</b> recursive call \u2014 the algorithm picks one sub-problem and ignores the rest (e.g., binary search picks one half).`
+    : a===2
+    ? `The algorithm makes <b>2</b> recursive sub-calls \u2014 it splits the problem into two pieces and solves both (e.g., merge sort sorts both halves).`
+    : `The algorithm spawns <b>${a}</b> recursive sub-calls. Each call tackles a smaller piece of the problem independently.`;
+  const bFraction = b===2 ? 'half' : b===3 ? 'one-third' : b===4 ? 'one-quarter' : `1/${b}`;
+  const bExplain = `Each sub-call works on a problem that is <b>${bFraction}</b> the original size (n/${b}). ${b===2 ? 'The problem halves at each level of recursion.' : `The problem shrinks by a factor of ${b} at each level.`}`;
+  const kExplain = k===0
+    ? `Each call does <b>O(1)</b> constant work outside the recursion (e.g., one comparison or one swap). The non-recursive overhead is negligible.`
+    : k===1
+    ? `Each call does <b>O(n)</b> work proportional to its input size (e.g., merging two halves, scanning an array, or partitioning elements).`
+    : k===0.5
+    ? `Each call does <b>O(\u221An)</b> work \u2014 proportional to the square root of its input size.`
+    : `Each call does <b>O(n${sup(k)})</b> work \u2014 polynomial in its input size.`;
+
+  // --- Level-by-level cost breakdown ---
+  const exN = 4;
+  const nEx = Math.round(Math.pow(b, exN));
+  let levelRows = '';
+  const maxLvl = Math.min(exN + 1, 5);
+  for(let i = 0; i < maxLvl; i++){
+    const nodes = Math.pow(a, i);
+    const subSz = nEx / Math.pow(b, i);
+    const wpn = Math.pow(subSz, k);
+    const tot = nodes * wpn;
+    const nodesStr = i===0 ? '1' : a===1 ? '1' : (i===1 ? `${a}` : `${a}${sup(i)} = ${Math.round(nodes)}`);
+    const sizeStr = i===0 ? `${nEx}` : `${nEx}/${b}${i>1?sup(i):''} = ${Math.round(subSz)}`;
+    const wpnStr = k===0 ? '1' : (wpn<0.01?wpn.toExponential(1):Math.round(wpn).toString());
+    const totStr = tot<0.01?tot.toExponential(1):Math.round(tot).toString();
+    const isFirst = i===0, isLast = i===maxLvl-1;
+    let rs = '';
+    if(activeCase===1 && isLast) rs='background:rgba(106,169,255,0.08);font-weight:600;';
+    else if(activeCase===3 && isFirst) rs='background:rgba(255,209,102,0.08);font-weight:600;';
+    levelRows += `<tr style="${rs}"><td>${i}</td><td>${nodesStr}</td><td>${sizeStr}</td><td>${wpnStr}</td><td>${totStr}</td></tr>`;
+  }
+  const trendArrow = activeCase===1 ? '\u2191' : activeCase===2 ? '\u2192' : '\u2193';
+  const trend = activeCase===1
+    ? `<span style="color:var(--c1);">${trendArrow} Total work per level <b>increases</b> going deeper</span> \u2014 the bottom (leaf) level does the most work. The total cost is dominated by the number of leaves: <b>n<sup>log<sub>${b}</sub>(${a})</sup></b>.`
+    : activeCase===2
+    ? `<span style="color:var(--c2);">${trendArrow} Total work per level stays <b>constant</b></span> \u2014 every level contributes the same amount. Since there are log<sub>${b}</sub>(n) levels, we pick up an extra <b>log n</b> factor.`
+    : `<span style="color:var(--c3);">${trendArrow} Total work per level <b>decreases</b> going deeper</span> \u2014 the root (top level) does the most work. The total cost is dominated by the root: <b>O(n<sup>${k}</sup>)</b>.`;
+
+  // --- Dynamic recursion story ---
+  let level1Total;
+  if(k===0) level1Total = `${a}`;
+  else if(k===1){
+    if(a===1) level1Total = `n/${b}`;
+    else if(a===b) level1Total = 'n';
+    else {
+      const r = a/b;
+      level1Total = Number.isInteger(r) ? `${r}n` : `${a}n/${b}`;
+    }
+  } else level1Total = `${a}\u00B7(n/${b})${sup(k)}`;
+
+  const fnStr = k===0?'1':k===1?'n':`n${sup(k)}`;
+  let leafStr;
+  if(logbaR===0) leafStr='1';
+  else if(Math.abs(logbaR-1)<0.01) leafStr='n';
+  else if(Math.abs(logbaR-2)<0.01) leafStr='n\xB2';
+  else leafStr=`n<sup>${logbaR.toFixed(2)}</sup>`;
+
+  const compExplain = activeCase===1
+    ? `The <b style="color:var(--c1);">recursion rate</b> (how fast subproblems multiply) beats the <b style="color:var(--c3);">work shrinkage</b>. More subproblems are created than work reduces per subproblem \u2014 the <b>leaves dominate</b>.`
+    : activeCase===2
+    ? `The <b style="color:var(--c1);">recursion rate</b> exactly matches the <b style="color:var(--c3);">work shrinkage</b>. The growth in subproblems perfectly cancels the reduction in work per subproblem \u2014 <b>every level contributes equally</b>.`
+    : `The <b style="color:var(--c3);">work per subproblem</b> shrinks slower than subproblems multiply. The root does the most work and deeper levels contribute less \u2014 the <b>root dominates</b>.`;
+
+  $('masterViz').innerHTML=`
+    <!-- Parameter Explanations -->
+    <div style="margin-bottom:16px;padding:16px;border-radius:14px;background:rgba(106,169,255,0.04);border:1px solid rgba(106,169,255,0.12);">
+      <div style="font-size:13px;font-weight:700;color:var(--c1);margin-bottom:10px;">Understanding the Parameters</div>
+      <div style="font-size:12.5px;line-height:1.7;color:var(--text);">
+        <div style="margin-bottom:8px;padding:8px 12px;border-radius:10px;background:rgba(0,0,0,0.15);border-left:3px solid var(--c1);">
+          <b style="color:var(--c1);">a = ${a}</b> <span style="color:var(--muted);font-size:11px;">(number of recursive sub-calls)</span><br>
+          ${aExplain}
+        </div>
+        <div style="margin-bottom:8px;padding:8px 12px;border-radius:10px;background:rgba(0,0,0,0.15);border-left:3px solid var(--c6);">
+          <b style="color:var(--c6);">b = ${b}</b> <span style="color:var(--muted);font-size:11px;">(subproblem size divisor)</span><br>
+          ${bExplain}
+        </div>
+        <div style="padding:8px 12px;border-radius:10px;background:rgba(0,0,0,0.15);border-left:3px solid var(--c3);">
+          <b style="color:var(--c3);">k = ${k}</b> <span style="color:var(--muted);font-size:11px;">(work exponent per call)</span><br>
+          ${kExplain}
+        </div>
+      </div>
+    </div>
+
+    <!-- Dynamic Recursion Story -->
+    <div style="margin-bottom:16px;padding:16px;border-radius:14px;background:rgba(255,209,102,0.04);border:1px solid rgba(255,209,102,0.12);">
+      <div style="font-size:13px;font-weight:700;color:var(--c3);margin-bottom:10px;">How the Recursion Unfolds</div>
+      <div style="font-size:12.5px;line-height:1.85;color:var(--text);">
+        <div style="margin-bottom:6px;"><span style="color:var(--c3);">\u25B6</span> At <b>level 0</b> (the root), we have the full problem of size <b>n</b>. The root does <b>O(${k===0?'1':k===1?'n':'n'+sup(k)})</b> non-recursive work and spawns <b>${a}</b> recursive sub-call${a>1?'s':''}.</div>
+        <div style="margin-bottom:6px;"><span style="color:var(--c3);">\u25B6</span> At <b>level 1</b>, there ${a===1?'is':'are'} <b>${a}</b> subproblem${a>1?'s':''}, each of size <b>n/${b}</b>. Each does <b>O(${k===0?'1':k===1?'n/'+b:'(n/'+b+')'+sup(k)})</b> work. Total work at this level: <b>${level1Total}</b>.</div>
+        <div style="margin-bottom:6px;"><span style="color:var(--c3);">\u25B6</span> This continues for <b>log<sub>${b}</sub>(n)</b> levels until the subproblem size reaches 1.</div>
+        <div><span style="color:var(--c3);">\u25B6</span> At the <b>bottom</b> (level log<sub>${b}</sub>(n)), there ${logbaR===0?'is':'are'} <b>${a}<sup>log<sub>${b}</sub>(n)</sup> = ${leafStr}</b> leaf node${logbaR===0?'':'s'}, each doing O(1) work.</div>
+      </div>
+    </div>
+
+    <!-- The Key Question -->
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:10px;line-height:1.6;">
+      <b>The key question:</b> How does the <span style="color:var(--c1);">rate at which subproblems multiply</span> (measured by log<sub>${b}</sub>(${a}) = <b>${logbaR.toFixed(2)}</b>) compare to the <span style="color:var(--c3);">rate at which work shrinks per subproblem</span> (measured by k = <b>${k}</b>)?
+    </div>
+    <div class="comparison-bar" style="flex-wrap:wrap;">
+      <div style="text-align:center;flex:0 0 auto;min-width:80px;">
+        <div style="font-size:10px;color:var(--muted);">recursion rate</div>
+        <div style="font-size:10px;color:var(--c1);">log<sub>${b}</sub>(${a})</div>
+        <div class="val" style="color:var(--c1);">${logbaR.toFixed(2)}</div>
+      </div>
+      <div class="bar-fill"><div class="bar-fill-inner" style="width:${leftPct}%;background:var(--c1);"></div></div>
+      <div class="vs" style="color:${compColor};font-size:22px;font-weight:700;">${compSymbol}</div>
+      <div class="bar-fill"><div class="bar-fill-inner" style="width:${rightPct}%;background:var(--c3);"></div></div>
+      <div style="text-align:center;flex:0 0 auto;min-width:80px;">
+        <div style="font-size:10px;color:var(--muted);">work exponent</div>
+        <div style="font-size:10px;color:var(--c3);">k</div>
+        <div class="val" style="color:var(--c3);">${k.toFixed(2)}</div>
+      </div>
+    </div>
+    <div style="font-size:12.5px;line-height:1.6;margin-bottom:16px;padding:10px 14px;border-radius:10px;background:rgba(0,0,0,0.15);border:1px solid rgba(255,255,255,0.06);">
+      ${compExplain}
+    </div>
+
+    <!-- Level-by-Level Cost Breakdown -->
+    <div style="margin-bottom:16px;padding:16px;border-radius:14px;background:rgba(100,240,200,0.04);border:1px solid rgba(100,240,200,0.12);">
+      <div style="font-size:13px;font-weight:700;color:var(--c2);margin-bottom:8px;">Level-by-Level Cost Breakdown <span style="font-weight:400;color:var(--muted);font-size:11px;">(illustrated with n = ${nEx})</span></div>
+      <div style="font-size:11.5px;color:var(--muted);margin-bottom:6px;">Each row shows how many nodes exist at that level, the subproblem size each node handles, and the total work done at that level.</div>
+      <table class="examples-table" style="margin-top:8px;">
+        <thead><tr><th>Level</th><th># Nodes</th><th>Subproblem Size</th><th>Work / Node</th><th>Level Total</th></tr></thead>
+        <tbody>${levelRows}</tbody>
+      </table>
+      <div style="font-size:12.5px;line-height:1.6;margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(0,0,0,0.12);color:var(--text);">${trend}</div>
+    </div>
+
+    <!-- Three Cases -->
+    <div class="case-card ${activeCase===1?'active-case':''}">
+      <h3>Case 1: log<sub>b</sub>(a) > k</h3>
+      <div class="formula">f(n) = O(n<sup>log<sub>b</sub>(a) \u2212 \u03B5</sup>) &nbsp;\u2192&nbsp; T(n) = \u0398(n<sup>log<sub>b</sub>(a)</sup>)</div>${activeCase===1 ? `
+      <div style="margin-top:8px;padding:10px 14px;border-radius:10px;background:rgba(106,169,255,0.08);border:1px solid rgba(106,169,255,0.2);font-size:13px;line-height:1.7;">
+        <div style="color:#8890b5;font-size:11px;margin-bottom:4px;">Substituting a=${a}, b=${b}, k=${k}:</div>
+        <div>log<sub>${b}</sub>(${a}) = <b>${logbaR.toFixed(2)}</b> &gt; k = ${k}</div>
+        <div>f(n) = n<sup>${k}</sup> = \u0398(${fnStr}) &nbsp;\u2014&nbsp; grows slower than n<sup>${logbaR.toFixed(2)}</sup></div>
+        <div style="margin-top:6px;font-size:15px;font-weight:700;color:#6aa9ff;">\u21D2 ${result}</div>
+      </div>` : ''}
+      <div class="explanation">The recursion dominates. Work <b>grows</b> as we go deeper \u2014 the leaves do most of the work. Think: many subproblems, little work each.</div>
+    </div>
+    <div class="case-card ${activeCase===2?'active-case':''}">
+      <h3>Case 2: log<sub>b</sub>(a) = k</h3>
+      <div class="formula">f(n) = \u0398(n<sup>log<sub>b</sub>(a)</sup>) &nbsp;\u2192&nbsp; T(n) = \u0398(n<sup>log<sub>b</sub>(a)</sup> log n)</div>${activeCase===2 ? `
+      <div style="margin-top:8px;padding:10px 14px;border-radius:10px;background:rgba(100,240,200,0.08);border:1px solid rgba(100,240,200,0.2);font-size:13px;line-height:1.7;">
+        <div style="color:#8890b5;font-size:11px;margin-bottom:4px;">Substituting a=${a}, b=${b}, k=${k}:</div>
+        <div>log<sub>${b}</sub>(${a}) = <b>${logbaR.toFixed(2)}</b> = k = ${k} &nbsp;\u2714</div>
+        <div>f(n) = n<sup>${k}</sup> = \u0398(${fnStr}) &nbsp;\u2014&nbsp; matches n<sup>log<sub>${b}</sub>(${a})</sup> = ${leafStr}</div>
+        <div>Each of the log<sub>${b}</sub>(n) levels contributes \u0398(${fnStr}) work</div>
+        <div style="margin-top:6px;font-size:15px;font-weight:700;color:#64f0c8;">\u21D2 ${result}</div>
+      </div>` : ''}
+      <div class="explanation">Balanced \u2014 each level contributes equally. Since there are log(n) levels, we pick up an extra log n factor.</div>
+    </div>
+    <div class="case-card ${activeCase===3?'active-case':''}">
+      <h3>Case 3: log<sub>b</sub>(a) < k</h3>
+      <div class="formula">f(n) = \u03A9(n<sup>log<sub>b</sub>(a) + \u03B5</sup>) &nbsp;\u2192&nbsp; T(n) = \u0398(f(n))</div>${activeCase===3 ? `
+      <div style="margin-top:8px;padding:10px 14px;border-radius:10px;background:rgba(255,209,102,0.08);border:1px solid rgba(255,209,102,0.2);font-size:13px;line-height:1.7;">
+        <div style="color:#8890b5;font-size:11px;margin-bottom:4px;">Substituting a=${a}, b=${b}, k=${k}:</div>
+        <div>log<sub>${b}</sub>(${a}) = <b>${logbaR.toFixed(2)}</b> &lt; k = ${k}</div>
+        <div>f(n) = n<sup>${k}</sup> = \u0398(${fnStr}) &nbsp;\u2014&nbsp; grows faster than n<sup>${logbaR.toFixed(2)}</sup> = ${leafStr}</div>
+        <div>Root dominates: total work \u2248 f(n) = \u0398(${fnStr})</div>
+        <div style="margin-top:6px;font-size:15px;font-weight:700;color:#ffd166;">\u21D2 ${result}</div>
+      </div>` : ''}
+      <div class="explanation">The combine/divide work dominates. The root does the most work and it <b>shrinks</b> going down. The total is just the root's cost: f(n).</div>
+    </div>
+
+    <div style="text-align:center;margin-top:16px;">
+      <div style="color:var(--muted);font-size:12px;margin-bottom:6px;">Result for T(n) = ${a}T(n/${b}) + n${k!==1?(k===0?'\u2070':sup(k)):''}</div>
+      <div class="result-badge" style="background:${compColor}22;color:${compColor};border:1px solid ${compColor}44;">${result}</div>
+    </div>
+
+    <div class="na-notice" style="margin-top:20px;">
+      <b>Note:</b> The Master Theorem only applies to <b>divide-and-conquer</b> recurrences of the form T(n) = aT(n/b) + f(n). It does <b>not</b> apply to subtractive recurrences like Fibonacci T(n) = T(n\u22121) + T(n\u22122) or Tower of Hanoi T(n) = 2T(n\u22121) + 1. Those require other methods (substitution, characteristic equation).
+    </div>
+
+    <div style="margin-top:16px;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--muted);">Classic Examples</div>
+      <table class="examples-table">
+        <thead><tr><th>Algorithm</th><th>Recurrence</th><th>Case</th><th>Complexity</th></tr></thead>
+        <tbody>
+          <tr><td>Binary Search</td><td>T(n)=T(n/2)+O(1)</td><td><span class="case-tag c2">Case 2</span></td><td>\u0398(log n)</td></tr>
+          <tr><td>Merge Sort</td><td>T(n)=2T(n/2)+O(n)</td><td><span class="case-tag c2">Case 2</span></td><td>\u0398(n log n)</td></tr>
+          <tr><td>Strassen's</td><td>T(n)=7T(n/2)+O(n\xB2)</td><td><span class="case-tag c1">Case 1</span></td><td>\u0398(n<sup>2.81</sup>)</td></tr>
+          <tr><td>T(n)=4T(n/2)+n</td><td>a=4,b=2,k=1</td><td><span class="case-tag c1">Case 1</span></td><td>\u0398(n\xB2)</td></tr>
+          <tr><td>T(n)=2T(n/2)+n\xB2</td><td>a=2,b=2,k=2</td><td><span class="case-tag c3">Case 3</span></td><td>\u0398(n\xB2)</td></tr>
+          <tr style="border-top:1px solid rgba(255,92,122,0.15);">
+            <td style="color:var(--c5);">Fibonacci (naive)</td><td style="color:var(--muted);">T(n)=T(n\u22121)+T(n\u22122)</td><td><span class="case-tag exp">N/A</span></td><td>O(2\u207F)</td></tr>
+          <tr><td style="color:var(--c3);">Fibonacci (memo)</td><td style="color:var(--muted);">n \u00D7 O(1) lookups</td><td><span class="case-tag exp">N/A</span></td><td>O(n)</td></tr>
+          <tr><td style="color:var(--c5);">Tower of Hanoi</td><td style="color:var(--muted);">T(n)=2T(n\u22121)+1</td><td><span class="case-tag exp">N/A</span></td><td>O(2\u207F)</td></tr>
+        </tbody>
+      </table>
+    </div>`;
+  renderMasterTree();
+}
+
+$('btnAnalyze').addEventListener('click',renderMaster);
+['masterA','masterB','masterK'].forEach(id=>{$(id).addEventListener('change',renderMaster);});
+document.querySelectorAll('.masterEx').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    $('masterA').value=btn.dataset.a;$('masterB').value=btn.dataset.b;$('masterK').value=btn.dataset.k;
+    renderMaster();
+  });
+});
+
+// ─── Master Theorem: Mini Recursion Tree ──────────────────
+function renderMasterTree(){
+  const a=parseFloat($('masterA').value)||2;
+  const b=parseFloat($('masterB').value)||2;
+  const k=parseFloat($('masterK').value)||0;
+  const el=$('masterTreeContainer');
+  if(!el) return;
+
+  const logba=Math.log(a)/Math.log(b);
+  const eps=0.001;
+  const caseNum=logba-k>eps?1:(Math.abs(logba-k)<=eps?2:3);
+  const caseColor=caseNum===1?'#6aa9ff':caseNum===2?'#64f0c8':'#ffd166';
+  const levels=3;
+
+  let h='<div style="padding:12px;border-radius:12px;background:rgba(0,0,0,0.18);border:1px solid rgba(255,255,255,0.08);">';
+  h+='<div style="text-align:center;font-size:9px;font-weight:600;color:#8890b5;margin-bottom:10px;letter-spacing:0.5px;">RECURSION TREE STRUCTURE</div>';
+
+  for(let lv=0;lv<levels;lv++){
+    const totalNodes=Math.pow(a,lv);
+    const bPow=Math.pow(b,lv);
+    const show=Math.min(totalNodes,6);
+    const truncated=totalNodes>6;
+
+    let sizeLabel;
+    if(lv===0) sizeLabel='T(n)';
+    else if(lv===1) sizeLabel='T(n/'+b+')';
+    else sizeLabel='T(n/'+Math.round(bPow)+')';
+
+    const nodeColor=lv===0?'#6aa9ff':lv===1?'#c77dff':'#ffd166';
+
+    // Work at this level
+    let workLabel;
+    if(k===0) workLabel=''+Math.round(totalNodes);
+    else if(k===1){
+      const ratio=totalNodes/bPow;
+      if(Math.abs(ratio-1)<0.01) workLabel='n';
+      else if(ratio<1) workLabel='n/'+Math.round(1/ratio);
+      else workLabel=Math.round(ratio)+'n';
+    } else {
+      if(lv===0) workLabel='n'+sup(k);
+      else workLabel=Math.round(totalNodes)+'\u00B7(n/'+Math.round(bPow)+')'+sup(k);
+    }
+    const isHL=(caseNum===1&&lv===levels-1)||(caseNum===3&&lv===0)||caseNum===2;
+    const wColor=isHL?caseColor:'#8890b5';
+    const wBold=((caseNum===1&&lv===levels-1)||(caseNum===3&&lv===0))?'700':'400';
+
+    // Level row
+    h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">';
+    // Left: level label
+    h+=`<div style="flex:0 0 32px;text-align:center;font-size:8px;color:#8890b5;"><div style="font-weight:600;">L${lv}</div><div>${Math.round(totalNodes)}x</div></div>`;
+    // Center: nodes
+    h+='<div style="flex:1;display:flex;justify-content:center;gap:4px;flex-wrap:nowrap;align-items:center;">';
+    for(let i=0;i<show;i++){
+      h+=`<div style="padding:3px 6px;border-radius:6px;border:1px solid ${nodeColor};background:${nodeColor}18;font-size:9px;font-weight:600;color:${nodeColor};white-space:nowrap;">${sizeLabel}</div>`;
+    }
+    if(truncated) h+=`<div style="color:#8890b5;font-size:11px;">\u2026</div>`;
+    h+='</div>';
+    // Right: work
+    h+=`<div style="flex:0 0 40px;text-align:right;font-size:9.5px;font-weight:${wBold};color:${wColor};">${workLabel}</div>`;
+    h+='</div>';
+
+    // Connector lines (simple arrows)
+    if(lv<levels-1){
+      h+='<div style="display:flex;justify-content:center;margin:1px 0;">';
+      h+='<div style="display:flex;gap:'+Math.max(4,30/a)+'px;justify-content:center;">';
+      const arrowCount=Math.min(show*a,12);
+      for(let i=0;i<Math.min(show,4);i++){
+        const arrows=Math.min(a,4);
+        for(let c=0;c<arrows;c++){
+          h+=`<div style="width:1px;height:10px;background:rgba(255,255,255,0.12);"></div>`;
+        }
+        if(i<Math.min(show,4)-1) h+='<div style="width:6px;"></div>';
+      }
+      h+='</div></div>';
+    }
+  }
+
+  // Bottom: dots + info
+  h+='<div style="text-align:center;margin-top:4px;">';
+  h+='<div style="color:#8890b5;font-size:12px;">\u22EE</div>';
+  const lc=logba<0.01?'1':Math.abs(logba-1)<0.01?'n':Math.abs(logba-2)<0.01?'n\xB2':'n^'+logba.toFixed(1);
+  h+=`<div style="font-size:8.5px;color:#8890b5;">depth = log(n)/log(${b}) \u2022 ${lc} leaves</div>`;
+  const tl=caseNum===1?'\u2191 work grows per level':caseNum===2?'\u2192 work constant per level':'\u2193 work shrinks per level';
+  h+=`<div style="font-size:8.5px;font-weight:600;color:${caseColor};margin-top:2px;">${tl}</div>`;
+  h+='</div></div>';
+
+  el.innerHTML=h;
+}
+
+
+
+// ═══════════════════════════════════════════════════════════
+// MODULE 3: SUBSTITUTION METHOD
+// ═══════════════════════════════════════════════════════════
+
+const SUB_DATA={
+  binary:{
+    title:'Binary Search: T(n) = T(n/2) + 1',
+    guess:'O(log n)',
+    steps:[
+      {title:'State the Recurrence',
+       content:'We want to solve:<div class="math-block">T(n) = T(n/2) + 1\nT(1) = 1</div>Each call does O(1) work (one comparison) and recurses on half the array.'},
+      {title:'Guess the Solution',
+       content:'The problem halves each time with O(1) work per level. With log\u2082(n) levels:<div class="math-block">T(n) = O(log n)</div>We guess: <span class="math">T(n) \u2264 c \u00B7 log\u2082(n)</span> for some constant c > 0.'},
+      {title:'Assume Inductive Hypothesis',
+       content:'Assume for all <span class="math">m < n</span>:<div class="math-block">T(m) \u2264 c \u00B7 log\u2082(m)</div>In particular, for <span class="math">m = n/2</span>:<div class="math-block">T(n/2) \u2264 c \u00B7 log\u2082(n/2)</div>'},
+      {title:'Substitute into Recurrence',
+       content:'Substituting our hypothesis:<div class="math-block">T(n) = T(n/2) + 1\n     \u2264 c \u00B7 log\u2082(n/2) + 1\n     = c \u00B7 [log\u2082(n) \u2212 1] + 1\n     = c \u00B7 log\u2082(n) \u2212 c + 1</div>'},
+      {title:'Prove T(n) \u2264 c \u00B7 log\u2082(n)',
+       content:'We need:<div class="math-block">c \u00B7 log\u2082(n) \u2212 c + 1 \u2264 c \u00B7 log\u2082(n)</div>Simplifying:<div class="math-block">\u2212c + 1 \u2264 0\nc \u2265 1</div>This holds for <span class="math">c \u2265 1</span>. \u2713'},
+      {title:'Verify Base Case',
+       content:'For n = 2: <span class="math">T(2) = T(1) + 1 = 2</span>. We need:<div class="math-block">T(2) \u2264 c \u00B7 log\u2082(2) = c</div>So we need <span class="math">c \u2265 2</span>.<div class="math-block" style="border-color:rgba(100,240,200,0.3);">\u2234 T(n) = O(log n) \u2713</div>'}
+    ]
+  },
+  fibSmart:{
+    title:'Fibonacci (memoized): O(n)',
+    guess:'O(n)',
+    steps:[
+      {title:'The Problem with Naive Fibonacci',
+       content:'Naive recursive Fibonacci has recurrence:<div class="math-block">T(n) = T(n\u22121) + T(n\u22122) + O(1)</div>This is O(2\u207F) because it recomputes the same subproblems exponentially many times. For example, fib(3) is computed many times when calculating fib(6).'},
+      {title:'The Memoization Idea',
+       content:'Store each computed value in a table (array or hash map). Before computing fib(k), check if it\u2019s already in the table:<div class="math-block">memo = {}\nfib(n):\n  if n in memo: return memo[n]   // O(1) lookup\n  if n \u2264 1: return n\n  memo[n] = fib(n\u22121) + fib(n\u22122)\n  return memo[n]</div>'},
+      {title:'Count the Work',
+       content:'Each subproblem fib(0), fib(1), ..., fib(n) is computed <b>exactly once</b>. Every other encounter is a O(1) table lookup:<div class="math-block">Unique subproblems: n + 1\nWork per subproblem: O(1)\nTotal work: (n+1) \u00D7 O(1) = O(n)</div>'},
+      {title:'Compare: Naive vs Memoized',
+       content:'<div class="math-block">n=10:  naive \u2248 177 calls    vs  memo = 10 lookups\nn=20:  naive \u2248 21,891      vs  memo = 20\nn=30:  naive \u2248 2,692,537   vs  memo = 30\nn=40:  naive \u2248 331 million vs  memo = 40</div>The naive version\'s exponential growth is completely eliminated.'},
+      {title:'Bottom-Up Alternative (Tabulation)',
+       content:'Instead of top-down recursion + memo, we can fill the table bottom-up:<div class="math-block">fib[0] = 0, fib[1] = 1\nfor i = 2 to n:\n  fib[i] = fib[i\u22121] + fib[i\u22122]</div>Same O(n) time, but no recursion overhead at all. This is <b>dynamic programming</b>.'},
+      {title:'Conclusion',
+       content:'Memoization transforms the problem from exponential to linear:<div class="math-block" style="border-color:rgba(100,240,200,0.3);">Naive:    T(n) = O(2\u207F)  \u2014 exponential\nMemoized: T(n) = O(n)    \u2014 linear\n\nSpeedup:  exponential! (2\u207F / n)</div>This is the power of <b>dynamic programming</b>: by remembering what we\u2019ve already computed, we avoid redundant work entirely.'}
+    ]
+  },
+  merge:{
+    title:'Merge Sort: T(n) = 2T(n/2) + n',
+    guess:'O(n log n)',
+    steps:[
+      {title:'State the Recurrence',
+       content:'We want to solve:<div class="math-block">T(n) = 2T(n/2) + n\nT(1) = 1</div>We split the array in two (2 subproblems of size n/2) and merge in O(n).'},
+      {title:'Guess the Solution',
+       content:'From the recursion tree, each level does O(n) total work and there are log\u2082(n) levels:<div class="math-block">T(n) = O(n log n)</div>We guess: <span class="math">T(n) \u2264 c \u00B7 n \u00B7 log\u2082(n)</span>.'},
+      {title:'Assume Inductive Hypothesis',
+       content:'Assume for all <span class="math">m < n</span>:<div class="math-block">T(m) \u2264 c \u00B7 m \u00B7 log\u2082(m)</div>For <span class="math">m = n/2</span>:<div class="math-block">T(n/2) \u2264 c \u00B7 (n/2) \u00B7 log\u2082(n/2)</div>'},
+      {title:'Substitute into Recurrence',
+       content:'Substituting:<div class="math-block">T(n) = 2T(n/2) + n\n     \u2264 2 \u00B7 [c \u00B7 (n/2) \u00B7 log\u2082(n/2)] + n\n     = c \u00B7 n \u00B7 log\u2082(n/2) + n\n     = c \u00B7 n \u00B7 [log\u2082(n) \u2212 1] + n\n     = c \u00B7 n \u00B7 log\u2082(n) \u2212 cn + n</div>'},
+      {title:'Prove T(n) \u2264 c \u00B7 n \u00B7 log\u2082(n)',
+       content:'We need:<div class="math-block">cn\u00B7log\u2082(n) \u2212 cn + n \u2264 cn\u00B7log\u2082(n)</div>Simplifying:<div class="math-block">\u2212cn + n \u2264 0\nn(1 \u2212 c) \u2264 0</div>This holds for <span class="math">c \u2265 1</span>. \u2713'},
+      {title:'Verify Base Case',
+       content:'For n = 2: <span class="math">T(2) = 2T(1) + 2 = 4</span>. We need:<div class="math-block">T(2) \u2264 c \u00B7 2 \u00B7 log\u2082(2) = 2c</div>So <span class="math">c \u2265 2</span>.<div class="math-block" style="border-color:rgba(100,240,200,0.3);">\u2234 T(n) = O(n log n) \u2713</div>'}
+    ]
+  },
+  fibonacci:{
+    title:'Fibonacci (naive): T(n) = T(n\u22121) + T(n\u22122) + 1',
+    guess:'O(2\u207F)',
+    steps:[
+      {title:'State the Recurrence',
+       content:'The naive recursive Fibonacci makes two recursive calls:<div class="math-block">T(n) = T(n\u22121) + T(n\u22122) + 1\nT(0) = T(1) = 1</div>We want to show this grows exponentially.'},
+      {title:'Guess the Solution',
+       content:'The tree branches into 2 at each level (approximately), and the depth is n. This suggests roughly 2\u207F total calls:<div class="math-block">T(n) = O(2\u207F)</div>We guess: <span class="math">T(n) \u2264 c \u00B7 2\u207F</span> for some constant c > 0.'},
+      {title:'Assume Inductive Hypothesis',
+       content:'Assume for all <span class="math">m < n</span>:<div class="math-block">T(m) \u2264 c \u00B7 2\u1D50</div>In particular:<div class="math-block">T(n\u22121) \u2264 c \u00B7 2\u207F\u207B\xB9\nT(n\u22122) \u2264 c \u00B7 2\u207F\u207B\xB2</div>'},
+      {title:'Substitute into Recurrence',
+       content:'Substituting:<div class="math-block">T(n) = T(n\u22121) + T(n\u22122) + 1\n     \u2264 c\u00B72\u207F\u207B\xB9 + c\u00B72\u207F\u207B\xB2 + 1\n     = c\u00B72\u207F(1/2 + 1/4) + 1\n     = c\u00B72\u207F\u00B7(3/4) + 1</div>'},
+      {title:'Prove T(n) \u2264 c \u00B7 2\u207F',
+       content:'We need:<div class="math-block">c\u00B72\u207F\u00B7(3/4) + 1 \u2264 c\u00B72\u207F</div>Simplifying:<div class="math-block">1 \u2264 c\u00B72\u207F\u00B7(1/4)\nc \u2265 4/2\u207F</div>For any <span class="math">n \u2265 2</span>, this holds with <span class="math">c \u2265 1</span>. \u2713'},
+      {title:'Verify Base Case & Conclusion',
+       content:'For n=2: <span class="math">T(2) = T(1)+T(0)+1 = 3</span>. We need <span class="math">3 \u2264 c\u00B74</span>, so c \u2265 1.<br><br>The exact solution involves the golden ratio \u03C6 = (1+\u221A5)/2 \u2248 1.618:<div class="math-block">T(n) = \u0398(\u03C6\u207F) \u2248 \u0398(1.618\u207F)</div>This is slightly less than 2\u207F but still <b>exponential</b>. For n=30, that\'s over a million calls!<div class="math-block" style="border-color:rgba(255,92,122,0.3);">\u2234 T(n) = O(2\u207F) \u2014 exponential! \u2713</div>'}
+    ]
+  },
+  hanoi:{
+    title:'Tower of Hanoi: T(n) = 2T(n\u22121) + 1',
+    guess:'O(2\u207F)',
+    steps:[
+      {title:'State the Recurrence',
+       content:'To move n disks: move n\u22121 disks to auxiliary, move the largest disk, then move n\u22121 disks back:<div class="math-block">T(n) = 2T(n\u22121) + 1\nT(1) = 1</div>Two recursive calls on (n\u22121) plus 1 move.'},
+      {title:'Guess the Solution',
+       content:'Each level doubles the calls, and the depth is n. This looks like:<div class="math-block">T(n) = 2\u207F \u2212 1</div>We guess: <span class="math">T(n) \u2264 c \u00B7 2\u207F</span> for some constant c > 0.'},
+      {title:'Assume Inductive Hypothesis',
+       content:'Assume for all <span class="math">m < n</span>:<div class="math-block">T(m) \u2264 c \u00B7 2\u1D50</div>In particular:<div class="math-block">T(n\u22121) \u2264 c \u00B7 2\u207F\u207B\xB9</div>'},
+      {title:'Substitute into Recurrence',
+       content:'Substituting:<div class="math-block">T(n) = 2T(n\u22121) + 1\n     \u2264 2 \u00B7 c \u00B7 2\u207F\u207B\xB9 + 1\n     = c \u00B7 2\u207F + 1</div>'},
+      {title:'Prove T(n) \u2264 c \u00B7 2\u207F',
+       content:'We need:<div class="math-block">c \u00B7 2\u207F + 1 \u2264 c \u00B7 2\u207F</div>This fails by 1! We need to <b>strengthen</b> the guess. Let\'s try <span class="math">T(n) \u2264 c \u00B7 2\u207F \u2212 1</span>:<div class="math-block">T(n) \u2264 2(c\u00B72\u207F\u207B\xB9 \u2212 1) + 1\n     = c\u00B72\u207F \u2212 2 + 1\n     = c\u00B72\u207F \u2212 1 \u2713</div>This works for any c \u2265 1.'},
+      {title:'Exact Solution & Conclusion',
+       content:'For n=1: T(1) = 1 and c\u00B72\xB9 \u2212 1 = 2c \u2212 1. With c=1, bound = 1 \u2713.<br><br>In fact, we can solve this <b>exactly</b>:<div class="math-block">T(n) = 2\u207F \u2212 1</div>n=1: 1 move, n=3: 7 moves, n=10: 1,023 moves, n=20: 1,048,575 moves!<br><br>Legend says monks are moving 64 disks. That would take 2\u2076\u2074 \u2212 1 \u2248 1.8 \u00D7 10\xB9\u2079 moves \u2014 about 585 billion years.<div class="math-block" style="border-color:rgba(255,92,122,0.3);">\u2234 T(n) = 2\u207F \u2212 1 = \u0398(2\u207F) \u2014 exponential! \u2713</div>'}
+    ]
+  }
+};
+
+function renderSubstitution(){
+  S.subPreset=$('subPreset').value;
+  const data=SUB_DATA[S.subPreset];
+  const div=$('subViz');
+  let html=`<div style="margin-bottom:16px;">
+    <div style="font-size:16px;font-weight:700;">${data.title}</div>
+    <div style="font-size:13px;color:var(--muted);margin-top:4px;">Expected result: <span style="color:var(--c2);font-weight:600;">${data.guess}</span></div>
+  </div>`;
+  data.steps.forEach((step,i)=>{
+    const revealed=i<S.subStep;
+    html+=`<div class="step-card ${revealed?'revealed':''}" data-step="${i}">
+      <div class="step-header"><div class="step-num">${i+1}</div><span>${step.title}</span></div>
+      <div class="step-body"><div class="step-content">${step.content}</div></div>
+    </div>`;
+  });
+  div.innerHTML=html;
+  $('subProgress').textContent=`${Math.min(S.subStep,data.steps.length)} / ${data.steps.length}`;
+  div.querySelectorAll('.step-header').forEach(h=>{
+    h.addEventListener('click',()=>{h.parentElement.classList.toggle('revealed');});
+  });
+}
+
+$('btnSubNext').addEventListener('click',()=>{
+  const data=SUB_DATA[S.subPreset];
+  if(S.subStep<data.steps.length){S.subStep++;renderSubstitution();}
+});
+$('btnSubPrev').addEventListener('click',()=>{if(S.subStep>0){S.subStep--;renderSubstitution();}});
+$('btnSubAll').addEventListener('click',()=>{S.subStep=SUB_DATA[S.subPreset].steps.length;renderSubstitution();});
+$('btnSubReset').addEventListener('click',()=>{S.subStep=0;renderSubstitution();});
+$('subPreset').addEventListener('change',()=>{S.subStep=0;renderSubstitution();});
+
+
+// ═══════════════════════════════════════════════════════════
+// TUTORIAL: INTRO TOGGLE
+// ═══════════════════════════════════════════════════════════
+
+$('introToggleBtn').addEventListener('click',()=>{
+  const body=$('introBody');
+  const btn=$('introToggleText');
+  body.classList.toggle('collapsed');
+  btn.textContent=body.classList.contains('collapsed')?'Expand':'Collapse';
+});
+
+// ═══════════════════════════════════════════════════════════
+// TUTORIAL: LEARNING PATH CLICKS
+// ═══════════════════════════════════════════════════════════
+
+document.querySelectorAll('.lp-step').forEach(step=>{
+  step.addEventListener('click',()=>{
+    const preset=step.dataset.preset;
+    if(!PRESETS[preset]) return;
+    $('presetSelect').value=preset;
+    $('presetSelect').dispatchEvent(new Event('change'));
+    // Scroll to the tool area
+    document.querySelector('.wrap').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+
+// ═══════════════════════════════════════════════════════════
+// TUTORIAL: KEY INSIGHT BOX
+// ═══════════════════════════════════════════════════════════
+
+const INSIGHTS={
+  log:{
+    cls:'log',
+    title:'Key Insight — Logarithmic Growth',
+    text:'Notice: there\'s <strong>only one branch</strong> at each level. The "tree" is actually a single chain! Since each step cuts the problem in half and does O(1) work, the total is just the number of halvings: log\u2082(n). Doubling the input size only adds <em>one</em> extra step.'
+  },
+  nlogn:{
+    cls:'nlogn',
+    title:'Key Insight — The Divide-and-Conquer Sweet Spot',
+    text:'Look at the <strong>total work per level</strong> in the table above — it\'s roughly <strong>n</strong> at every level (all subproblems at a level collectively process all n elements). Since there are log(n) levels, the total is n \u00D7 log(n). This is the sweet spot: you split the work and still touch everything at each level.'
+  },
+  exp:{
+    cls:'exp',
+    title:'Key Insight — Exponential Explosion',
+    text:'The tree <strong>doubles at every level</strong>: 1, 2, 4, 8, 16... After n levels, that\'s 2\u207F total nodes. Even modest inputs become astronomical — n=30 means over a billion operations. This is why naive recursive algorithms are impractical for large inputs. The solution? <strong>Memoization</strong> (see Fibonacci memoized).'
+  },
+  linear:{
+    cls:'linear',
+    title:'Key Insight — Memoization Tames the Beast',
+    text:'With memoization, the explosive 2\u207F tree <strong>collapses into a straight line</strong>. Each subproblem is solved exactly once; every other call is an O(1) lookup. Compare the two Fibonacci trees side by side to see the dramatic difference. This is the core idea of <strong>dynamic programming</strong>.'
+  }
+};
+
+function renderInsight(){
+  const container=$('insightContainer');
+  if(!container) return;
+  // Only show when tree is fully revealed
+  if(S.revealedLevel<S.maxLevel||!S.tree){
+    container.innerHTML='';
+    return;
+  }
+  const p=PRESETS[S.preset];
+  if(!p||S.preset==='custom'){container.innerHTML='';return;}
+  const insight=INSIGHTS[p.compClass];
+  if(!insight){container.innerHTML='';return;}
+  container.innerHTML=`
+    <div class="insight-box ${insight.cls}">
+      <div class="insight-title">${insight.title}</div>
+      ${insight.text}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// TUTORIAL: TRY THIS PROMPTS
+// ═══════════════════════════════════════════════════════════
+
+const TRY_THIS={
+  binary:'Try increasing n from 16 to 256 or 512. Notice the tree only adds a few levels — that\'s the power of log(n)!',
+  fastexp:'Try n=64 vs n=512. Even a huge exponent only takes a handful of squaring steps.',
+  merge:'After playing the animation, look at the "Total Work" column — it\'s the same at every level. That\'s why it\'s n log(n).',
+  quick:'Same recurrence as Merge Sort! The pattern of the recurrence, not the algorithm, determines the complexity. Try comparing both trees.',
+  fibonacci:'Try n=7, then n=10. Watch the node count explode. Now switch to Fibonacci (memoized) and compare — same result, linear time!',
+  fibSmart:'Compare this with naive Fibonacci at the same n. The green "memo" nodes show O(1) lookups where the naive version would recurse exponentially.',
+  hanoi:'Try n=3 first (7 moves), then n=4 (15 moves). Each extra disk doubles the work plus one. That\'s 2\u207F \u2212 1 in action.',
+};
+
+function renderTryThis(){
+  const container=$('tryThisContainer');
+  if(!container) return;
+  const hint=TRY_THIS[S.preset];
+  if(!hint){container.innerHTML='';return;}
+  container.innerHTML=`<div class="try-this">\u{1F4A1} ${hint}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// TUTORIAL: COMPLEXITY COMPARISON SVG CHART
+// ═══════════════════════════════════════════════════════════
+
+function renderComplexityChart(){
+  const container=$('complexityChartContainer');
+  if(!container) return;
+  const w=600,h=200,pad={l:50,r:20,t:10,b:50};
+  const pw=w-pad.l-pad.r, ph=h-pad.t-pad.b;
+
+  // Plot log(n), n, n*log(n) for n=1..50 with log scale on Y
+  const nMax=50;
+  const funcs=[
+    {name:'O(log n)',fn:n=>Math.log2(n),color:'#6aa9ff'},
+    {name:'O(n)',fn:n=>n,color:'#64f0c8'},
+    {name:'O(n log n)',fn:n=>n*Math.log2(n),color:'#ffd166'},
+    {name:'O(2\u207F)',fn:n=>Math.pow(2,n),color:'#ff5c7a'},
+  ];
+
+  // Use log scale for y. Cap 2^n at 2^20 for display
+  const yMax=Math.log2(Math.pow(2,20)); // 20
+  function scaleX(n){return pad.l+(n/nMax)*pw;}
+  function scaleY(val){
+    const lv=Math.log2(Math.max(val,1));
+    return pad.t+ph-(Math.min(lv,yMax)/yMax)*ph;
+  }
+
+  let svg=`<svg width="100%" viewBox="0 0 ${w} ${h}" style="border-radius:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.06);">`;
+
+  // Grid lines
+  for(let exp=0;exp<=20;exp+=5){
+    const y=scaleY(Math.pow(2,exp));
+    svg+=`<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>`;
+    const label=exp===0?'1':exp===5?'32':exp===10?'1K':exp===15?'32K':'1M';
+    svg+=`<text x="${pad.l-6}" y="${y+4}" text-anchor="end" fill="#666" font-size="9">${label}</text>`;
+  }
+  // X axis labels
+  for(let n=10;n<=50;n+=10){
+    svg+=`<text x="${scaleX(n)}" y="${pad.t+ph+14}" text-anchor="middle" fill="#666" font-size="9">n=${n}</text>`;
+  }
+
+  // Plot each function
+  funcs.forEach(f=>{
+    let pts=[];
+    for(let n=1;n<=nMax;n++){
+      pts.push(`${scaleX(n).toFixed(1)},${scaleY(f.fn(n)).toFixed(1)}`);
+    }
+    svg+=`<polyline points="${pts.join(' ')}" fill="none" stroke="${f.color}" stroke-width="2" opacity="0.8"/>`;
+  });
+
+  // 2^n goes off chart label
+  svg+=`<text x="${scaleX(22)}" y="${pad.t+12}" fill="#ff5c7a" font-size="9" font-weight="600">2\u207F \u2192 off the chart!</text>`;
+
+  // Legend — positioned below x-axis ticks
+  const ly=h-8;
+  const totalLegendW=funcs.reduce((s,f)=>s+f.name.length*6+38,0);
+  let lx=(w-totalLegendW)/2;
+  funcs.forEach(f=>{
+    svg+=`<line x1="${lx}" y1="${ly-3}" x2="${lx+14}" y2="${ly-3}" stroke="${f.color}" stroke-width="2"/>`;
+    svg+=`<text x="${lx+18}" y="${ly}" fill="${f.color}" font-size="9">${f.name}</text>`;
+    lx+=f.name.length*6+38;
+  });
+
+  svg+='</svg>';
+  container.innerHTML=svg;
+}
+
+// ═══════════════════════════════════════════════════════════
+// ALGORITHM SIMULATION ENGINE
+// ═══════════════════════════════════════════════════════════
+
+const SIM_PRESETS=['hanoi','binary','merge','quick'];
+
+const SIM={
+  active:false,steps:[],stepIndex:0,
+  playing:false,playToken:0,data:null
+};
+
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+function simShow(){
+  SIM.active=SIM_PRESETS.includes(S.preset);
+  $('simContainer').style.display=SIM.active?'block':'none';
+  if(SIM.active) simReset();
+}
+
+function simReset(){
+  SIM.playing=false;SIM.playToken++;
+  SIM.stepIndex=0;SIM.steps=[];SIM.data=null;
+  simGenerate();
+  simRenderInit();
+  $('simDesc').textContent='Click Play or Step to watch the algorithm solve the problem.';
+  simUpdateUI();
+}
+
+function simGenerate(){
+  const n=S.preset==='hanoi'?Math.min(S.n,5):0;
+  switch(S.preset){
+    case'hanoi':SIM.steps=generateHanoiSteps(n);break;
+    case'binary':SIM.steps=generateBinarySteps();break;
+    case'merge':SIM.steps=generateMergeSteps();break;
+    case'quick':SIM.steps=generateQuickSteps();break;
+  }
+}
+
+function simRenderInit(){
+  switch(S.preset){
+    case'hanoi':simInitHanoi();break;
+    case'binary':simInitBinary();break;
+    case'merge':simInitMerge();break;
+    case'quick':simInitQuick();break;
+  }
+}
+
+function simApplyStep(step){
+  switch(S.preset){
+    case'hanoi':simStepHanoi(step);break;
+    case'binary':simStepBinary(step);break;
+    case'merge':simStepMerge(step);break;
+    case'quick':simStepQuick(step);break;
+  }
+  $('simDesc').innerHTML=step.desc;
+}
+
+async function simPlay(){
+  if(!SIM.steps.length) return;
+  if(SIM.stepIndex>=SIM.steps.length){simReset();}
+  SIM.playing=true;
+  const token=++SIM.playToken;
+  while(SIM.playing&&token===SIM.playToken&&SIM.stepIndex<SIM.steps.length){
+    simApplyStep(SIM.steps[SIM.stepIndex]);
+    SIM.stepIndex++;
+    simUpdateUI();
+    const baseDelay=S.preset==='hanoi'?900:700;
+    await sleep(Math.max(baseDelay/(S.speed/3),200));
+  }
+  SIM.playing=false;
+}
+
+function simStepOnce(){
+  SIM.playing=false;SIM.playToken++;
+  if(!SIM.steps.length) return;
+  if(SIM.stepIndex>=SIM.steps.length) return;
+  simApplyStep(SIM.steps[SIM.stepIndex]);
+  SIM.stepIndex++;
+  simUpdateUI();
+}
+
+function simUpdateUI(){
+  $('simProgress').textContent=`Step ${SIM.stepIndex} / ${SIM.steps.length}`;
+}
+
+$('simPlayBtn').addEventListener('click',simPlay);
+$('simStepBtn').addEventListener('click',simStepOnce);
+$('simResetBtn').addEventListener('click',simReset);
+$('simToggleBtn').addEventListener('click',()=>{
+  $('simBody').classList.toggle('collapsed');
+  $('simToggleText').textContent=$('simBody').classList.contains('collapsed')?'Expand':'Collapse';
+});
+
+// ═══════════════════════════════════════════════════════════
+// SIMULATION: TOWER OF HANOI
+// ═══════════════════════════════════════════════════════════
+
+function generateHanoiSteps(n){
+  const steps=[];
+  function hanoi(k,from,to,aux){
+    if(k===0) return;
+    hanoi(k-1,from,aux,to);
+    steps.push({type:'move',disk:k-1,from,to,
+      desc:`Move disk ${k} <span style="color:${LEVEL_COLORS[k-1]};">\u25A0</span> from peg <b>${from}</b> to peg <b>${to}</b>`});
+    hanoi(k-1,aux,to,from);
+  }
+  hanoi(n,'A','C','B');
+  return steps;
+}
+
+function simInitHanoi(){
+  const n=Math.min(S.n,5);
+  const svg=$('simSVG');
+  const w=600,h=180;
+  svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  svg.style.height='180px';
+  // Peg positions
+  const pegX={A:120,B:300,C:480};
+  const baseY=150,pegH=110,dh=20;
+  // State: which disks are on which peg (arrays of disk indices, bottom=first)
+  SIM.data={n,pegX,baseY,dh,pegs:{A:[],B:[],C:[]},diskEls:[]};
+  for(let i=n-1;i>=0;i--) SIM.data.pegs.A.push(i);
+
+  let html='';
+  // Draw pegs
+  ['A','B','C'].forEach(p=>{
+    const px=pegX[p];
+    html+=`<rect x="${px-2}" y="${baseY-pegH}" width="4" height="${pegH}" rx="2" fill="rgba(255,255,255,0.15)"/>`;
+    html+=`<rect x="${px-70}" y="${baseY}" width="140" height="4" rx="2" fill="rgba(255,255,255,0.1)"/>`;
+    html+=`<text x="${px}" y="${baseY+16}" text-anchor="middle" fill="#b7c0ff" font-size="12" font-weight="600">${p}</text>`;
+  });
+  // Draw disks (create with id so we can animate)
+  const maxW=120,minW=40;
+  for(let i=0;i<n;i++){
+    const dw=minW+(maxW-minW)*(i/(Math.max(n-1,1)));
+    const stackPos=n-1-i; // position from bottom
+    const dx=pegX.A-dw/2;
+    const dy=baseY-dh*(stackPos+1);
+    const c=LEVEL_COLORS[i%LEVEL_COLORS.length];
+    html+=`<rect id="sim-disk-${i}" class="sim-disk" x="${dx}" y="${dy}" width="${dw}" height="${dh-2}" rx="6" fill="${c}44" stroke="${c}" stroke-width="1.5" data-disk="${i}" data-w="${dw}"/>`;
+  }
+  svg.innerHTML=html;
+}
+
+function simStepHanoi(step){
+  const d=SIM.data;
+  const diskIdx=step.disk;
+  // Remove disk from source peg
+  const srcPeg=d.pegs[step.from];
+  srcPeg.pop();
+  // Add disk to target peg
+  const dstPeg=d.pegs[step.to];
+  dstPeg.push(diskIdx);
+  // Calculate new position
+  const dstX=d.pegX[step.to];
+  const stackPos=dstPeg.length-1;
+  const el=document.getElementById('sim-disk-'+diskIdx);
+  if(!el) return;
+  const dw=parseFloat(el.getAttribute('data-w'));
+  el.setAttribute('x',dstX-dw/2);
+  el.setAttribute('y',d.baseY-d.dh*(stackPos+1));
+}
+
+// ═══════════════════════════════════════════════════════════
+// SIMULATION: BINARY SEARCH
+// ═══════════════════════════════════════════════════════════
+
+function generateBinarySteps(){
+  const arr=[3,7,11,15,19,23,27,31,35,39,43,47,51,55,59];
+  const target=23;
+  const steps=[];
+  let lo=0,hi=arr.length-1;
+  while(lo<=hi){
+    const mid=Math.floor((lo+hi)/2);
+    if(arr[mid]===target){
+      steps.push({type:'found',lo,hi,mid,target,
+        desc:`<b style="color:var(--c2);">\u2713 Found!</b> arr[${mid}] = ${arr[mid]} = target. Found <b>${target}</b> at index <b>${mid}</b> in just <b>${steps.length+1} steps</b>.`});
+      return steps;
+    } else if(arr[mid]<target){
+      steps.push({type:'compare',lo,hi,mid,target,result:'right',
+        desc:`Compare: arr[${mid}] = <b>${arr[mid]}</b> &lt; target <b>${target}</b>. Discard left half. Search [${mid+1}..${hi}].`});
+      lo=mid+1;
+    } else {
+      steps.push({type:'compare',lo,hi,mid,target,result:'left',
+        desc:`Compare: arr[${mid}] = <b>${arr[mid]}</b> &gt; target <b>${target}</b>. Discard right half. Search [${lo}..${mid-1}].`});
+      hi=mid-1;
+    }
+  }
+  steps.push({type:'notfound',desc:`Target ${target} not found.`});
+  return steps;
+}
+
+function simInitBinary(){
+  const arr=[3,7,11,15,19,23,27,31,35,39,43,47,51,55,59];
+  const target=23;
+  const svg=$('simSVG');
+  const w=600,h=130;
+  svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  svg.style.height='130px';
+  const cw=34,ch=28,gap=3;
+  const sx=(w-arr.length*(cw+gap))/2;
+  SIM.data={arr,target,sx,cw,ch,gap,eliminated:new Set()};
+  let html='';
+  // Target label
+  html+=`<text x="${w/2}" y="14" text-anchor="middle" fill="var(--c3)" font-size="12" font-weight="600">Target: ${target}</text>`;
+  // Array cells
+  for(let i=0;i<arr.length;i++){
+    const x=sx+i*(cw+gap);
+    html+=`<rect id="sim-cell-${i}" class="sim-cell" x="${x}" y="24" width="${cw}" height="${ch}" rx="5" fill="rgba(106,169,255,0.12)" stroke="rgba(106,169,255,0.3)" stroke-width="1"/>`;
+    html+=`<text id="sim-val-${i}" x="${x+cw/2}" y="42" text-anchor="middle" fill="#e8ecff" font-size="10">${arr[i]}</text>`;
+    html+=`<text id="sim-idx-${i}" x="${x+cw/2}" y="66" text-anchor="middle" fill="#666" font-size="8">${i}</text>`;
+  }
+  // Range bracket
+  html+=`<rect id="sim-bracket" x="${sx}" y="56" width="${arr.length*(cw+gap)-gap}" height="3" rx="1.5" fill="rgba(106,169,255,0.3)"/>`;
+  // Pointer
+  html+=`<polygon id="sim-pointer" points="0,-6 5,0 -5,0" fill="var(--c2)" transform="translate(${sx+Math.floor(arr.length/2)*(cw+gap)+cw/2},22)" style="transition:transform .3s ease;"/>`;
+  // Labels
+  html+=`<text id="sim-lo-label" x="${sx}" y="80" text-anchor="middle" fill="var(--c1)" font-size="9" font-weight="600">lo</text>`;
+  html+=`<text id="sim-hi-label" x="${sx+(arr.length-1)*(cw+gap)+cw/2}" y="80" text-anchor="middle" fill="var(--c1)" font-size="9" font-weight="600">hi</text>`;
+  html+=`<text id="sim-mid-label" x="${sx+Math.floor(arr.length/2)*(cw+gap)+cw/2}" y="80" text-anchor="middle" fill="var(--c2)" font-size="9" font-weight="600">mid</text>`;
+  svg.innerHTML=html;
+}
+
+function simStepBinary(step){
+  const d=SIM.data;
+  const {sx,cw,gap}=d;
+  if(step.type==='compare'){
+    // Highlight mid
+    const midEl=document.getElementById('sim-cell-'+step.mid);
+    if(midEl){midEl.setAttribute('fill','rgba(100,240,200,0.25)');midEl.setAttribute('stroke','#64f0c8');}
+    // Move pointer to mid
+    const midX=sx+step.mid*(cw+gap)+cw/2;
+    document.getElementById('sim-pointer').setAttribute('transform',`translate(${midX},22)`);
+    // Update labels
+    document.getElementById('sim-lo-label').setAttribute('x',sx+step.lo*(cw+gap)+cw/2);
+    document.getElementById('sim-hi-label').setAttribute('x',sx+step.hi*(cw+gap)+cw/2);
+    document.getElementById('sim-mid-label').setAttribute('x',midX);
+    // Eliminate discarded half
+    const elimStart=step.result==='right'?step.lo:step.mid+1;
+    const elimEnd=step.result==='right'?step.mid:step.hi;
+    for(let i=elimStart;i<=elimEnd;i++){
+      if(!d.eliminated.has(i)){
+        d.eliminated.add(i);
+        const el=document.getElementById('sim-cell-'+i);
+        if(el){el.setAttribute('fill','rgba(255,92,122,0.08)');el.setAttribute('stroke','rgba(255,92,122,0.15)');el.setAttribute('opacity','0.3');}
+        const vEl=document.getElementById('sim-val-'+i);
+        if(vEl) vEl.setAttribute('fill','#444');
+      }
+    }
+    // After eliminating, also reset mid cell to neutral for next step
+    setTimeout(()=>{
+      if(midEl&&!d.eliminated.has(step.mid)){
+        midEl.setAttribute('fill','rgba(106,169,255,0.12)');
+        midEl.setAttribute('stroke','rgba(106,169,255,0.3)');
+      }
+    },400);
+    // Update bracket
+    const newLo=step.result==='right'?step.mid+1:step.lo;
+    const newHi=step.result==='right'?step.hi:step.mid-1;
+    const br=document.getElementById('sim-bracket');
+    br.setAttribute('x',sx+newLo*(cw+gap));
+    br.setAttribute('width',(newHi-newLo+1)*(cw+gap)-gap);
+  } else if(step.type==='found'){
+    const el=document.getElementById('sim-cell-'+step.mid);
+    if(el){el.setAttribute('fill','rgba(100,240,200,0.35)');el.setAttribute('stroke','#64f0c8');el.setAttribute('stroke-width','2.5');}
+    const midX=sx+step.mid*(cw+gap)+cw/2;
+    document.getElementById('sim-pointer').setAttribute('transform',`translate(${midX},22)`);
+    document.getElementById('sim-mid-label').setAttribute('x',midX);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SIMULATION: MERGE SORT
+// ═══════════════════════════════════════════════════════════
+
+function generateMergeSteps(){
+  const arr=[38,27,43,3,9,82,10];
+  const steps=[];
+  const working=arr.slice();
+  function ms(lo,hi,depth){
+    if(lo>=hi) return;
+    const mid=Math.floor((lo+hi)/2);
+    steps.push({type:'split',lo,hi,mid,depth,
+      values:working.slice(lo,hi+1),
+      left:working.slice(lo,mid+1),right:working.slice(mid+1,hi+1),
+      desc:`<b>Depth ${depth+1} — Split</b> [${working.slice(lo,hi+1)}] into [${working.slice(lo,mid+1)}] and [${working.slice(mid+1,hi+1)}]`});
+    ms(lo,mid,depth+1);
+    ms(mid+1,hi,depth+1);
+    const merged=[];
+    let i=lo,j=mid+1;
+    while(i<=mid&&j<=hi){if(working[i]<=working[j]) merged.push(working[i++]);else merged.push(working[j++]);}
+    while(i<=mid) merged.push(working[i++]);
+    while(j<=hi) merged.push(working[j++]);
+    for(let k=0;k<merged.length;k++) working[lo+k]=merged[k];
+    steps.push({type:'merge',lo,hi,mid,depth,merged:merged.slice(),
+      desc:`<b style="color:var(--c2);">Depth ${depth} — Merge</b> \u2192 [${merged}]`});
+  }
+  ms(0,arr.length-1,0);
+  return steps;
+}
+
+function simInitMerge(){
+  const arr=[38,27,43,3,9,82,10];
+  const svg=$('simSVG');
+  const w=600,h=300;
+  svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  svg.style.height='300px';
+  const cw=40,ch=26,gap=4,labelX=10;
+  SIM.data={arr:arr.slice(),working:arr.slice(),cw,ch,gap,w,labelX,rows:[]};
+  // Draw initial array as row 0
+  let html='';
+  const sx=(w-arr.length*(cw+gap))/2;
+  html+=`<text x="${labelX}" y="32" fill="var(--c1)" font-size="9" font-weight="600">depth 0</text>`;
+  for(let i=0;i<arr.length;i++){
+    const x=sx+i*(cw+gap);
+    html+=`<rect x="${x}" y="24" width="${cw}" height="${ch}" rx="5" fill="rgba(255,92,122,0.12)" stroke="rgba(255,92,122,0.3)" stroke-width="1"/>`;
+    html+=`<text x="${x+cw/2}" y="41" text-anchor="middle" fill="#e8ecff" font-size="11">${arr[i]}</text>`;
+  }
+  SIM.data.nextY=70;
+  SIM.data.html=html;
+  svg.innerHTML=html;
+}
+
+function simStepMerge(step){
+  const d=SIM.data;
+  const svg=$('simSVG');
+  const {cw,ch,gap,w}=d;
+  if(step.type==='split'){
+    const rowY=d.nextY;
+    // Draw two subarrays side by side with gap
+    const lLen=step.mid-step.lo+1;
+    const rLen=step.hi-step.mid;
+    const totalW=(lLen+rLen)*(cw+gap)+20;
+    const startX=(w-totalW)/2;
+    let html=d.html;
+    // Depth label on the left
+    html+=`<text x="${d.labelX}" y="${rowY+17}" fill="var(--c1)" font-size="9" font-weight="600">depth ${step.depth+1}</text>`;
+    // Left subarray
+    for(let i=0;i<lLen;i++){
+      const x=startX+i*(cw+gap);
+      html+=`<rect x="${x}" y="${rowY}" width="${cw}" height="${ch}" rx="5" fill="rgba(106,169,255,0.12)" stroke="rgba(106,169,255,0.3)" stroke-width="1"/>`;
+      html+=`<text x="${x+cw/2}" y="${rowY+17}" text-anchor="middle" fill="#e8ecff" font-size="10">${step.left[i]}</text>`;
+    }
+    // Right subarray
+    const rStart=startX+lLen*(cw+gap)+20;
+    for(let i=0;i<rLen;i++){
+      const x=rStart+i*(cw+gap);
+      html+=`<rect x="${x}" y="${rowY}" width="${cw}" height="${ch}" rx="5" fill="rgba(199,125,255,0.12)" stroke="rgba(199,125,255,0.3)" stroke-width="1"/>`;
+      html+=`<text x="${x+cw/2}" y="${rowY+17}" text-anchor="middle" fill="#e8ecff" font-size="10">${step.right[i]}</text>`;
+    }
+    // Down arrow
+    html+=`<text x="${w/2}" y="${rowY-4}" text-anchor="middle" fill="var(--muted)" font-size="9">\u2193 split</text>`;
+    d.nextY=rowY+ch+20;
+    d.html=html;
+    svg.innerHTML=html;
+  } else if(step.type==='merge'){
+    const rowY=d.nextY;
+    let html=d.html;
+    const mLen=step.merged.length;
+    const startX=(w-mLen*(cw+gap))/2;
+    // Depth label on the left
+    html+=`<text x="${d.labelX}" y="${rowY+17}" fill="var(--c2)" font-size="9" font-weight="600">depth ${step.depth}</text>`;
+    html+=`<text x="${w/2}" y="${rowY-4}" text-anchor="middle" fill="var(--c2)" font-size="9">\u2193 merge</text>`;
+    for(let i=0;i<mLen;i++){
+      const x=startX+i*(cw+gap);
+      html+=`<rect x="${x}" y="${rowY}" width="${cw}" height="${ch}" rx="5" fill="rgba(100,240,200,0.15)" stroke="rgba(100,240,200,0.35)" stroke-width="1"/>`;
+      html+=`<text x="${x+cw/2}" y="${rowY+17}" text-anchor="middle" fill="var(--c2)" font-size="10" font-weight="600">${step.merged[i]}</text>`;
+    }
+    d.nextY=rowY+ch+20;
+    d.html=html;
+    svg.innerHTML=html;
+    // Grow SVG if needed
+    if(d.nextY>parseInt(svg.getAttribute('viewBox').split(' ')[3])){
+      svg.setAttribute('viewBox',`0 0 ${w} ${d.nextY+20}`);
+      svg.style.height=(d.nextY+20)+'px';
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SIMULATION: QUICK SORT
+// ═══════════════════════════════════════════════════════════
+
+function generateQuickSteps(){
+  // DFS recursive: each recursive call = one step/row
+  const arr=[8,3,1,5,9,2,7];
+  const steps=[];
+  const working=arr.slice();
+
+  function recurse(lo,hi,depth){
+    if(lo>hi) return;
+    if(lo===hi){
+      // Base case: single element already sorted
+      steps.push({
+        type:'base', depth, subarray:[working[lo]], lo, hi,
+        desc:`<b>Depth ${depth}</b> — Base case: [${working[lo]}] is already sorted.`
+      });
+      return;
+    }
+    // Partition with last element as pivot
+    const pivotVal=working[hi];
+    let i=lo;
+    for(let j=lo;j<hi;j++){
+      if(working[j]<pivotVal){
+        [working[i],working[j]]=[working[j],working[i]];
+        i++;
+      }
+    }
+    [working[i],working[hi]]=[working[hi],working[i]];
+    const pivotIdx=i;
+    const leftPart=working.slice(lo,pivotIdx);
+    const rightPart=working.slice(pivotIdx+1,hi+1);
+    steps.push({
+      type:'partition', depth, lo, hi, pivotIdx, pivotVal,
+      subarray:working.slice(lo,hi+1),
+      leftPart:leftPart.slice(), rightPart:rightPart.slice(),
+      desc:`<b>Depth ${depth}</b> — quicksort([${working.slice(lo,hi+1)}]): pivot=<b style="color:#ffd166">${pivotVal}</b> → [${leftPart.length?leftPart:'∅'}] | <b style="color:#ffd166">${pivotVal}</b> | [${rightPart.length?rightPart:'∅'}]`
+    });
+    // Recurse left, then right (DFS)
+    if(lo<=pivotIdx-1) recurse(lo,pivotIdx-1,depth+1);
+    if(pivotIdx+1<=hi) recurse(pivotIdx+1,hi,depth+1);
+  }
+
+  recurse(0,arr.length-1,0);
+  return steps;
+}
+
+function simInitQuick(){
+  const arr=[8,3,1,5,9,2,7];
+  const svg=$('simSVG');
+  const w=600,h=360;
+  svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  svg.style.height='360px';
+  const cw=40,ch=26,gap=4;
+  const labelX=10;
+  SIM.data={arr:arr.slice(),n:arr.length,cw,ch,gap,w,labelX,nextY:24};
+  // Draw initial unsorted array
+  let html='';
+  const totalW=arr.length*(cw+gap)-gap;
+  const sx=(w-totalW)/2;
+  SIM.data.sx=sx;
+  html+=`<text x="${labelX}" y="18" fill="var(--c1)" font-size="9" font-weight="600">unsorted</text>`;
+  for(let i=0;i<arr.length;i++){
+    const x=sx+i*(cw+gap);
+    html+=`<rect x="${x}" y="24" width="${cw}" height="${ch}" rx="5" fill="rgba(255,92,122,0.12)" stroke="rgba(255,92,122,0.3)" stroke-width="1"/>`;
+    html+=`<text x="${x+cw/2}" y="41" text-anchor="middle" fill="#e8ecff" font-size="11">${arr[i]}</text>`;
+  }
+  SIM.data.nextY=70;
+  SIM.data.html=html;
+  svg.innerHTML=html;
+}
+
+function simStepQuick(step){
+  const d=SIM.data;
+  const svg=$('simSVG');
+  const {cw,ch,gap,w,labelX}=d;
+  const rowY=d.nextY;
+  let html=d.html;
+  const sub=step.subarray;
+  const len=sub.length;
+
+  // Depth label on left
+  html+=`<text x="${labelX}" y="${rowY+17}" fill="var(--c3)" font-size="9" font-weight="600">depth ${step.depth}</text>`;
+
+  if(step.type==='base'){
+    // Single element — shown as green (sorted)
+    const cx=(w-(cw))/2;
+    html+=`<rect x="${cx}" y="${rowY}" width="${cw}" height="${ch}" rx="5" fill="rgba(100,240,200,0.22)" stroke="#64f0c8" stroke-width="1.5"/>`;
+    html+=`<text x="${cx+cw/2}" y="${rowY+17}" text-anchor="middle" fill="#64f0c8" font-size="10" font-weight="600">${sub[0]}</text>`;
+    html+=`<text x="${cx+cw/2}" y="${rowY-3}" text-anchor="middle" fill="#64f0c8" font-size="7">sorted</text>`;
+  } else {
+    // Partition step: show left | pivot | right with visual gaps
+    const pivotLocal=step.pivotIdx-step.lo; // index of pivot within subarray
+    const sepGap=12; // gap between left/pivot/right sections
+    const leftLen=step.leftPart.length;
+    const rightLen=step.rightPart.length;
+    // Total width: all cells + 2 separator gaps (left|pivot, pivot|right)
+    const numCells=len;
+    const numSeps=((leftLen>0)?1:0)+((rightLen>0)?1:0);
+    const totalW=numCells*(cw+gap)-gap+numSeps*sepGap;
+    const startX=(w-totalW)/2;
+
+    let cx=startX;
+    // Draw left partition (blue)
+    for(let i=0;i<leftLen;i++){
+      html+=`<rect x="${cx}" y="${rowY}" width="${cw}" height="${ch}" rx="5" fill="rgba(106,169,255,0.12)" stroke="rgba(106,169,255,0.3)" stroke-width="1"/>`;
+      html+=`<text x="${cx+cw/2}" y="${rowY+17}" text-anchor="middle" fill="#e8ecff" font-size="10">${step.leftPart[i]}</text>`;
+      cx+=cw+gap;
+    }
+    // Separator gap before pivot
+    if(leftLen>0) cx+=sepGap-gap;
+    // Draw pivot (yellow/gold, prominent)
+    html+=`<rect x="${cx}" y="${rowY}" width="${cw}" height="${ch}" rx="5" fill="rgba(255,209,102,0.30)" stroke="#ffd166" stroke-width="2.5"/>`;
+    html+=`<text x="${cx+cw/2}" y="${rowY+17}" text-anchor="middle" fill="#ffd166" font-size="10" font-weight="700">${step.pivotVal}</text>`;
+    html+=`<text x="${cx+cw/2}" y="${rowY-3}" text-anchor="middle" fill="#ffd166" font-size="7" font-weight="600">pivot</text>`;
+    cx+=cw+gap;
+    // Separator gap after pivot
+    if(rightLen>0) cx+=sepGap-gap;
+    // Draw right partition (blue)
+    for(let i=0;i<rightLen;i++){
+      html+=`<rect x="${cx}" y="${rowY}" width="${cw}" height="${ch}" rx="5" fill="rgba(106,169,255,0.12)" stroke="rgba(106,169,255,0.3)" stroke-width="1"/>`;
+      html+=`<text x="${cx+cw/2}" y="${rowY+17}" text-anchor="middle" fill="#e8ecff" font-size="10">${step.rightPart[i]}</text>`;
+      cx+=cw+gap;
+    }
+
+    // Bracket labels for left and right partitions
+    if(leftLen>0){
+      const lx1=startX;
+      const lx2=startX+leftLen*(cw+gap)-gap;
+      html+=`<text x="${(lx1+lx2+cw)/2}" y="${rowY+ch+12}" text-anchor="middle" fill="rgba(106,169,255,0.6)" font-size="7">left (${leftLen})</text>`;
+    }
+    if(rightLen>0){
+      const rx1=cx-rightLen*(cw+gap);
+      const rx2=cx-gap;
+      html+=`<text x="${(rx1+rx2+cw)/2}" y="${rowY+ch+12}" text-anchor="middle" fill="rgba(106,169,255,0.6)" font-size="7">right (${rightLen})</text>`;
+    }
+  }
+
+  d.nextY=rowY+ch+28;
+  d.html=html;
+  svg.innerHTML=html;
+  // Grow SVG if needed
+  if(d.nextY>parseInt(svg.getAttribute('viewBox').split(' ')[3])){
+    svg.setAttribute('viewBox',`0 0 ${w} ${d.nextY+20}`);
+    svg.style.height=(d.nextY+20)+'px';
+  }
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// INITIALIZATION
+// ═══════════════════════════════════════════════════════════
+renderAlgoInfo();
+renderTryThis();
+updateRecurrenceDisplay();
+resetTree();
+renderMaster();
+renderSubstitution();
+renderComplexityChart();
+simShow();
+
+</script>
+</body>
+</html>

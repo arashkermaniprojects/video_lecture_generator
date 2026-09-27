@@ -1,0 +1,217 @@
+{
+  "lecture": {
+    "toolPath": "/home/ara/Documents/Teaching/RSA/number_theory_rsa.html"
+  },
+  "defaults": {
+    "ttsVoice": "shimmer",
+    "ttsModel": "tts-1-hd",
+    "ttsSpeed": 0.95
+  },
+  "sections": [
+    {
+      "id": "01_intro_what_is_rsa",
+      "navActions": [
+        { "action": "scroll_to", "target": "#introBody" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#introBody", "label": "introduction panel" }
+      ],
+      "narration": "RSA is the cryptosystem that quietly secures most of the internet. It lets two strangers exchange a secret over a public channel without ever meeting. To understand how it works we need to assemble seven small pieces of number theory: modular arithmetic, the greatest common divisor, modular inverses, fast exponentiation, Euler's theorem, primality testing, and factorization. Each piece is simple on its own. Together they form one of the most beautiful constructions in computer science.",
+      "expectedElements": ["#introBody"],
+      "focusTarget": "#introBody",
+      "isAnimated": false
+    },
+    {
+      "id": "02_sec1_modular_arithmetic",
+      "navActions": [
+        { "action": "scroll_to", "target": "#sec1" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#sec1", "label": "section 1 modular arithmetic" }
+      ],
+      "narration": "Section one. Modular arithmetic is the foundation. When we write a mod n, we mean the remainder when a is divided by n. Seventeen mod five equals two, because seventeen is three fives plus two. The crucial property for cryptography is that you can take the remainder after every single multiplication, not just at the end. That keeps the numbers small even when the exponents are astronomical.",
+      "expectedElements": ["#sec1"],
+      "focusTarget": "#sec1",
+      "isAnimated": false
+    },
+    {
+      "id": "03_sec2_gcd_euclid",
+      "navActions": [
+        { "action": "scroll_to", "target": "#sec2" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#sec2", "label": "section 2 extended Euclidean" }
+      ],
+      "narration": "Section two. The greatest common divisor of two numbers is the largest integer that divides both of them. Euclid's algorithm computes it in just a few steps using the identity gcd of a and b equals gcd of b and a mod b. The extended version goes one step further and finds two integers x and y such that a x plus b y equals the gcd. This is called Bezout's identity, and we will need it to find modular inverses.",
+      "expectedElements": ["#sec2"],
+      "focusTarget": "#sec2",
+      "isAnimated": false
+    },
+    {
+      "id": "04_sec3_modular_inverse",
+      "navActions": [
+        { "action": "scroll_to", "target": "#sec3" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#sec3", "label": "section 3 modular inverse" }
+      ],
+      "narration": "Section three. The modular inverse of e modulo n is a number d such that e times d is congruent to one mod n. Not every number has an inverse — only those that share no common factor with n. When the inverse exists, the extended Euclidean algorithm hands it to us directly, because the Bezout coefficient of e is exactly the inverse we want, possibly reduced into the right range.",
+      "expectedElements": ["#sec3"],
+      "focusTarget": "#sec3",
+      "isAnimated": false
+    },
+    {
+      "id": "05_sec4_fast_modular_exponentiation",
+      "navActions": [
+        { "action": "scroll_to", "target": "#sec4" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#sec4", "label": "section 4 fast exponentiation" }
+      ],
+      "narration": "Section four. Fast modular exponentiation, also called repeated squaring, computes a to the power k mod n in roughly log k multiplications instead of k. The trick is to read the binary representation of k and square the running value at every bit, multiplying in an extra factor of a only when the bit is one. Without this trick, RSA with thousand-bit exponents would take longer than the age of the universe.",
+      "expectedElements": ["#sec4"],
+      "focusTarget": "#sec4",
+      "isAnimated": false
+    },
+    {
+      "id": "06_sec5_euler_fermat",
+      "navActions": [
+        { "action": "scroll_to", "target": "#sec5" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#sec5", "label": "section 5 Euler and Fermat" }
+      ],
+      "narration": "Section five. Euler's totient function phi of n counts how many integers from one to n share no common factor with n. Euler's theorem says that for any a coprime to n, a to the power phi of n is congruent to one mod n. Fermat's little theorem is the special case when n is prime. These two theorems are the magic that makes RSA decryption actually invert encryption.",
+      "expectedElements": ["#sec5"],
+      "focusTarget": "#sec5",
+      "isAnimated": false
+    },
+    {
+      "id": "07_sec6_rsa_construction",
+      "navActions": [
+        { "action": "scroll_to", "target": "#sec6" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#sec6", "label": "section 6 RSA construction" }
+      ],
+      "narration": "Section six. Here is RSA itself. Pick two large primes p and q, and compute n equals p times q. Compute phi of n equals p minus one times q minus one. Pick a public exponent e coprime to phi of n. Compute the private exponent d as the modular inverse of e modulo phi of n. The public key is the pair n and e. The private key is d. To encrypt a message m, compute m to the e mod n. To decrypt, raise the ciphertext to the d mod n. Euler's theorem guarantees you get m back.",
+      "expectedElements": ["#sec6"],
+      "focusTarget": "#sec6",
+      "isAnimated": false
+    },
+    {
+      "id": "08_sec7_primality_testing",
+      "navActions": [
+        { "action": "scroll_to", "target": "#sec7" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#sec7", "label": "section 7 primality testing" }
+      ],
+      "narration": "Section seven. RSA needs large primes, but how do we find them? Trial division is hopeless past about a million. Instead we pick a random odd number of the right size and probabilistically test it for primality. The Miller-Rabin test checks one witness in a few modular exponentiations. If the witness fails, the number is definitely composite. If a few dozen witnesses all pass, the number is prime with overwhelming probability.",
+      "expectedElements": ["#sec7"],
+      "focusTarget": "#sec7",
+      "isAnimated": false
+    },
+    {
+      "id": "09_sec8_factoring_hardness",
+      "navActions": [
+        { "action": "scroll_to", "target": "#sec8" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#sec8", "label": "section 8 factoring" }
+      ],
+      "narration": "Section eight. The security of RSA hinges entirely on one assumption: factoring a large composite is hard. Given the public modulus n equals p times q, an attacker who can recover p and q can immediately compute phi of n, then d, and then read every encrypted message. The fastest known classical factoring algorithm, the general number field sieve, is sub-exponential but still infeasible for two-thousand-bit numbers. That gap is the entire wall protecting RSA.",
+      "expectedElements": ["#sec8"],
+      "focusTarget": "#sec8",
+      "isAnimated": false
+    },
+    {
+      "id": "10_sec9_breaking_rsa",
+      "navActions": [
+        { "action": "scroll_to", "target": "#sec9" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#sec9", "label": "section 9 breaking RSA" }
+      ],
+      "narration": "Section nine. Even if factoring is hard in general, RSA has subtle ways to fail. Reusing primes across different keys, encrypting the same message with multiple public exponents, using a small private exponent, or skipping randomized padding all open shortcuts that bypass factoring entirely. Real-world attacks rarely break the math — they exploit the implementation. The lesson is that getting the algorithm right is only half the work.",
+      "expectedElements": ["#sec9"],
+      "focusTarget": "#sec9",
+      "isAnimated": false
+    },
+    {
+      "id": "11_demo_modarith",
+      "navActions": [
+        { "action": "scroll_to", "target": ".wrap" },
+        { "action": "set_select", "selector": "#algo", "index": 0 },
+        { "action": "wait", "ms": 600 },
+        { "action": "click_button", "text": "Build Steps" },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Play" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#vizArea", "label": "modular arithmetic visualization" }
+      ],
+      "narration": "Now let's see modular arithmetic in action. The calculator picks twenty-three mod seven and walks through the reduction. You can see how the operands get reduced first, then the operation runs in the small residue class, and finally the result is reduced one last time. This is exactly how every step of RSA keeps numbers small.",
+      "expectedElements": ["#vizArea", "#status"],
+      "focusTarget": "#vizArea",
+      "isAnimated": true
+    },
+    {
+      "id": "12_demo_extgcd",
+      "navActions": [
+        { "action": "scroll_to", "target": ".wrap" },
+        { "action": "set_select", "selector": "#algo", "index": 1 },
+        { "action": "wait", "ms": 600 },
+        { "action": "click_button", "text": "Build Steps" },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Play" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#vizArea", "label": "extended Euclidean trace" }
+      ],
+      "narration": "Here is the extended Euclidean algorithm running on seven and forty. Watch the recursion descend until it hits the base case, then unwind back up the call stack, threading the Bezout coefficients through every level. At the top, you can read off both the gcd and the two integers x and y that satisfy Bezout's identity.",
+      "expectedElements": ["#vizArea", "#status"],
+      "focusTarget": "#vizArea",
+      "isAnimated": true
+    },
+    {
+      "id": "13_demo_modexp",
+      "navActions": [
+        { "action": "scroll_to", "target": ".wrap" },
+        { "action": "set_select", "selector": "#algo", "index": 2 },
+        { "action": "wait", "ms": 600 },
+        { "action": "click_button", "text": "Build Steps" },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Play" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#vizArea", "label": "fast modular exponentiation" }
+      ],
+      "narration": "Fast modular exponentiation, computing seven to the thirteen mod eleven. The visualization walks the binary expansion of the exponent thirteen, which is one one zero one. At each bit it squares the running value, and on the ones it multiplies in an extra seven. Notice how the numbers stay below one hundred the entire time, even though the answer corresponds to a much larger plain power.",
+      "expectedElements": ["#vizArea", "#status"],
+      "focusTarget": "#vizArea",
+      "isAnimated": true
+    },
+    {
+      "id": "14_demo_rsa_end_to_end",
+      "navActions": [
+        { "action": "scroll_to", "target": ".wrap" },
+        { "action": "set_select", "selector": "#algo", "index": 3 },
+        { "action": "wait", "ms": 600 },
+        { "action": "click_button", "text": "Build Steps" },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Play" },
+        { "action": "wait", "ms": 800 },
+        { "action": "move_cursor_to", "target": "#vizArea", "label": "RSA end to end" }
+      ],
+      "narration": "And here is RSA itself, end to end. Two small primes p equals sixty-one and q equals fifty-three give us a modulus n equals three two three three. The tool computes phi of n, picks the public exponent e equals seventeen, derives the private d using extended Euclidean, then encrypts the message sixty-five and decrypts it back. Every step you have seen in the previous sections is happening right here, inside this single demonstration.",
+      "expectedElements": ["#vizArea", "#status"],
+      "focusTarget": "#vizArea",
+      "isAnimated": true
+    },
+    {
+      "id": "15_demo_break_rsa",
+      "navActions": [
+        { "action": "scroll_to", "target": ".wrap" },
+        { "action": "set_select", "selector": "#algo", "index": 7 },
+        { "action": "wait", "ms": 600 },
+        { "action": "click_button", "text": "Build Steps" },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Play" },
+        { "action": "wait", "ms": 800 },
+        { "action": "move_cursor_to", "target": "#vizArea", "label": "break RSA full attack" }
+      ],
+      "narration": "Finally, let's break a small RSA key. The attacker sees only the public modulus three two three three and the public exponent seventeen, plus the intercepted ciphertext. Step one: factor the modulus to recover the primes. Step two: compute phi of n. Step three: derive the private exponent. Step four: decrypt. With small primes this takes milliseconds. With two-thousand-bit primes, it would take longer than the age of the universe — and that gap is exactly what keeps your bank login safe.",
+      "expectedElements": ["#vizArea", "#status"],
+      "focusTarget": "#vizArea",
+      "isAnimated": true
+    }
+  ]
+}

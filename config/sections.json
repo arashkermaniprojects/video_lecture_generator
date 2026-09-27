@@ -1,0 +1,3920 @@
+[
+  {
+    "id": "01_theory_what_is_rlhf",
+    "group": "prologue_theory",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "What is RLHF?"
+      }
+    ],
+    "narration": "Let's start by defining Reinforcement Learning from Human Feedback, or RLHF. Imagine we've trained a language model on vast amounts of internet text. While it's excellent at predicting the next word, this doesn't guarantee it will follow instructions helpfully or avoid producing harmful content. RLHF is a method for aligning a model's outputs with human preferences, using feedback from people rather than just maximizing the likelihood of the next token.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": false
+  },
+  {
+    "id": "02_theory_core_idea",
+    "group": "prologue_theory",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-core-idea"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-core-idea",
+        "label": "Core Idea Equation"
+      }
+    ],
+    "narration": "Here's the core idea behind RLHF. Traditionally, we train models to maximize the probability of the next token given the context. In RLHF, we instead maximize the expected reward of a response, minus a penalty term involving beta times the Kullback-Leibler divergence, or KL divergence, between our model and a reference model. Throughout this lecture, we'll unpack what each of these symbols means and why they're essential for aligning language models with human values.",
+    "expectedElements": [
+      "#theory-core-idea"
+    ],
+    "focusTarget": "#theory-core-idea",
+    "isAnimated": false
+  },
+  {
+    "id": "03_theory_three_stages",
+    "group": "prologue_theory",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-three-stages"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-three-stages",
+        "label": "Three Stages of RLHF"
+      }
+    ],
+    "narration": "RLHF is typically carried out in three stages. First, we perform Supervised Fine-Tuning, often called SFT, where the model learns from high-quality human-written responses. Next, we train a reward model to predict which responses humans prefer. Finally, we use Proximal Policy Optimization, or PPO, to fine-tune the language model using the reward model as a guide. This three-stage process forms the backbone of modern RLHF pipelines.",
+    "expectedElements": [
+      "#theory-three-stages"
+    ],
+    "focusTarget": "#theory-three-stages",
+    "isAnimated": false
+  },
+  {
+    "id": "04_theory_why_not_supervised",
+    "group": "prologue_theory",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-why-not-supervised"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-why-not-supervised",
+        "label": "Why Not Just Use More Supervised Data?"
+      }
+    ],
+    "narration": "You might wonder: why not just collect more supervised data? The challenge is that it's much harder for humans to write the perfect answer to an open-ended question than it is to compare two responses and say which one is better. RLHF leverages this by using human comparisons, making the training process more scalable and practical.",
+    "expectedElements": [
+      "#theory-why-not-supervised"
+    ],
+    "focusTarget": "#theory-why-not-supervised",
+    "isAnimated": false
+  },
+  {
+    "id": "05_theory_bradley_terry",
+    "group": "prologue_theory",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-bradley-terry"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-bradley-terry",
+        "label": "Reward Model (Bradley-Terry)"
+      }
+    ],
+    "narration": "To turn human preferences into a reward signal, we use a reward model based on the Bradley-Terry framework. This model estimates the probability that one response is preferred over another using a sigmoid function of their reward scores. The loss function encourages the model to assign higher scores to responses that humans prefer, making it a crucial component of RLHF.",
+    "expectedElements": [
+      "#theory-bradley-terry"
+    ],
+    "focusTarget": "#theory-bradley-terry",
+    "isAnimated": false
+  },
+  {
+    "id": "06_theory_kl_reward_hacking",
+    "group": "prologue_theory",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-kl-reward-hacking"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-kl-reward-hacking",
+        "label": "KL Divergence & Reward Hacking"
+      }
+    ],
+    "narration": "A key challenge in RLHF is avoiding reward hacking, where the model exploits flaws in the reward model rather than genuinely improving. The KL divergence term acts as a regularizer, keeping the fine-tuned model close to the original. If beta is too small, the model may game the reward; if it's too large, learning stalls. Balancing this tradeoff is essential for safe and effective RLHF.",
+    "expectedElements": [
+      "#theory-kl-reward-hacking"
+    ],
+    "focusTarget": "#theory-kl-reward-hacking",
+    "isAnimated": false
+  },
+  {
+    "id": "07_theory_dpo",
+    "group": "prologue_theory",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-dpo"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-dpo",
+        "label": "DPO: A Simpler Alternative"
+      }
+    ],
+    "narration": "Direct Preference Optimization, or DPO, is a recent alternative to RLHF. DPO directly optimizes the model to prefer responses that humans like, using a simpler loss function that avoids the need for reinforcement learning algorithms like PPO. We'll compare DPO and RLHF in more detail later in the lecture.",
+    "expectedElements": [
+      "#theory-dpo"
+    ],
+    "focusTarget": "#theory-dpo",
+    "isAnimated": false
+  },
+  {
+    "id": "08_theory_rlhf_vs_dpo",
+    "group": "prologue_theory",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-rlhf-vs-dpo"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-rlhf-vs-dpo",
+        "label": "RLHF vs DPO at a Glance"
+      }
+    ],
+    "narration": "To summarize, RLHF uses a reward model and reinforcement learning to align language models with human preferences, while DPO offers a more direct and often simpler approach. Both methods aim to make AI systems more helpful, harmless, and honest, but they differ in complexity and training dynamics.",
+    "expectedElements": [
+      "#theory-rlhf-vs-dpo"
+    ],
+    "focusTarget": "#theory-rlhf-vs-dpo",
+    "isAnimated": false
+  },
+  {
+    "id": "09_collapse_theory",
+    "group": "prologue_theory",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "click_button",
+        "text": "Collapse"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#pipelineSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#pipelineSvg",
+        "label": "Main Interactive Area"
+      }
+    ],
+    "narration": "Now that we've established the theoretical foundations, let's collapse the theory section and prepare to explore the RLHF pipeline interactively. This will give us a clear view of the main tool, where we'll walk through each stage of the process.",
+    "expectedElements": [
+      "#pipelineSvg"
+    ],
+    "focusTarget": "#pipelineSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "10_pipeline_color_legend",
+    "group": "pipeline_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "zoom_to",
+        "target": ".legend"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ".legend",
+        "label": "Colour legend"
+      }
+    ],
+    "narration": "Throughout this tool, we use a consistent colour scheme: blue represents Supervised Fine-Tuning, or SFT; yellow stands for the Reward Model; and green indicates Proximal Policy Optimization, known as PPO. This helps us quickly identify each stage of the Reinforcement Learning from Human Feedback, or RLHF, pipeline.",
+    "expectedElements": [
+      ".legend"
+    ],
+    "focusTarget": ".legend",
+    "isAnimated": false
+  },
+  {
+    "id": "11_pipeline_overview_walkthrough",
+    "group": "pipeline_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#pipelineSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#pipelineSvg",
+        "label": "Pipeline overview diagram"
+      }
+    ],
+    "narration": "Let's walk through the RLHF pipeline from left to right. We start with a pre-trained language model, which is fine-tuned using supervised data to create the SFT model. Next, a reward model is trained using human preferences. Finally, the PPO stage uses reinforcement learning to optimize the model further, resulting in an aligned model. Notice the data annotations above each box and the loss formulas below, which summarize the key inputs and objectives at every step.",
+    "expectedElements": [
+      "#pipelineSvg"
+    ],
+    "focusTarget": "#pipelineSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "12_pipeline_stage1_sft_detail",
+    "group": "pipeline_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "click_selector",
+        "target": ".pipeline-node:nth-child(1)"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#pipelineSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#pipelineSvg",
+        "label": "Stage 1: SFT detail diagram"
+      }
+    ],
+    "narration": "In Stage 1, Supervised Fine-Tuning, or SFT, we take a prompt and feed it into the language model. The model predicts a response, which we compare to a ground-truth expert answer. We use cross-entropy loss to measure the difference, and gradients flow back to update the model. This stage uses demonstration pairs as data, with the goal of producing a strong initial model.",
+    "expectedElements": [
+      "#pipelineSvg"
+    ],
+    "focusTarget": "#pipelineSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "13_pipeline_stage1_sft_statpills",
+    "group": "pipeline_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "click_selector",
+        "target": ".pipeline-node:nth-child(1)"
+      },
+      {
+        "action": "zoom_to",
+        "target": ".stat-pills"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ".stat-pills",
+        "label": "Stat pills for SFT"
+      }
+    ],
+    "narration": "For this stage, the input is a pre-trained language model, and the output is the SFT model. We use demonstration pairs as data, and the method is cross-entropy loss. These structured summaries help us keep track of each stage's role in the pipeline.",
+    "expectedElements": [
+      ".stat-pills"
+    ],
+    "focusTarget": ".stat-pills",
+    "isAnimated": false
+  },
+  {
+    "id": "14_pipeline_stage2_rm_detail",
+    "group": "pipeline_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "click_selector",
+        "target": ".pipeline-node:nth-child(2)"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#pipelineSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#pipelineSvg",
+        "label": "Stage 2: Reward Model detail diagram"
+      }
+    ],
+    "narration": "Stage 2 is all about the reward model. Here, two responses to the same prompt are evaluated. The reward model assigns a scalar score to each, and these scores are used in the Bradley-Terry loss to learn which response is preferred. Notice how the winner receives a higher score than the loser.",
+    "expectedElements": [
+      "#pipelineSvg"
+    ],
+    "focusTarget": "#pipelineSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "15_pipeline_stage2_rm_statpills",
+    "group": "pipeline_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "click_selector",
+        "target": ".pipeline-node:nth-child(2)"
+      },
+      {
+        "action": "zoom_to",
+        "target": ".stat-pills"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ".stat-pills",
+        "label": "Stat pills for Reward Model"
+      }
+    ],
+    "narration": "At this stage, the input is the SFT model, and the output is the trained reward model. We use preference pairs as data, and the method is the Bradley-Terry loss. This step translates human judgments into a reward signal for learning.",
+    "expectedElements": [
+      ".stat-pills"
+    ],
+    "focusTarget": ".stat-pills",
+    "isAnimated": false
+  },
+  {
+    "id": "16_pipeline_stage3_ppo_detail",
+    "group": "pipeline_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "click_selector",
+        "target": ".pipeline-node:nth-child(3)"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#pipelineSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#pipelineSvg",
+        "label": "Stage 3: PPO detail diagram"
+      }
+    ],
+    "narration": "In Stage 3, Proximal Policy Optimization, or PPO, a prompt is sampled and the policy generates a response. The reward model scores this response, while a frozen reference model computes the Kullback-Leibler, or KL, divergence. The objective combines the reward minus beta times the KL penalty, and gradients update the policy. The reference model remains unchanged to anchor learning.",
+    "expectedElements": [
+      "#pipelineSvg"
+    ],
+    "focusTarget": "#pipelineSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "17_pipeline_stage3_ppo_statpills",
+    "group": "pipeline_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "click_selector",
+        "target": ".pipeline-node:nth-child(3)"
+      },
+      {
+        "action": "zoom_to",
+        "target": ".stat-pills"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ".stat-pills",
+        "label": "Stat pills for PPO"
+      }
+    ],
+    "narration": "Here, the input is the SFT model and the reward model, and the output is the aligned model. The data consists of prompts and sampled responses, and the method is PPO with a KL penalty. This final stage aligns the model's behavior with human preferences while maintaining language quality.",
+    "expectedElements": [
+      ".stat-pills"
+    ],
+    "focusTarget": ".stat-pills",
+    "isAnimated": false
+  },
+  {
+    "id": "18_pipeline_kl_penalty_question",
+    "group": "pipeline_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "click_selector",
+        "target": ".pipeline-node:nth-child(3)"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#pipelineSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#pipelineSvg",
+        "label": "KL penalty in PPO diagram"
+      }
+    ],
+    "narration": "Let's pause and consider: what might happen if we removed the KL penalty from this objective? Think about how the model's outputs could change. We'll explore this question experimentally in just a few minutes.",
+    "expectedElements": [
+      "#pipelineSvg"
+    ],
+    "focusTarget": "#pipelineSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "19_pipeline_transition_to_reward_model",
+    "group": "pipeline_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "1"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "zoom_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "module focus"
+      }
+    ],
+    "narration": "Now that we've explored the full RLHF pipeline, let's dive deeper into how the reward model is trained and used.",
+    "expectedElements": [
+      ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+    ],
+    "focusTarget": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+    "isAnimated": false
+  },
+  {
+    "id": "20_reward_expand_theory_bt",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "1"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-bradley-terry"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-bradley-terry",
+        "label": "Bradley-Terry formulas"
+      }
+    ],
+    "narration": "Before we dive in, let's revisit the Bradley-Terry formulas. These equations let us turn human preferences into a reward signal, which is the foundation for training our reward model.",
+    "expectedElements": [
+      "#theory-bradley-terry"
+    ],
+    "focusTarget": "#theory-bradley-terry",
+    "isAnimated": false
+  },
+  {
+    "id": "21_reward_collapse_theory",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "Reward Model tool"
+      }
+    ],
+    "narration": "Now, let's put this theory into practice by acting as human annotators. We'll compare model responses and see how the reward model learns from our choices.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": false
+  },
+  {
+    "id": "22_reward_intro_annotator_frame",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "1"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "Prompt selector"
+      }
+    ],
+    "narration": "Imagine you are the human in the loop. For each prompt, you'll see two model responses. Your job is to decide which response is better, just like a real annotator.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": false
+  },
+  {
+    "id": "23_reward_read_responses_vote",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 0
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "zoom_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "Response A"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "Response B"
+      }
+    ],
+    "narration": "Let's start with the prompt: 'Explain quantum computing simply.' Listen to both responses and think about which one you prefer.",
+    "expectedElements": [
+      ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+    ],
+    "focusTarget": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+    "isAnimated": false
+  },
+  {
+    "id": "24_reward_choose_first_winner",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "click_selector",
+        "target": "#rmA"
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 1200
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "Winner card"
+      }
+    ],
+    "narration": "After making your choice, notice how the winner is highlighted in green and the other response fades. This feedback is what the reward model uses to learn.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": true
+  },
+  {
+    "id": "25_reward_stat_pills_first",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "Stat pills"
+      }
+    ],
+    "narration": "Now, let's interpret the feedback. The stat pills show the reward scores for both responses, the gap between them, the probability the winner should win, and the loss. Each value reflects how well the model is learning from your choice.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": false
+  },
+  {
+    "id": "26_reward_chart_btbar_first",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": "#pipelineSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#pipelineSvg",
+        "label": "Reward Scores Over Comparisons chart"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#pipelineSvg",
+        "label": "Bradley-Terry probability bar"
+      }
+    ],
+    "narration": "The line chart now displays a single data point for each response, and the Bradley-Terry bar visualizes the probability split between the winner and loser. This makes the model's confidence tangible.",
+    "expectedElements": [
+      "#pipelineSvg"
+    ],
+    "focusTarget": "#pipelineSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "27_reward_new_pair_second_comparison",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "click_button",
+        "text": "New Pair"
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 1200
+      },
+      {
+        "action": "zoom_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "Response A (new pair)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "Response B (new pair)"
+      }
+    ],
+    "narration": "Let's try another comparison. With each new pair, the reward model updates its understanding. Notice how the chart now has two points, showing the model's progress.",
+    "expectedElements": [
+      ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+    ],
+    "focusTarget": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+    "isAnimated": true
+  },
+  {
+    "id": "28_reward_choose_second_winner",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "click_selector",
+        "target": "#rmB"
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 1200
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "Reward chart with two points"
+      }
+    ],
+    "narration": "After this second choice, the gap between the reward scores often grows, reflecting the model's increasing ability to distinguish good from bad responses.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": true
+  },
+  {
+    "id": "29_reward_switch_prompt_poem",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "zoom_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "Prompt selector"
+      }
+    ],
+    "narration": "Let's switch to a new prompt: 'Write a poem about the ocean.' This tests whether the reward model can generalize its learning to a different kind of task.",
+    "expectedElements": [
+      ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+    ],
+    "focusTarget": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+    "isAnimated": false
+  },
+  {
+    "id": "30_reward_poem_first_comparison",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "click_selector",
+        "target": "#rmA"
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 1200
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "Reward chart with new prompt"
+      }
+    ],
+    "narration": "After comparing responses for the poem prompt, the chart adds another data point. This shows the reward model adapting to new types of outputs.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": true
+  },
+  {
+    "id": "31_reward_poem_second_comparison",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "click_button",
+        "text": "New Pair"
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 1200
+      },
+      {
+        "action": "click_selector",
+        "target": "#rmB"
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 1200
+      },
+      {
+        "action": "zoom_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "Reward chart with more points"
+      }
+    ],
+    "narration": "With each new comparison, the reward model continues to refine its ability to judge quality, even as the task changes.",
+    "expectedElements": [
+      ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+    ],
+    "focusTarget": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+    "isAnimated": true
+  },
+  {
+    "id": "32_reward_switch_prompt_pasta",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 2
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "zoom_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "Prompt selector"
+      }
+    ],
+    "narration": "Now, let's try one more prompt: 'How do I make pasta?' This further demonstrates the reward model's ability to generalize across different tasks.",
+    "expectedElements": [
+      ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+    ],
+    "focusTarget": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+    "isAnimated": false
+  },
+  {
+    "id": "33_reward_pasta_comparison",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "click_selector",
+        "target": "#rmA"
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 1200
+      },
+      {
+        "action": "zoom_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "Reward chart with pasta prompt"
+      }
+    ],
+    "narration": "After this comparison, the chart now shows several data points, each representing the model's growing ability to distinguish quality across prompts.",
+    "expectedElements": [
+      ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+    ],
+    "focusTarget": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+    "isAnimated": true
+  },
+  {
+    "id": "34_reward_point_to_gap",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "Yellow gap on chart"
+      }
+    ],
+    "narration": "Notice the yellow shaded gap on the chart. This gap represents the reward model's ability to separate good responses from bad ones, and it grows as the model learns from more comparisons.",
+    "expectedElements": [
+      ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+    ],
+    "focusTarget": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+    "isAnimated": false
+  },
+  {
+    "id": "35_reward_point_to_btbar_confidence",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "Bradley-Terry probability bar"
+      }
+    ],
+    "narration": "Look at the Bradley-Terry bar. Even after just a few comparisons, the reward model can reach high confidence in its predictions.",
+    "expectedElements": [
+      ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+    ],
+    "focusTarget": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+    "isAnimated": false
+  },
+  {
+    "id": "36_reward_phase_bar_readout",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "Phase bar"
+      }
+    ],
+    "narration": "The phase bar summarizes the latest comparison, showing the reward gap, the probability of the chosen response winning, and the loss. This gives a quick snapshot of the model's learning progress.",
+    "expectedElements": [
+      ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+    ],
+    "focusTarget": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+    "isAnimated": false
+  },
+  {
+    "id": "37_reward_reset_model",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "click_button",
+        "text": "Reset Reward Model"
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 1200
+      },
+      {
+        "action": "zoom_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "module focus"
+      }
+    ],
+    "narration": "In real-world training, reward models are updated using tens of thousands of comparisons, not just a handful. But the learning process you see here is fundamentally the same.",
+    "expectedElements": [
+      ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+    ],
+    "focusTarget": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+    "isAnimated": true
+  },
+  {
+    "id": "38_reward_transition_to_ppo",
+    "group": "reward_model",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "module focus"
+      }
+    ],
+    "narration": "Now that we've seen how the reward model learns from human feedback, let's move on to the next stage: Proximal Policy Optimization, or PPO.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": false
+  },
+  {
+    "id": "39_ppo_controls_intro",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#betaSlider"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#betaSlider",
+        "label": "Beta slider"
+      }
+    ],
+    "narration": "Let's get hands-on with Proximal Policy Optimization, or PPO. The beta parameter here controls how much we penalize the model for drifting away from the Supervised Fine-Tuning baseline. The learning rate sets how big each update step is. We'll use these controls to run and analyze several training experiments.",
+    "expectedElements": [
+      "#betaSlider"
+    ],
+    "focusTarget": "#betaSlider",
+    "isAnimated": false
+  },
+  {
+    "id": "40_ppo_controls_run_step_reset",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Run PPO"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Reset Reward Model"
+      },
+      {
+        "action": "wait",
+        "ms": 350
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1500
+      },
+      {
+        "action": "wait",
+        "ms": 700
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "Training Dynamics chart"
+      }
+    ],
+    "narration": "We can run PPO training all at once, step through it one update at a time, or reset everything to start over. These options let us observe how the model evolves during training.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "41_ppo_exp1_run_baseline",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "set_slider",
+        "selector": "#betaSlider",
+        "value": 20
+      },
+      {
+        "action": "set_slider",
+        "selector": "#lrSlider",
+        "value": 10
+      },
+      {
+        "action": "set_slider",
+        "selector": "#stepsSlider",
+        "value": 50
+      },
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Run PPO"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "Training Dynamics chart"
+      }
+    ],
+    "narration": "Let's run our first experiment with the default settings. Watch as the blue reward line climbs quickly at first, then levels off. The red KL penalty line drops below zero, showing the penalty is growing.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": true
+  },
+  {
+    "id": "42_ppo_exp1_frontier_baseline",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Run PPO"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoFrontierSvg",
+        "label": "Reward vs KL Frontier"
+      }
+    ],
+    "narration": "Now, look at the reward versus KL frontier. The training started at the origin and moved right, increasing KL divergence, and up, increasing reward. The ideal is to reach the top-left—high reward with low KL.",
+    "expectedElements": [
+      "#ppoFrontierSvg"
+    ],
+    "focusTarget": "#ppoFrontierSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "43_ppo_exp1_wait",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": "#ppoSvg"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "wait",
+        "ms": 1500
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "module focus"
+      }
+    ],
+    "narration": "Take a moment to absorb how the reward, KL penalty, and net objective evolved during this baseline run.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "44_ppo_exp2_reset",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "click_button",
+        "text": "Reset"
+      },
+      {
+        "action": "zoom_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "module focus"
+      }
+    ],
+    "narration": "Let's reset everything so we can try a new experiment from scratch.",
+    "expectedElements": [
+      ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+    ],
+    "focusTarget": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+    "isAnimated": false
+  },
+  {
+    "id": "45_ppo_exp2_run_no_kl",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "set_slider",
+        "selector": "#betaSlider",
+        "value": 0
+      },
+      {
+        "action": "set_slider",
+        "selector": "#stepsSlider",
+        "value": 100
+      },
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 2
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Run PPO"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "Training Dynamics chart"
+      }
+    ],
+    "narration": "Now, let's set beta to zero—no KL penalty at all. The reward climbs unchecked, but notice how the KL penalty explodes. This is classic reward hacking: the model finds degenerate outputs that maximize reward but may not make sense.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": true
+  },
+  {
+    "id": "46_ppo_exp2_frontier_no_kl",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Run PPO"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoFrontierSvg",
+        "label": "Reward vs KL Frontier"
+      }
+    ],
+    "narration": "On the frontier plot, the policy moves far to the right—KL divergence grows rapidly. This demonstrates why we need a penalty: without it, the model can drift far from the original behavior.",
+    "expectedElements": [
+      "#ppoFrontierSvg"
+    ],
+    "focusTarget": "#ppoFrontierSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "47_ppo_exp2_wait",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": "#ppoSvg"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "wait",
+        "ms": 1200
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "module focus"
+      }
+    ],
+    "narration": "This experiment answers our earlier question: removing the KL penalty leads to reward hacking.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "48_ppo_exp3_reset",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "click_button",
+        "text": "Reset"
+      },
+      {
+        "action": "zoom_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "module focus"
+      }
+    ],
+    "narration": "We'll reset again to try a very different setting.",
+    "expectedElements": [
+      ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+    ],
+    "focusTarget": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+    "isAnimated": false
+  },
+  {
+    "id": "49_ppo_exp3_run_high_kl",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "set_slider",
+        "selector": "#betaSlider",
+        "value": 80
+      },
+      {
+        "action": "set_slider",
+        "selector": "#stepsSlider",
+        "value": 100
+      },
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Run PPO"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "Training Dynamics chart"
+      }
+    ],
+    "narration": "With a very high beta, the KL penalty dominates. The red penalty line drops steeply, and the net objective might even go negative. The model is so constrained it can barely learn.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": true
+  },
+  {
+    "id": "50_ppo_exp3_frontier_high_kl",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Run PPO"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoFrontierSvg",
+        "label": "Reward vs KL Frontier"
+      }
+    ],
+    "narration": "On the frontier, the policy barely moves from the origin. This is over-regularization: the model is so tightly bound to the original that it can't improve reward.",
+    "expectedElements": [
+      "#ppoFrontierSvg"
+    ],
+    "focusTarget": "#ppoFrontierSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "51_ppo_exp3_wait",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": "#ppoSvg"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "wait",
+        "ms": 1200
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "module focus"
+      }
+    ],
+    "narration": "Notice how too much penalty can prevent any meaningful learning.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "52_ppo_exp4_reset",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "click_button",
+        "text": "Reset"
+      },
+      {
+        "action": "zoom_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+        "label": "module focus"
+      }
+    ],
+    "narration": "Let's reset one last time to find a sweet spot.",
+    "expectedElements": [
+      ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)"
+    ],
+    "focusTarget": ":nth-child(4) > :nth-child(1) > :nth-child(3) > :nth-child(1) > :nth-child(7)",
+    "isAnimated": false
+  },
+  {
+    "id": "53_ppo_exp4_run_sweet_spot",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "set_slider",
+        "selector": "#betaSlider",
+        "value": 15
+      },
+      {
+        "action": "set_slider",
+        "selector": "#lrSlider",
+        "value": 20
+      },
+      {
+        "action": "set_slider",
+        "selector": "#stepsSlider",
+        "value": 80
+      },
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Run PPO"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "Training Dynamics chart"
+      }
+    ],
+    "narration": "With a moderate beta and a slightly higher learning rate, reward increases aggressively at first. The net objective peaks, and that's roughly where we'd want to stop in practice.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": true
+  },
+  {
+    "id": "54_ppo_exp4_frontier_sweet_spot",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Run PPO"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoFrontierSvg",
+        "label": "Reward vs KL Frontier"
+      }
+    ],
+    "narration": "On the frontier, we see fast vertical movement—reward gains—followed by mostly horizontal movement as KL grows and returns diminish. This is the trade-off practitioners look for.",
+    "expectedElements": [
+      "#ppoFrontierSvg"
+    ],
+    "focusTarget": "#ppoFrontierSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "55_ppo_exp4_wait",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": "#ppoSvg"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "wait",
+        "ms": 1200
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "module focus"
+      }
+    ],
+    "narration": "This sweet spot balances learning and regularization, maximizing net objective.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "56_ppo_exp4_step1",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "click_button",
+        "text": "Step"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#ppoFrontierSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoFrontierSvg",
+        "label": "Frontier new dot"
+      }
+    ],
+    "narration": "Let's step through training manually. After one step, check the stat pills—reward, KL penalty, and net objective update. On the frontier, a new dot appears, showing our progress.",
+    "expectedElements": [
+      "#ppoFrontierSvg"
+    ],
+    "focusTarget": "#ppoFrontierSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "57_ppo_exp4_step2",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "click_button",
+        "text": "Step"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#ppoFrontierSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoFrontierSvg",
+        "label": "Frontier next dot"
+      }
+    ],
+    "narration": "With each step, the model moves along the frontier. This slow-motion view helps us see how each update affects both reward and KL divergence.",
+    "expectedElements": [
+      "#ppoFrontierSvg"
+    ],
+    "focusTarget": "#ppoFrontierSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "58_ppo_exp4_step3",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "click_button",
+        "text": "Step"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#ppoFrontierSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoFrontierSvg",
+        "label": "Frontier next dot"
+      }
+    ],
+    "narration": "Notice how the stat pills and the frontier plot update together, reinforcing the connection between each training step and the model's behavior.",
+    "expectedElements": [
+      "#ppoFrontierSvg"
+    ],
+    "focusTarget": "#ppoFrontierSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "59_ppo_exp4_step4",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "click_button",
+        "text": "Step"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#ppoFrontierSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoFrontierSvg",
+        "label": "Frontier next dot"
+      }
+    ],
+    "narration": "After a few steps, you can see the trajectory forming. This is how practitioners monitor PPO training in real time.",
+    "expectedElements": [
+      "#ppoFrontierSvg"
+    ],
+    "focusTarget": "#ppoFrontierSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "60_ppo_summary",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "module focus"
+      }
+    ],
+    "narration": "To sum up: beta is the single most important hyperparameter in Reinforcement Learning from Human Feedback. Too low, and we get reward hacking. Too high, and learning stalls. These charts are essential tools for diagnosing and tuning real RLHF training runs.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": false
+  },
+  {
+    "id": "61_ppo_transition_kl_tab",
+    "group": "ppo",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "3"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "zoom_to",
+        "target": "#ppoSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "module focus"
+      }
+    ],
+    "narration": "Next, let's dive deeper into Kullback-Leibler divergence and see why it's so crucial in RLHF.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "62_kl_intro_reference",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "3"
+      },
+      {
+        "action": "click_button",
+        "text": "Collapse"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#rmSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#rmSvg",
+        "label": "Reference distribution (blue bars)"
+      }
+    ],
+    "narration": "These blue bars show the probability distribution over the next token from the Supervised Fine-Tuning, or SFT, model. This represents our reference distribution—the safe starting point for the policy.",
+    "expectedElements": [
+      "#rmSvg"
+    ],
+    "focusTarget": "#rmSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "63_kl_intro_policy",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "3"
+      },
+      {
+        "action": "click_button",
+        "text": "Collapse"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#ppoSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "Policy distribution (purple bars)"
+      }
+    ],
+    "narration": "The purple bars represent the current policy's probability distribution. Right now, the policy matches the reference exactly, so the Kullback-Leibler divergence, or KL divergence, is zero.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "64_kl_intro_overlay",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "3"
+      },
+      {
+        "action": "click_button",
+        "text": "Collapse"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#klOverlaySvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#klOverlaySvg",
+        "label": "Overlay: Reference vs Policy Distributions"
+      }
+    ],
+    "narration": "Here, the blue and purple bars are identical for every token. This means the policy hasn't diverged from the reference at all.",
+    "expectedElements": [
+      "#klOverlaySvg"
+    ],
+    "focusTarget": "#klOverlaySvg",
+    "isAnimated": false
+  },
+  {
+    "id": "65_kl_demo1_mild_shift_drag",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "3"
+      },
+      {
+        "action": "click_button",
+        "text": "Collapse"
+      },
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "set_slider",
+        "selector": "#ppoSvg .bar[data-token='the']",
+        "value": 25
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 1500
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "Policy bar for 'the'"
+      }
+    ],
+    "narration": "Let's increase the probability of 'the' just a bit. Notice how the KL divergence rises from zero, reflecting this small change. The purple bar for 'the' is now taller, and its KL contribution is the largest.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": true
+  },
+  {
+    "id": "66_kl_demo1_mild_shift_explain",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "3"
+      },
+      {
+        "action": "click_button",
+        "text": "Collapse"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#klContribSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#klContribSvg",
+        "label": "KL contribution for 'the'"
+      }
+    ],
+    "narration": "Because 'the' changed the most, it contributes the most to the total KL divergence. This helps us see how KL measures the difference between the two distributions, token by token.",
+    "expectedElements": [
+      "#klContribSvg"
+    ],
+    "focusTarget": "#klContribSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "67_kl_demo2_extreme_shift_drag",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "3"
+      },
+      {
+        "action": "click_button",
+        "text": "Collapse"
+      },
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "set_slider",
+        "selector": "#ppoSvg .bar[data-token='the']",
+        "value": 45
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 1500
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "Policy bar for 'the'"
+      }
+    ],
+    "narration": "Now let's make 'the' extremely likely, dominating the distribution. The KL divergence jumps much higher, and nearly all of it comes from this single token.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": true
+  },
+  {
+    "id": "68_kl_demo2_extreme_shift_explain",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "3"
+      },
+      {
+        "action": "click_button",
+        "text": "Collapse"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#klContribSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#klContribSvg",
+        "label": "KL contribution for 'the'"
+      }
+    ],
+    "narration": "When the policy becomes nearly deterministic, the KL penalty becomes huge. This discourages the model from making extreme changes that stray far from the reference.",
+    "expectedElements": [
+      "#klContribSvg"
+    ],
+    "focusTarget": "#klContribSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "69_kl_reset_to_reference",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "3"
+      },
+      {
+        "action": "click_button",
+        "text": "Collapse"
+      },
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Reset to Reference"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "module focus"
+      }
+    ],
+    "narration": "Resetting brings the policy back to the reference distribution, and the KL divergence returns to zero.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "70_kl_demo3_uniform_shift_drag",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "click_tab",
+        "target": "3"
+      },
+      {
+        "action": "click_button",
+        "text": "Collapse"
+      },
+      {
+        "action": "set_slider",
+        "selector": "#ppoSvg .bar[data-token='the']",
+        "value": 10
+      },
+      {
+        "action": "set_slider",
+        "selector": "#ppoSvg .bar[data-token='a']",
+        "value": 10
+      },
+      {
+        "action": "set_slider",
+        "selector": "#ppoSvg .bar[data-token='is']",
+        "value": 10
+      },
+      {
+        "action": "set_slider",
+        "selector": "#ppoSvg .bar[data-token='of']",
+        "value": 10
+      },
+      {
+        "action": "set_slider",
+        "selector": "#ppoSvg .bar[data-token='in']",
+        "value": 10
+      },
+      {
+        "action": "set_slider",
+        "selector": "#ppoSvg .bar[data-token='to']",
+        "value": 10
+      },
+      {
+        "action": "set_slider",
+        "selector": "#ppoSvg .bar[data-token='and']",
+        "value": 10
+      },
+      {
+        "action": "set_slider",
+        "selector": "#ppoSvg .bar[data-token='it']",
+        "value": 10
+      },
+      {
+        "action": "set_slider",
+        "selector": "#ppoSvg .bar[data-token='for']",
+        "value": 10
+      },
+      {
+        "action": "set_slider",
+        "selector": "#ppoSvg .bar[data-token='on']",
+        "value": 10
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 2000
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "Policy bars (uniform)"
+      }
+    ],
+    "narration": "Now, let's make every token equally likely. Even though no single token stands out, the overall distribution is very different from the reference, so the KL divergence is still significant.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": true
+  },
+  {
+    "id": "71_kl_demo3_uniform_shift_explain",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "3"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "zoom_to",
+        "target": "#klContribSvg"
+      },
+      {
+        "action": "click_button",
+        "text": "Collapse"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#klContribSvg",
+        "label": "KL contribution bars (uniform)"
+      }
+    ],
+    "narration": "KL divergence captures the total difference between distributions, not just changes to individual tokens. Uniformity can still mean a large penalty if it doesn't match the reference.",
+    "expectedElements": [
+      "#klContribSvg"
+    ],
+    "focusTarget": "#klContribSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "72_kl_reset_to_reference2",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "3"
+      },
+      {
+        "action": "click_button",
+        "text": "Collapse"
+      },
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Reset to Reference"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "module focus"
+      }
+    ],
+    "narration": "Let's reset again, returning to the reference distribution and zero KL divergence.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "73_kl_demo4_beta_scaling_drag",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "click_tab",
+        "target": "3"
+      },
+      {
+        "action": "click_button",
+        "text": "Collapse"
+      },
+      {
+        "action": "set_slider",
+        "selector": "#ppoSvg .bar[data-token='the']",
+        "value": 20
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 1000
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "module focus"
+      }
+    ],
+    "narration": "Let's make a small change to the policy—just a slight increase for 'the'. The KL divergence is now small, around 0.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": true
+  },
+  {
+    "id": "74_kl_demo4_beta_scaling_low",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": "#klContribSvg"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_slider",
+        "selector": "#klBetaSlider",
+        "value": 5
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#klContribSvg",
+        "label": "KL penalty (low beta)"
+      }
+    ],
+    "narration": "With a low beta value, the penalty for this small divergence is barely noticeable. The model can explore freely.",
+    "expectedElements": [
+      "#klContribSvg"
+    ],
+    "focusTarget": "#klContribSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "75_kl_demo4_beta_scaling_medium",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": "#klContribSvg"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_slider",
+        "selector": "#klBetaSlider",
+        "value": 50
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#klContribSvg",
+        "label": "KL penalty (medium beta)"
+      }
+    ],
+    "narration": "Increasing beta to a moderate value makes the same KL divergence much more costly. Now, even small shifts are penalized significantly.",
+    "expectedElements": [
+      "#klContribSvg"
+    ],
+    "focusTarget": "#klContribSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "76_kl_demo4_beta_scaling_high",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": "#klContribSvg"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_slider",
+        "selector": "#klBetaSlider",
+        "value": 100
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#klContribSvg",
+        "label": "KL penalty (high beta)"
+      }
+    ],
+    "narration": "At a very high beta, even this tiny divergence results in a large penalty. This shows how beta controls the strength of regularization in RLHF.",
+    "expectedElements": [
+      "#klContribSvg"
+    ],
+    "focusTarget": "#klContribSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "77_kl_phase_bar_definition",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".phase-bar"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "move_cursor_to",
+        "target": ".phase-bar",
+        "label": "KL phase bar"
+      }
+    ],
+    "narration": "Kullback-Leibler divergence, or KL divergence, is always non-negative and equals zero only when the two distributions are identical. It measures the asymmetric distance from the policy to the reference.",
+    "expectedElements": [
+      ".phase-bar"
+    ],
+    "focusTarget": ".phase-bar",
+    "isAnimated": false
+  },
+  {
+    "id": "78_kl_transition_to_dpo",
+    "group": "kl_tab",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "4"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "module focus"
+      }
+    ],
+    "narration": "Now that we've built intuition for KL divergence and its role in RLHF, let's compare this approach to Direct Preference Optimization, or DPO.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": false
+  },
+  {
+    "id": "79_dpo_vs_rlhf_summary_phasebars",
+    "group": "dpo_vs_rlhf",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "4"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "RLHF summary phase bar"
+      }
+    ],
+    "narration": "Let's compare the overall structure of Reinforcement Learning from Human Feedback, or RLHF, and Direct Preference Optimization, or DPO. RLHF requires three stages: Supervised Fine-Tuning, training a reward model, and then optimizing with Proximal Policy Optimization. In contrast, DPO simplifies the process to just two stages: Supervised Fine-Tuning, followed by direct preference optimization—no separate reward model or reinforcement learning loop needed.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": false
+  },
+  {
+    "id": "80_dpo_vs_rlhf_implicit_reward_explanation",
+    "group": "dpo_vs_rlhf",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "4"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "DPO beta slider"
+      }
+    ],
+    "narration": "The key insight behind DPO is that you don't need to explicitly train a reward model. Instead, the reward is defined implicitly by the policy itself: it's proportional to the log-ratio between the policy and the reference model, scaled by beta. This means DPO can optimize preferences directly, using only the policy and the reference.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": false
+  },
+  {
+    "id": "81_dpo_vs_rlhf_comparison_table_walkthrough",
+    "group": "dpo_vs_rlhf",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "4"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "Comparison table"
+      }
+    ],
+    "narration": "Let's walk through the main differences between RLHF and DPO. RLHF needs a separate reward model, while DPO does not. RLHF uses a reinforcement learning loop with PPO, but DPO uses a classification-style loss. RLHF can be unstable to train, whereas DPO is generally more stable. RLHF is more flexible but requires more compute, since it keeps four models in memory, while DPO only needs two. Finally, RLHF supports online exploration, generating new responses, but DPO typically works with offline data.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": false
+  },
+  {
+    "id": "82_dpo_vs_rlhf_loss_landscape_default",
+    "group": "dpo_vs_rlhf",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "4"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "set_slider",
+        "selector": "#dpoGapSlider",
+        "value": 15
+      },
+      {
+        "action": "set_slider",
+        "selector": "#dpoBetaSlider",
+        "value": 10
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "DPO Loss Landscape chart"
+      }
+    ],
+    "narration": "Here we see the DPO loss landscape for several beta values. The thick curve shows our current beta of 0.10. At a gap of 1.50, the purple dot marks our current loss. Notice how the stat pills summarize the loss, the probability of preferring the winner, and the implicit rewards for each response.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": false
+  },
+  {
+    "id": "83_dpo_vs_rlhf_gap_sweep_animation",
+    "group": "dpo_vs_rlhf",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "4"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "set_slider",
+        "selector": "#dpoBetaSlider",
+        "value": 10
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "set_slider",
+        "selector": "#dpoGapSlider",
+        "value": 0
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "set_slider",
+        "selector": "#dpoGapSlider",
+        "value": 10
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "set_slider",
+        "selector": "#dpoGapSlider",
+        "value": 20
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "set_slider",
+        "selector": "#dpoGapSlider",
+        "value": 30
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "set_slider",
+        "selector": "#dpoGapSlider",
+        "value": 40
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "set_slider",
+        "selector": "#dpoGapSlider",
+        "value": 50
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 2000
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "Gap slider"
+      }
+    ],
+    "narration": "As we increase the gap from zero to five, the loss drops toward zero. When the policy can't distinguish between winner and loser, the loss is maximized. As the policy becomes more confident, the loss approaches zero, indicating strong separation.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": true
+  },
+  {
+    "id": "84_dpo_vs_rlhf_beta_comparison",
+    "group": "dpo_vs_rlhf",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "4"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "set_slider",
+        "selector": "#dpoGapSlider",
+        "value": 20
+      },
+      {
+        "action": "set_slider",
+        "selector": "#dpoBetaSlider",
+        "value": 5
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "set_slider",
+        "selector": "#dpoBetaSlider",
+        "value": 10
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "set_slider",
+        "selector": "#dpoBetaSlider",
+        "value": 20
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "set_slider",
+        "selector": "#dpoBetaSlider",
+        "value": 50
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 2000
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "Beta slider"
+      }
+    ],
+    "narration": "Now let's compare different beta values at a fixed gap of two. Lower beta produces a flatter loss curve, leading to gentler, slower learning. Higher beta makes the curve steeper, providing a stronger learning signal, but can risk over-correction. Notice how the thick curve shifts as we change beta.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": true
+  },
+  {
+    "id": "85_dpo_vs_rlhf_key_insight_phasebar",
+    "group": "dpo_vs_rlhf",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "4"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "Key Insight phase bar"
+      }
+    ],
+    "narration": "The key insight of DPO is that its equation is mathematically equivalent to the RLHF objective, but solved in closed form. This means DPO achieves the same goal as RLHF, but with a much simpler and more stable training process.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": false
+  },
+  {
+    "id": "86_epilogue_expand_theory",
+    "group": "epilogue",
+    "navActions": [
+      {
+        "action": "click_tab",
+        "target": "0"
+      },
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#theory-rlhf-vs-dpo"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-rlhf-vs-dpo",
+        "label": "RLHF vs DPO at a Glance"
+      }
+    ],
+    "narration": "Let's wrap up by reviewing the big picture. This summary contrasts Reinforcement Learning from Human Feedback, or RLHF, with Direct Preference Optimization, or DPO. Notice how both approaches aim to align models with human values, but differ in how they use reward signals and optimization. This table distills the key similarities and differences, helping you see the landscape at a glance.",
+    "expectedElements": [
+      "#theory-rlhf-vs-dpo"
+    ],
+    "focusTarget": "#theory-rlhf-vs-dpo",
+    "isAnimated": false
+  },
+  {
+    "id": "87_epilogue_core_idea_equation",
+    "group": "epilogue",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": "#theory-core-idea"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-core-idea",
+        "label": "Core Idea Equation"
+      }
+    ],
+    "narration": "Now, let's revisit the core equation. At this point, you understand every symbol: R is the reward learned from human feedback, beta is the coefficient we tuned to balance learning and regularization, KL is the divergence that keeps the model close to its safe baseline, pi is the current policy, and pi_ref is the reference model from supervised fine-tuning. The equation tells us to maximize reward while staying close to the baseline.",
+    "expectedElements": [
+      "#theory-core-idea"
+    ],
+    "focusTarget": "#theory-core-idea",
+    "isAnimated": false
+  },
+  {
+    "id": "88_epilogue_collapse_theory",
+    "group": "epilogue",
+    "navActions": [
+      {
+        "action": "click_selector",
+        "target": ".intro-header"
+      },
+      {
+        "action": "click_tab",
+        "target": "2"
+      },
+      {
+        "action": "zoom_to",
+        "target": "#ppoSvg"
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#ppoSvg",
+        "label": "PPO Final Experiment"
+      }
+    ],
+    "narration": "Let's close the theory section and return to our PPO experiment. Here, you can see the results of balancing reward and regularization in action. The training dynamics and frontier plot provide a visual summary of everything we've learned.",
+    "expectedElements": [
+      "#ppoSvg"
+    ],
+    "focusTarget": "#ppoSvg",
+    "isAnimated": false
+  },
+  {
+    "id": "89_epilogue_invite_questions",
+    "group": "epilogue",
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": "#theory-what-is-rlhf"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_slider",
+        "selector": "#betaSlider",
+        "value": 50
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Run PPO"
+      },
+      {
+        "action": "wait_for_animation",
+        "timeout": 4000
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#theory-what-is-rlhf",
+        "label": "Beta Slider"
+      }
+    ],
+    "narration": "If you have questions, now is the perfect time to ask. And if you're curious, try running your own PPO experiment with a different beta value. Exploring how the model responds will deepen your intuition for how RLHF works in practice.",
+    "expectedElements": [
+      "#theory-what-is-rlhf"
+    ],
+    "focusTarget": "#theory-what-is-rlhf",
+    "isAnimated": true
+  },
+  {
+    "id": "90_explain_quantum_computing_simply_new_pair_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 0
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "New Pair"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "Explain quantum computing simply overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "91_explain_quantum_computing_simply_run_ppo_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 0
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Run PPO"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "Explain quantum computing simply overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "92_explain_quantum_computing_simply_reset_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 0
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Reset"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "Explain quantum computing simply overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "93_explain_quantum_computing_simply_reset_to_reference_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 0
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Reset to Reference"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "Explain quantum computing simply overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "94_write_a_poem_about_the_ocean_new_pair_guided_steps",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "New Pair"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Reset Reward Model"
+      },
+      {
+        "action": "wait",
+        "ms": 350
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1500
+      },
+      {
+        "action": "wait",
+        "ms": 700
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "Write a poem about the ocean guided walkthrough"
+      }
+    ],
+    "narration": "Here the example unfolds step by step, so each algorithmic choice can be connected to the approximation guarantee.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "95_write_a_poem_about_the_ocean_run_ppo_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Run PPO"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "Write a poem about the ocean overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "96_write_a_poem_about_the_ocean_reset_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Reset"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "Write a poem about the ocean overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "97_write_a_poem_about_the_ocean_reset_to_reference_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 1
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Reset to Reference"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "Write a poem about the ocean overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "98_how_do_i_make_pasta_new_pair_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 2
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "New Pair"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "How do I make pasta? overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "99_how_do_i_make_pasta_run_ppo_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 2
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Run PPO"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "How do I make pasta? overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "100_how_do_i_make_pasta_reset_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 2
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Reset"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "How do I make pasta? overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "101_how_do_i_make_pasta_reset_to_reference_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 2
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Reset to Reference"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "How do I make pasta? overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "102_what_is_machine_learning_new_pair_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 3
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "New Pair"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "What is machine learning? overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "103_what_is_machine_learning_run_ppo_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 3
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Run PPO"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "What is machine learning? overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "104_what_is_machine_learning_reset_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 3
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Reset"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "What is machine learning? overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  },
+  {
+    "id": "105_what_is_machine_learning_reset_to_reference_overview",
+    "group": null,
+    "navActions": [
+      {
+        "action": "zoom_to",
+        "target": ".wrap"
+      },
+      {
+        "action": "wait",
+        "ms": 400
+      },
+      {
+        "action": "set_select",
+        "selector": "#rmPromptSel",
+        "index": 3
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "click_button",
+        "text": "Reset to Reference"
+      },
+      {
+        "action": "wait",
+        "ms": 500
+      },
+      {
+        "action": "step_through",
+        "target": "#step",
+        "pauseMs": 1200
+      },
+      {
+        "action": "wait",
+        "ms": 800
+      },
+      {
+        "action": "move_cursor_to",
+        "target": "#vizArea",
+        "label": "What is machine learning? overview"
+      }
+    ],
+    "narration": "This instance gives a quick overview run first. The overall behavior appears up front, and the slower walkthrough explains the decisions afterward.",
+    "expectedElements": [
+      "#vizArea"
+    ],
+    "focusTarget": "#vizArea",
+    "isAnimated": true
+  }
+]

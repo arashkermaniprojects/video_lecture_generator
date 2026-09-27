@@ -1,0 +1,92 @@
+================================================================================
+  EPILOGUE: WRAP-UP & INTERACTIVE ELEMENTS CHECKLIST (5 minutes)
+================================================================================
+
+
+WRAP-UP STEPS
+-------------
+1. Expand the theory section again. Scroll to the "RLHF vs DPO at a Glance"
+   box. Read it as a final summary.
+
+2. Scroll back to the "Core Idea" box. Say: "You now understand every symbol:
+   - R is the reward we learned in the Reward Model tab.
+   - beta is the coefficient we tuned in the PPO tab.
+   - KL is the divergence we explored in the KL Divergence tab.
+   - pi is the policy, pi_ref is the frozen SFT model.
+   - The whole expression says: maximise reward while staying close to the
+   safe baseline."
+
+3. Collapse the theory section. Switch to the PPO tab and leave the final
+   experiment visible on screen as a visual summary.
+
+4. Invite questions. If time permits, let a student run their own PPO
+   experiment with a beta value of their choosing.
+
+
+================================================================================
+  INTERACTIVE ELEMENTS CHECKLIST
+  Every item below MUST be used at least once during the lecture.
+================================================================================
+
+THEORY SECTION:
+[ ] Expand/Collapse button
+[ ] Core Idea key-concept box (Prologue + Epilogue)
+[ ] "Why Not Just Use More Supervised Data?" example box
+[ ] Reward Hacking warning box
+[ ] RLHF vs DPO at a Glance key-concept box
+
+PIPELINE TAB:
+[ ] Click Stage 1 (SFT) node
+[ ] Click Stage 2 (Reward Model) node
+[ ] Click Stage 3 (PPO) node
+[ ] Observe overview SVG diagram
+[ ] Observe SFT detail diagram
+[ ] Observe Reward Model detail diagram
+[ ] Observe PPO detail diagram
+[ ] Read stat pills for each stage
+[ ] Read phase bar description for each stage
+
+REWARD MODEL TAB:
+[ ] Use prompt dropdown (at least 3 different prompts)
+[ ] Click Response A or B (at least 4 times total)
+[ ] Observe response card colour change (win/lose)
+[ ] Read stat pills after each comparison
+[ ] Observe reward scores line chart growing
+[ ] Observe Bradley-Terry probability bar shifting
+[ ] Read phase bar after a comparison
+[ ] Click "New Pair" button
+[ ] Click "Reset Reward Model" button
+
+PPO TAB:
+[ ] Adjust beta slider (at least 3 values: 0.00, 0.20, 0.80)
+[ ] Adjust learning rate slider
+[ ] Adjust training steps slider
+[ ] Click "Run PPO" (at least 3 full runs)
+[ ] Click "Step" button (at least 3 manual steps)
+[ ] Click "Reset" button
+[ ] Observe training dynamics chart (all three lines)
+[ ] Observe reward-KL frontier scatter plot
+[ ] Read stat pills during training
+[ ] Observe phase bar colour changes
+
+KL DIVERGENCE TAB:
+[ ] Observe reference distribution (static blue bars)
+[ ] Drag policy bars (at least 3 different configurations)
+[ ] Observe auto-normalisation of policy distribution
+[ ] Read KL value stat pill after dragging
+[ ] Observe overlay chart (blue vs purple bars)
+[ ] Observe per-token KL contribution chart
+[ ] Adjust beta slider (at least 2 values)
+[ ] Click "Reset to Reference" button
+[ ] Read "How KL Divergence Works" phase bar
+
+DPO vs RLHF TAB:
+[ ] Read RLHF summary phase bar
+[ ] Read DPO summary phase bar
+[ ] Adjust implicit reward gap slider (sweep 0 to 5)
+[ ] Adjust beta slider (at least 3 values)
+[ ] Observe DPO loss landscape chart (curves + purple dot)
+[ ] Read comparison table (all 6 rows)
+[ ] Read "Key Insight" phase bar
+
+================================================================================

@@ -1,0 +1,239 @@
+{
+  "lecture": {
+    "toolPath": "./test_recurrence_index.html"
+  },
+  "defaults": {
+    "ttsVoice": "shimmer",
+    "ttsModel": "tts-1-hd",
+    "ttsSpeed": 0.95
+  },
+  "sections": [
+    {
+      "id": "01_intro_what_is_recurrence",
+      "group": "tree",
+      "navActions": [
+        { "action": "click_tab", "target": "tree" },
+        { "action": "scroll_to", "target": "#introBody" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#introBody", "label": "introduction panel" }
+      ],
+      "narration": "A recurrence relation is an equation that describes the running time of a recursive algorithm in terms of its time on smaller inputs. For instance, binary search satisfies T of n equals T of n over two, plus one comparison. By solving such equations, we predict how an algorithm scales without ever running it.",
+      "expectedElements": ["#introBody"],
+      "focusTarget": "#introBody",
+      "isAnimated": false
+    },
+    {
+      "id": "02_why_we_care",
+      "group": "tree",
+      "navActions": [
+        { "action": "click_tab", "target": "tree" },
+        { "action": "scroll_to", "target": "#introBody" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#introBody", "label": "complexity comparison table" }
+      ],
+      "narration": "Recurrences matter because tiny differences in their structure produce wildly different runtimes. Logarithmic algorithms finish in microseconds where exponential ones never finish at all. The whole point of analyzing recurrences is to know which category your algorithm falls into before you commit to implementing it.",
+      "expectedElements": ["#introBody"],
+      "focusTarget": "#introBody",
+      "isAnimated": false
+    },
+    {
+      "id": "03_three_modules_overview",
+      "group": "tree",
+      "navActions": [
+        { "action": "click_tab", "target": "tree" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": ".tabBar", "label": "three module tabs" }
+      ],
+      "narration": "This tool offers three complementary lenses on recurrences. The recursion tree visualizes the work; the master theorem applies a formula shortcut; and the substitution method gives a formal inductive proof. Each method illuminates the same problem from a different angle.",
+      "expectedElements": [".tabBar", "#viz-tree"],
+      "focusTarget": ".wrap",
+      "isAnimated": false
+    },
+    {
+      "id": "04_tree_binary_search",
+      "group": "tree",
+      "navActions": [
+        { "action": "click_tab", "target": "tree" },
+        { "action": "set_select", "selector": "#presetSelect", "index": 0 },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Play" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#statBigO", "label": "complexity result" }
+      ],
+      "narration": "Let's start with binary search. Each call solves one subproblem of half the size, so the recurrence is T of n equals T of n over two plus a constant. The recursion tree has only one path from root to leaf, of length log n. Total work is therefore order log n.",
+      "expectedElements": ["#viz-tree", "#statBigO", "#recurrenceText"],
+      "focusTarget": "#viz-tree",
+      "isAnimated": true
+    },
+    {
+      "id": "05_tree_merge_sort",
+      "group": "tree",
+      "navActions": [
+        { "action": "click_tab", "target": "tree" },
+        { "action": "set_select", "selector": "#presetSelect", "index": 2 },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Play" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#statBigO", "label": "merge sort complexity" }
+      ],
+      "narration": "Merge sort splits each problem into two halves and does linear work to combine them. The tree has log n levels, and at every level the total work across all nodes adds up to n. Multiplying the levels by the per-level work gives us the famous O of n log n.",
+      "expectedElements": ["#viz-tree", "#statBigO", "#recurrenceText"],
+      "focusTarget": "#viz-tree",
+      "isAnimated": true
+    },
+    {
+      "id": "06_tree_fibonacci_naive",
+      "group": "tree",
+      "navActions": [
+        { "action": "click_tab", "target": "tree" },
+        { "action": "set_select", "selector": "#presetSelect", "index": 5 },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Play" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#statNodes", "label": "node count explodes" }
+      ],
+      "narration": "Naive Fibonacci is the classic warning. Each call branches into two subproblems that barely shrink, so the tree doubles at every level. The total node count grows like two to the n, an exponential. At n equals fifty, the tree has more nodes than there are seconds in a year.",
+      "expectedElements": ["#viz-tree", "#statNodes", "#statBigO"],
+      "focusTarget": "#viz-tree",
+      "isAnimated": true
+    },
+    {
+      "id": "07_tree_fibonacci_memoized",
+      "group": "tree",
+      "navActions": [
+        { "action": "click_tab", "target": "tree" },
+        { "action": "set_select", "selector": "#presetSelect", "index": 4 },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Play" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#statBigO", "label": "now linear" }
+      ],
+      "narration": "Add a single line of memoization and the picture changes completely. Each subproblem is solved exactly once instead of trillions of times. The effective recursion tree collapses to a path of length n, so the total work is just O of n. Same algorithm, exponentially faster.",
+      "expectedElements": ["#viz-tree", "#statBigO"],
+      "focusTarget": "#viz-tree",
+      "isAnimated": true
+    },
+    {
+      "id": "08_tree_tower_hanoi",
+      "group": "tree",
+      "navActions": [
+        { "action": "click_tab", "target": "tree" },
+        { "action": "set_select", "selector": "#presetSelect", "index": 6 },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Play" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#statBigO", "label": "tower of hanoi complexity" }
+      ],
+      "narration": "Tower of Hanoi gives us another exponential, but for a different reason. The problem only shrinks by one each step, but every call spawns two more, giving the recurrence T of n equals two T of n minus one plus a constant. Solving that gives us 2 to the n, which is why the puzzle is so famously hard.",
+      "expectedElements": ["#viz-tree", "#statBigO"],
+      "focusTarget": "#viz-tree",
+      "isAnimated": true
+    },
+    {
+      "id": "09_master_theorem_intro",
+      "group": "master",
+      "navActions": [
+        { "action": "click_tab", "target": "master" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#viz-master", "label": "master theorem panel" }
+      ],
+      "narration": "The Master Theorem is a formula shortcut for divide and conquer recurrences of the form T of n equals a times T of n over b plus order n to the k. Instead of drawing a tree, we just compare two numbers, log base b of a versus k, and the answer falls into one of three cases instantly.",
+      "expectedElements": ["#viz-master", "#masterA", "#masterB", "#masterK"],
+      "focusTarget": "#viz-master",
+      "isAnimated": false
+    },
+    {
+      "id": "10_master_binary_search",
+      "group": "master",
+      "navActions": [
+        { "action": "click_tab", "target": "master" },
+        { "action": "wait", "ms": 400 },
+        { "action": "click_button", "text": "Bin. Search" },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Analyze" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#masterResult", "label": "binary search result" }
+      ],
+      "narration": "For binary search, a equals one, b equals two, and k equals zero. Log base two of one is zero, which equals k, so we are in case two: balanced. The result is order log n. The Master Theorem confirms what the recursion tree already showed us, in one line of arithmetic.",
+      "expectedElements": ["#viz-master", "#masterResult"],
+      "focusTarget": "#viz-master",
+      "isAnimated": false
+    },
+    {
+      "id": "11_master_merge_sort",
+      "group": "master",
+      "navActions": [
+        { "action": "click_tab", "target": "master" },
+        { "action": "wait", "ms": 400 },
+        { "action": "click_button", "text": "Merge Sort" },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Analyze" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#masterResult", "label": "merge sort result" }
+      ],
+      "narration": "For merge sort, a equals two, b equals two, k equals one. Log base two of two equals one, which equals k, so we are again in case two: balanced. The result is O of n log n. The work-per-level is constant at n, multiplied by log n levels.",
+      "expectedElements": ["#viz-master", "#masterResult"],
+      "focusTarget": "#viz-master",
+      "isAnimated": false
+    },
+    {
+      "id": "12_master_case_1",
+      "group": "master",
+      "navActions": [
+        { "action": "click_tab", "target": "master" },
+        { "action": "wait", "ms": 400 },
+        { "action": "click_button", "text": "Case 1" },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Analyze" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#masterResult", "label": "case 1 result" }
+      ],
+      "narration": "Case one is when log base b of a is greater than k, meaning the recursion tree is bottom-heavy. With four subproblems of half size and linear combine work, we get four T of n over two plus n. The leaves dominate the total, and the answer is order n squared.",
+      "expectedElements": ["#viz-master", "#masterResult"],
+      "focusTarget": "#viz-master",
+      "isAnimated": false
+    },
+    {
+      "id": "13_substitution_intro",
+      "group": "sub",
+      "navActions": [
+        { "action": "click_tab", "target": "sub" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#viz-sub", "label": "substitution method panel" }
+      ],
+      "narration": "The substitution method gives us a rigorous proof rather than a shortcut. The recipe is always the same: guess the answer, assume it holds for smaller inputs, substitute into the recurrence, simplify, and verify the base case. It is the formal scaffolding behind every Big O claim.",
+      "expectedElements": ["#viz-sub"],
+      "focusTarget": "#viz-sub",
+      "isAnimated": false
+    },
+    {
+      "id": "14_substitution_walkthrough",
+      "group": "sub",
+      "navActions": [
+        { "action": "click_tab", "target": "sub" },
+        { "action": "set_select", "selector": "#subPreset", "index": 1 },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Show All" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#subProgress", "label": "all proof steps" }
+      ],
+      "narration": "Here is the merge sort proof in full. We guess T of n is at most c times n log n. We assume that holds for smaller inputs. We substitute and simplify, and the bound is preserved. The base case holds for any sufficiently large c. Six steps, and we have a complete induction.",
+      "expectedElements": ["#viz-sub", "#subProgress"],
+      "focusTarget": "#viz-sub",
+      "isAnimated": false
+    },
+    {
+      "id": "15_conclusion",
+      "group": "tree",
+      "navActions": [
+        { "action": "click_tab", "target": "tree" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": ".wrap", "label": "full tool" }
+      ],
+      "narration": "Three methods, one underlying skill: reading the structure of a recursive algorithm and predicting how it scales. The recursion tree builds intuition. The master theorem gives speed. Substitution gives certainty. Together, they let you reason about the cost of any divide and conquer algorithm before writing a single line of code.",
+      "expectedElements": [".wrap"],
+      "focusTarget": ".wrap",
+      "isAnimated": false
+    }
+  ]
+}

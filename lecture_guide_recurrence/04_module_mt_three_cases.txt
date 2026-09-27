@@ -1,0 +1,131 @@
+================================================================================
+  ACT 3: MASTER THEOREM (12 minutes)
+  State: Click the "Master Theorem" tab.
+================================================================================
+
+
+MASTER THEOREM TAB COMPONENTS (LEFT PANEL)
+-------------------------------------------
+  1. Label: "Recurrence: T(n) = a * T(n/b) + O(n^k)"
+  2. Parameters row: a, b, k inputs
+  3. "Analyze" button
+  4. Stats: log_b(a), n^(log_b(a)), f(n) = n^k, Result
+  5. Quick Examples buttons: Bin. Search, Merge Sort, Case 1, Case 3
+
+RIGHT PANEL:
+  - Module banner explaining the Master Theorem concept
+  - Comparison bar: log_b(a) vs k with visual bar chart
+  - Explanation text (dynamically generated for each case)
+  - Three case cards (Case 1, 2, 3) — the active one is highlighted green
+  - Result badge with the final Big-O
+  - "Note" box about Master Theorem limitations (doesn't apply to subtractive)
+  - Classic Examples table
+
+
+TEACHING STEPS — INTRODUCTION
+-------------------------------
+1. Click the "Master Theorem" tab to switch modules.
+
+2. Read the module banner:
+   "The Master Theorem is a shortcut. Instead of drawing the entire recursion
+   tree, we compare two numbers and get the answer instantly. It works for any
+   divide-and-conquer recurrence T(n) = aT(n/b) + O(n^k)."
+
+3. Explain the three parameters:
+   "a is how many subproblems we create. b is how much we shrink the input.
+   k is the exponent on the work done at each level. The key question: does
+   the recursion rate beat the work rate, or vice versa?"
+
+
+TEACHING STEPS — CASE 2 (BALANCED): MERGE SORT
+-------------------------------------------------
+4. Click the "Merge Sort" quick example button (sets a=2, b=2, k=1).
+
+5. Point to the comparison bar:
+   "log_2(2) = 1.00, and k = 1.00. They're EQUAL. This is Case 2."
+
+6. Show the highlighted Case 2 card:
+   "When log_b(a) equals k, every level of the recursion tree contributes the
+   same amount of work. Since there are log(n) levels, we pick up an extra
+   log n factor. Result: O(n log n)."
+
+7. Point to the result badge: "T(n) = Theta(n log n)".
+
+8. Reference back to Act 1:
+   "Remember how every level of the Merge Sort tree did exactly n total work?
+   That's Case 2 — perfectly balanced across levels."
+
+
+TEACHING STEPS — CASE 2 (BALANCED): BINARY SEARCH
+----------------------------------------------------
+9. Click the "Bin. Search" quick example button (sets a=1, b=2, k=0).
+
+10. Point to the comparison bar:
+    "log_2(1) = 0, and k = 0. Equal again — Case 2."
+
+11. Show the result: "T(n) = Theta(log n)".
+    "With k=0, the base work is O(1). Case 2 adds a log factor:
+    O(1) * log(n) = O(log n). Exactly what we saw in the recursion tree."
+
+
+TEACHING STEPS — CASE 1 (RECURSION DOMINATES)
+-----------------------------------------------
+12. Click the "Case 1" quick example button (sets a=4, b=2, k=1).
+
+13. Point to the comparison bar:
+    "log_2(4) = 2.00, but k = 1.00. The recursion rate (2) is BIGGER than
+    the work exponent (1). This is Case 1."
+
+14. Show the highlighted Case 1 card:
+    "When the recursion dominates, work GROWS as we go deeper. The leaves do
+    most of the work. The answer is determined by the recursion:
+    O(n^log_b(a)) = O(n^2)."
+
+15. Show the result badge: "T(n) = Theta(n^2)".
+
+16. Explain intuitively:
+    "We have 4 subproblems each of size n/2. The 4 subproblems at level 1
+    together do 4*(n/2) = 2n work — MORE than the root's n. Each level does
+    more work than the last. The leaves dominate."
+
+
+TEACHING STEPS — CASE 3 (WORK DOMINATES)
+------------------------------------------
+17. Click the "Case 3" quick example button (sets a=2, b=2, k=2).
+
+18. Point to the comparison bar:
+    "log_2(2) = 1.00, but k = 2.00. The work exponent (2) is BIGGER than
+    the recursion rate (1). This is Case 3."
+
+19. Show the highlighted Case 3 card:
+    "When the work per level dominates, the root does the most work and it
+    SHRINKS going down. The total cost is just the root's cost: O(n^k) = O(n^2)."
+
+20. Show the result badge: "T(n) = Theta(n^2)".
+
+21. Contrast Cases 1 and 3:
+    "Case 1 with a=4,b=2,k=1 gives O(n^2) because the LEAVES dominate.
+    Case 3 with a=2,b=2,k=2 also gives O(n^2) but because the ROOT dominates.
+    Same answer, completely different reason!"
+
+
+TEACHING STEPS — LIMITATIONS
+------------------------------
+22. Point to the "Note" box at the bottom:
+    "The Master Theorem ONLY works for divide-and-conquer recurrences where
+    we divide by b. It does NOT apply to Fibonacci T(n) = T(n-1) + T(n-2)
+    or Tower of Hanoi T(n) = 2T(n-1) + 1 — those subtract instead of divide."
+
+23. Point to the classic examples table showing N/A for Fibonacci, Hanoi:
+    "For subtractive recurrences, we need other methods like the substitution
+    method, which we'll learn next."
+
+24. Let students experiment:
+    "Try changing a, b, and k to see which case activates. Can you find values
+    that give O(n^3)? What about O(sqrt(n))?"
+
+
+>> Transition: Click the "Substitution" tab.
+   Load 05_module_substitution.txt for Act 4.
+
+================================================================================

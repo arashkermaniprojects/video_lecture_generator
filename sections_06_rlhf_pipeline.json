@@ -1,0 +1,108 @@
+{
+  "sections": [
+    {
+      "id": "06_pipeline_intro",
+      "group": "pipeline_overview",
+      "navActions": [
+        { "action": "click_tab", "target": "0" },
+        { "action": "wait", "ms": 1000 },
+        { "action": "click_selector", "target": ".intro-header" },
+        { "action": "wait", "ms": 300 },
+        { "action": "zoom_to", "target": "#pipelineSvg" },
+        { "action": "move_cursor_to", "target": ".legend", "label": "colour legend — blue SFT, yellow RM, green PPO" }
+      ],
+      "narration": "Reinforcement Learning from Human Feedback, or RLHF, is the training paradigm that transforms a capable but unaligned language model into one that consistently responds in helpful, harmless, and honest ways. Pre-training on internet-scale text teaches a model language and facts, but gives it no preference for what counts as a good answer — RLHF adds a human-in-the-loop feedback signal that provides exactly that. The process unfolds in three sequential stages, and we use a consistent colour scheme throughout this module to track them: blue for Supervised Fine-Tuning, often called SFT; yellow for the Reward Model; and green for the final policy optimisation stage using Proximal Policy Optimization, known as PPO.",
+      "expectedElements": ["#pipelineSvg"],
+      "focusTarget": "#pipelineSvg",
+      "isAnimated": false
+    },
+    {
+      "id": "06_pipeline_overview_diagram",
+      "group": "pipeline_overview",
+      "navActions": [
+        { "action": "click_tab", "target": "0" },
+        { "action": "wait", "ms": 1000 },
+        { "action": "click_selector", "target": ".intro-header" },
+        { "action": "wait", "ms": 300 },
+        { "action": "zoom_to", "target": "#pipelineSvg" },
+        { "action": "move_cursor_to", "target": "#pipelineSvg", "label": "five-box pipeline left to right" }
+      ],
+      "narration": "Reading the pipeline left to right: a pre-trained base LLM is first fine-tuned on expert-written demonstrations to produce the SFT model, giving the model its initial ability to follow instructions. The SFT model is then used as the starting point to train a separate Reward Model on pairwise human preference comparisons. Finally, PPO uses the trained Reward Model as a live scoring function to further fine-tune the SFT model into the fully aligned output. The data annotations above each arrow tell us what kind of supervision each stage requires — demonstration pairs, preference comparisons, and online-sampled prompts — while the loss functions annotated below define the precise training objective at each step: cross-entropy, Bradley-Terry ranking loss, and the PPO clipped surrogate objective.",
+      "expectedElements": ["#pipelineSvg"],
+      "focusTarget": "#pipelineSvg",
+      "isAnimated": false
+    },
+    {
+      "id": "06_sft_stage",
+      "group": "sft_stage",
+      "navActions": [
+        { "action": "click_tab", "target": "0" },
+        { "action": "wait", "ms": 1000 },
+        { "action": "click_selector", "target": ".intro-header" },
+        { "action": "wait", "ms": 300 },
+        { "action": "click_selector", "target": "[onclick='selectStage(0)']" },
+        { "action": "wait_for_animation", "timeout": 1500 },
+        { "action": "zoom_to", "target": "#pipelineSvg" },
+        { "action": "move_cursor_to", "target": "#pipelineSvg", "label": "SFT cross-entropy training loop" }
+      ],
+      "narration": "In the SFT stage, a prompt x is fed into the language model, which produces a probability distribution over candidate next tokens — the predicted output y-hat. That prediction is compared token by token against the ground-truth response y written by a human expert, and cross-entropy loss is computed: the model is penalised for assigning low probability to the correct tokens. Gradients flow back through the network, nudging every weight to make expert-quality responses more likely. The inputs to this stage are the pre-trained base model and a dataset of demonstration pairs; the output is the SFT model — already capable of following instructions — which will serve as the initialisation point for both the Reward Model and the PPO policy in the stages that follow.",
+      "expectedElements": ["#pipelineSvg"],
+      "focusTarget": "#pipelineSvg",
+      "isAnimated": true
+    },
+    {
+      "id": "06_reward_model_stage",
+      "group": "reward_model_stage",
+      "navActions": [
+        { "action": "click_tab", "target": "0" },
+        { "action": "wait", "ms": 1000 },
+        { "action": "click_selector", "target": ".intro-header" },
+        { "action": "wait", "ms": 300 },
+        { "action": "click_selector", "target": "[onclick='selectStage(1)']" },
+        { "action": "wait_for_animation", "timeout": 1500 },
+        { "action": "zoom_to", "target": "#pipelineSvg" },
+        { "action": "move_cursor_to", "target": "#pipelineSvg", "label": "Bradley-Terry ranking loss" }
+      ],
+      "narration": "The Reward Model stage converts subjective human judgments into a differentiable scalar signal. For each prompt, two candidate responses are generated — a preferred winner and a rejected loser — and a human annotator labels which they prefer. Both responses are independently scored by the Reward Model: in this example the winner receives 2.3 and the loser only 0.8. The model is trained with the Bradley-Terry ranking loss, a classical pairwise comparison framework that converts score differences into a preference probability and penalises the model whenever the loser outscores the winner. The result is a neural network that, given any prompt-response pair, produces a meaningful quality scalar — an automated stand-in for human judgment that will score every response generated during PPO training.",
+      "expectedElements": ["#pipelineSvg"],
+      "focusTarget": "#pipelineSvg",
+      "isAnimated": true
+    },
+    {
+      "id": "06_ppo_stage",
+      "group": "ppo_stage",
+      "navActions": [
+        { "action": "click_tab", "target": "0" },
+        { "action": "wait", "ms": 1000 },
+        { "action": "click_selector", "target": ".intro-header" },
+        { "action": "wait", "ms": 300 },
+        { "action": "click_selector", "target": "[onclick='selectStage(2)']" },
+        { "action": "wait_for_animation", "timeout": 1500 },
+        { "action": "zoom_to", "target": "#pipelineSvg" },
+        { "action": "move_cursor_to", "target": "#pipelineSvg", "label": "PPO objective: R minus beta times KL" }
+      ],
+      "narration": "In the PPO stage, a prompt is sampled and the current policy generates a response, which the frozen Reward Model immediately scores with scalar reward R. A frozen copy of the original SFT model — the reference policy pi-ref — evaluates the same response and measures how much the current policy has drifted from the original using the Kullback-Leibler divergence, or KL divergence, a statistical measure of the difference between two probability distributions. The training objective is to maximise R minus beta times this KL divergence: the reward term pushes the policy toward high-scoring responses while the KL term penalises it for straying too far from the SFT baseline. The gradient flows back to update only the active policy — pi-ref is frozen throughout, serving purely as a reference anchor — and this separation is what keeps training stable.",
+      "expectedElements": ["#pipelineSvg"],
+      "focusTarget": "#pipelineSvg",
+      "isAnimated": true
+    },
+    {
+      "id": "06_pipeline_kl_question",
+      "group": "pipeline_overview",
+      "navActions": [
+        { "action": "click_tab", "target": "0" },
+        { "action": "wait", "ms": 1000 },
+        { "action": "click_selector", "target": ".intro-header" },
+        { "action": "wait", "ms": 300 },
+        { "action": "click_selector", "target": "[onclick='selectStage(2)']" },
+        { "action": "wait_for_animation", "timeout": 1500 },
+        { "action": "zoom_to", "target": "#pipelineSvg" },
+        { "action": "move_cursor_to", "target": "#pipelineSvg", "label": "PPO objective node — KL penalty term" }
+      ],
+      "narration": "Before moving on, consider this question: what would happen if we simply removed the KL penalty and optimised purely for reward? On the surface it sounds appealing — more reward should mean better responses. But the Reward Model is an imperfect proxy trained on a finite sample of human comparisons, and any learned function has exploitable gaps. Without the KL constraint anchoring the policy to the SFT distribution, the model quickly learns to generate outputs that score artificially high according to the reward model while becoming incoherent, repetitive, or adversarial in practice — a phenomenon called reward hacking. The coefficient beta controls the strength of this regularisation and is one of the key engineering decisions in any RLHF training run; we will explore this tradeoff experimentally in the PPO and KL Divergence sections that follow.",
+      "expectedElements": ["#pipelineSvg"],
+      "focusTarget": "#pipelineSvg",
+      "isAnimated": true
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "lecture": {
+    "toolPath": "./test_recurrence_index.html"
+  },
+  "defaults": {
+    "ttsVoice": "shimmer",
+    "ttsModel": "tts-1-hd",
+    "ttsSpeed": 0.95
+  },
+  "sections": [
+    {
+      "id": "01_intro_what_is_recurrence",
+      "group": "tree",
+      "navActions": [
+        { "action": "click_tab", "target": "tree" },
+        { "action": "scroll_to", "target": "#introBody" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#introBody", "label": "introduction panel" }
+      ],
+      "narration": "A recurrence relation is an equation that describes the running time of a recursive algorithm in terms of its time on smaller inputs. For instance, binary search satisfies T of n equals T of n over two, plus one comparison.",
+      "expectedElements": ["#introBody"],
+      "focusTarget": "#introBody",
+      "isAnimated": false
+    },
+    {
+      "id": "02_tree_module_merge_sort",
+      "group": "tree",
+      "navActions": [
+        { "action": "click_tab", "target": "tree" },
+        { "action": "wait", "ms": 400 },
+        { "action": "click_button", "text": "Play" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#treeSVG", "label": "merge sort recursion tree" }
+      ],
+      "narration": "The recursion tree module makes the work visible. Here is merge sort: each level splits the array in half, and across all levels we do linear work, giving an overall complexity of O of n log n.",
+      "expectedElements": ["#treeSVG", "#statBigO"],
+      "focusTarget": "#viz-tree",
+      "isAnimated": true
+    },
+    {
+      "id": "03_master_theorem_module",
+      "group": "master",
+      "navActions": [
+        { "action": "click_tab", "target": "master" },
+        { "action": "wait", "ms": 500 },
+        { "action": "click_button", "text": "Analyze" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#masterResult", "label": "master theorem result" }
+      ],
+      "narration": "The Master Theorem gives a shortcut for divide and conquer recurrences. We just compare log base b of a against k, and the answer falls into one of three cases instantly.",
+      "expectedElements": ["#masterResult"],
+      "focusTarget": "#viz-master",
+      "isAnimated": false
+    }
+  ]
+}

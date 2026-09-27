@@ -1,0 +1,160 @@
+{
+  "sections": [
+    {
+      "id": "28_ppo_controls_intro",
+      "group": "ppo_introduction",
+      "navActions": [
+        { "action": "click_tab", "target": "2" },
+        { "action": "click_selector", "target": ".intro-header" },
+        { "action": "wait", "ms": 600 },
+        { "action": "scroll_to", "target": "#betaSlider" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#betaSlider", "label": "Beta — KL penalty coefficient" }
+      ],
+      "narration": "Before running any experiments, let's understand the three parameters that govern Proximal Policy Optimization, or PPO, training. Beta is the Kullback-Leibler divergence, or KL divergence, penalty coefficient — it controls how strongly we penalise the policy for drifting away from the supervised fine-tuning baseline. Learning rate controls the size of each gradient update step, while the number of training steps determines how long the optimisation runs. Of these three, beta is by far the most consequential hyperparameter, and four experiments will now demonstrate exactly why — set it wrong in either direction, and training fails in a characteristic way.",
+      "expectedElements": ["#betaSlider", "#lrSlider", "#stepsSlider"],
+      "focusTarget": "#betaSlider",
+      "isAnimated": false
+    },
+    {
+      "id": "28_ppo_exp1_baseline",
+      "group": "ppo_experiment_1",
+      "navActions": [
+        { "action": "click_tab", "target": "2" },
+        { "action": "click_selector", "target": ".intro-header" },
+        { "action": "wait", "ms": 600 },
+        { "action": "scroll_to", "target": "#ppoSvg" },
+        { "action": "wait", "ms": 400 },
+        { "action": "click_button", "text": "Run PPO" },
+        { "action": "wait_for_animation", "timeout": 6000 },
+        { "action": "scroll_to", "target": "#ppoFrontierSvg" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#ppoFrontierSvg", "label": "Reward vs KL frontier — baseline trajectory" }
+      ],
+      "narration": "With the default settings — a beta of zero-point-two, learning rate of zero-point-zero-one, and fifty training steps — observe three quantities evolving simultaneously. Reward rises quickly at first then levels off as easy gains are exhausted, while the KL divergence from the reference policy grows steadily; the net objective, which equals reward minus beta times KL, peaks in the middle and then plateaus — this tug-of-war between reward and penalty is the fundamental dynamic of Reinforcement Learning from Human Feedback, or RLHF. On the reward-versus-KL frontier, the trajectory moves from the origin toward the upper right, gaining reward faster than it accumulates divergence early on, before the curve bends rightward as diminishing returns set in — the ideal operating region is the top-left corner, high reward with minimal drift.",
+      "expectedElements": ["#ppoSvg", "#ppoFrontierSvg"],
+      "focusTarget": "#ppoFrontierSvg",
+      "isAnimated": true
+    },
+    {
+      "id": "28_ppo_exp2_no_kl_penalty",
+      "group": "ppo_experiment_2",
+      "navActions": [
+        { "action": "click_tab", "target": "2" },
+        { "action": "click_selector", "target": ".intro-header" },
+        { "action": "wait", "ms": 600 },
+        { "action": "set_slider", "selector": "#betaSlider", "value": 0 },
+        { "action": "wait", "ms": 500 },
+        { "action": "set_slider", "selector": "#stepsSlider", "value": 100 },
+        { "action": "wait", "ms": 500 },
+        { "action": "scroll_to", "target": "#ppoSvg" },
+        { "action": "wait", "ms": 400 },
+        { "action": "click_button", "text": "Run PPO" },
+        { "action": "wait_for_animation", "timeout": 10000 },
+        { "action": "scroll_to", "target": "#ppoFrontierSvg" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#ppoFrontierSvg", "label": "Frontier showing KL explosion — reward hacking" }
+      ],
+      "narration": "Setting beta to zero — removing the KL penalty entirely — produces a striking failure mode. Reward climbs without bound across all one hundred steps because nothing penalises deviation from the reference policy, but the frontier reveals the true cost: the trajectory shoots far to the right, meaning the policy has drifted enormously from its supervised baseline. This is reward hacking — the model discovers outputs that score highly on the reward model but may be repetitive, incoherent, or completely divorced from human intent, because the reward model is an imperfect proxy and the policy has learned to exploit its blind spots. This is precisely the failure mode that beta was designed to prevent.",
+      "expectedElements": ["#ppoSvg", "#ppoFrontierSvg"],
+      "focusTarget": "#ppoFrontierSvg",
+      "isAnimated": true
+    },
+    {
+      "id": "28_ppo_exp3_high_kl_penalty",
+      "group": "ppo_experiment_3",
+      "navActions": [
+        { "action": "click_tab", "target": "2" },
+        { "action": "click_selector", "target": ".intro-header" },
+        { "action": "wait", "ms": 600 },
+        { "action": "set_slider", "selector": "#betaSlider", "value": 80 },
+        { "action": "wait", "ms": 500 },
+        { "action": "set_slider", "selector": "#stepsSlider", "value": 100 },
+        { "action": "wait", "ms": 500 },
+        { "action": "scroll_to", "target": "#ppoSvg" },
+        { "action": "wait", "ms": 400 },
+        { "action": "click_button", "text": "Run PPO" },
+        { "action": "wait_for_animation", "timeout": 10000 },
+        { "action": "scroll_to", "target": "#ppoFrontierSvg" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#ppoFrontierSvg", "label": "Frontier showing over-regularisation — policy frozen near origin" }
+      ],
+      "narration": "The opposite extreme is equally damaging. With beta raised to zero-point-eight, the KL penalty dominates the objective function so completely that the net objective quickly turns negative — the cost of diverging from the reference outweighs any reward being earned. On the frontier, the policy barely moves from the origin across all one hundred steps: it is so constrained by the penalty that it learns almost nothing from the reward signal. This is over-regularisation — the model effectively ignores human preference feedback and remains nearly identical to its supervised fine-tuning baseline, making the entire RLHF procedure pointless.",
+      "expectedElements": ["#ppoSvg", "#ppoFrontierSvg"],
+      "focusTarget": "#ppoFrontierSvg",
+      "isAnimated": true
+    },
+    {
+      "id": "28_ppo_exp4_sweet_spot",
+      "group": "ppo_experiment_4",
+      "navActions": [
+        { "action": "click_tab", "target": "2" },
+        { "action": "click_selector", "target": ".intro-header" },
+        { "action": "wait", "ms": 600 },
+        { "action": "set_slider", "selector": "#betaSlider", "value": 15 },
+        { "action": "wait", "ms": 500 },
+        { "action": "set_slider", "selector": "#lrSlider", "value": 20 },
+        { "action": "wait", "ms": 500 },
+        { "action": "set_slider", "selector": "#stepsSlider", "value": 80 },
+        { "action": "wait", "ms": 500 },
+        { "action": "scroll_to", "target": "#ppoSvg" },
+        { "action": "wait", "ms": 400 },
+        { "action": "click_button", "text": "Run PPO" },
+        { "action": "wait_for_animation", "timeout": 8000 },
+        { "action": "scroll_to", "target": "#ppoFrontierSvg" },
+        { "action": "wait", "ms": 600 },
+        { "action": "move_cursor_to", "target": "#ppoFrontierSvg", "label": "Sweet spot — peak net objective and frontier inflection" }
+      ],
+      "narration": "With beta lowered slightly to zero-point-fifteen and the learning rate raised modestly, we find a balanced configuration. Reward increases aggressively early in training before the net objective peaks cleanly — that peak marks the point where additional KL divergence no longer buys proportional reward gain. On the frontier, the trajectory moves steeply upward at first, meaning rapid reward gains per unit of KL divergence, then bends rightward as diminishing returns set in. That inflection point — where the curve transitions from nearly vertical to nearly horizontal — is approximately where a practitioner would stop training in a real RLHF run.",
+      "expectedElements": ["#ppoSvg", "#ppoFrontierSvg"],
+      "focusTarget": "#ppoFrontierSvg",
+      "isAnimated": true
+    },
+    {
+      "id": "28_ppo_manual_stepping",
+      "group": "ppo_manual_step",
+      "navActions": [
+        { "action": "click_tab", "target": "2" },
+        { "action": "click_selector", "target": ".intro-header" },
+        { "action": "wait", "ms": 600 },
+        { "action": "set_slider", "selector": "#betaSlider", "value": 15 },
+        { "action": "wait", "ms": 300 },
+        { "action": "set_slider", "selector": "#lrSlider", "value": 20 },
+        { "action": "wait", "ms": 300 },
+        { "action": "set_slider", "selector": "#stepsSlider", "value": 80 },
+        { "action": "wait", "ms": 300 },
+        { "action": "scroll_to", "target": "#ppoFrontierSvg" },
+        { "action": "wait", "ms": 400 },
+        { "action": "click_button", "text": "Step" },
+        { "action": "wait", "ms": 900 },
+        { "action": "click_button", "text": "Step" },
+        { "action": "wait", "ms": 900 },
+        { "action": "click_button", "text": "Step" },
+        { "action": "wait", "ms": 900 },
+        { "action": "click_button", "text": "Step" },
+        { "action": "wait", "ms": 900 },
+        { "action": "move_cursor_to", "target": "#ppoFrontierSvg", "label": "Per-step frontier position — current policy state" }
+      ],
+      "narration": "Advancing one gradient step at a time reveals the micro-dynamics that a full animated run compresses into seconds. Each individual update represents one complete cycle: the policy generates responses to a batch of prompts, the reward model scores them, the KL penalty against the reference policy is computed, and the weights are adjusted by exactly one gradient step. After each step the reward increases by a small increment, the KL divergence accumulates slightly, and the net objective shifts — and the frontier dot advances one position, tracing out the same reward-versus-KL curve we have been analysing, but now at a pace that makes each trade-off legible.",
+      "expectedElements": ["#ppoFrontierSvg"],
+      "focusTarget": "#ppoFrontierSvg",
+      "isAnimated": false
+    },
+    {
+      "id": "28_ppo_summary",
+      "group": "ppo_summary",
+      "navActions": [
+        { "action": "click_tab", "target": "2" },
+        { "action": "click_selector", "target": ".intro-header" },
+        { "action": "wait", "ms": 600 },
+        { "action": "scroll_to", "target": "#betaSlider" },
+        { "action": "wait", "ms": 400 },
+        { "action": "move_cursor_to", "target": "#betaSlider", "label": "Beta — the single most important RLHF hyperparameter" }
+      ],
+      "narration": "Beta is the single most important hyperparameter in RLHF: too low and the policy reward-hacks its way into degenerate outputs; too high and the KL penalty suffocates all learning from human preferences; tuned correctly, the policy acquires genuinely useful behaviour while remaining anchored to the supervised baseline. The training dynamics chart and the reward-versus-KL frontier are the primary diagnostic tools practitioners use to monitor real alignment training runs and identify when the optimal trade-off has been reached. With PPO's mechanics now fully explored, we are ready to examine KL divergence more rigorously — what it measures mathematically, why it is the right constraint for limiting policy drift, and how its analytical properties shape the entire RLHF objective.",
+      "expectedElements": ["#betaSlider", "#ppoSvg", "#ppoFrontierSvg"],
+      "focusTarget": "#betaSlider",
+      "isAnimated": false
+    }
+  ]
+}

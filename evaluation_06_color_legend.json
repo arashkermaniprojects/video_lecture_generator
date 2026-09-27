@@ -1,0 +1,56 @@
+{
+  "verdict": "evolve_tool",
+  "confidence": 85,
+  "reasoning": "The current static legend cannot address fundamental student questions about how these stages work and connect. Sam needs concrete examples of abstract concepts like 'numerically encode preferences,' while Alex needs to see the actual flow and dependencies. A static color legend operates at REMEMBER level when students need UNDERSTAND level engagement.",
+  "bloomLevel": "understand",
+  "pedagogyScore": 45,
+  "narrationFeedback": {
+    "strengths": [
+      "Clear color-coding system that will help throughout the course",
+      "Consistent terminology (SFT, Reward Model, PPO)",
+      "Concise explanations that don't overwhelm"
+    ],
+    "weaknesses": [
+      "Too abstract - uses technical terms without concrete grounding",
+      "Doesn't address what 'supervised' means in accessible terms",
+      "The phrase 'numerically encode human preferences' is meaningless to beginners",
+      "No scaffolding from familiar concepts to technical terminology"
+    ],
+    "rewrite": null
+  },
+  "toolEvolution": {
+    "needed": true,
+    "priority": "critical",
+    "requirements": [
+      {
+        "type": "add_animation",
+        "description": "Animated flow showing data moving through all three stages in sequence, with color-coded highlights showing which stage 'owns' each data transformation",
+        "reason": "Addresses Alex's dependency question and makes the abstract pipeline concrete and visual",
+        "studentNeed": "strong students need to see actual flow and dependencies"
+      },
+      {
+        "type": "add_feature",
+        "description": "Interactive example panel showing a concrete preference scenario - human says 'I prefer answer A to answer B', then show the reward model converting this to a numerical score (e.g. +0.8)",
+        "reason": "Grounds the abstract concept of 'numerically encode preferences' in a concrete, relatable example",
+        "studentNeed": "struggling students need concrete examples before abstract concepts"
+      },
+      {
+        "type": "add_feature",
+        "description": "Hover/click interactions on each color that reveal simple analogies - SFT as 'teaching basic skills with examples', Reward Model as 'learning to grade answers like humans do', PPO as 'practicing to get better grades'",
+        "reason": "Provides accessible explanations of technical terms using familiar educational metaphors",
+        "studentNeed": "struggling students need familiar analogies for technical concepts"
+      },
+      {
+        "type": "modify_view",
+        "description": "Split view showing the legend alongside a live mini-example of each stage in action, so students see both the color code AND what that color represents happening",
+        "reason": "Achieves visual-verbal alignment by showing both abstract symbol and concrete process simultaneously",
+        "studentNeed": "all students benefit from seeing symbol and meaning together"
+      }
+    ]
+  },
+  "teachingSequence": {
+    "prerequisitesMetBy": ["04_three_stages_preview"],
+    "shouldPrecede": ["all subsequent RLHF sections that use color coding"],
+    "missingPrerequisite": null
+  }
+}

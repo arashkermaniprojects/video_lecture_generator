@@ -1,0 +1,73 @@
+================================================================================
+  PROLOGUE: MOTIVATION & INTRODUCTION (5 minutes)
+  State: Intro section EXPANDED. No tab interaction yet.
+================================================================================
+
+
+INTRO SECTION COMPONENTS
+------------------------
+The collapsible intro section sits at the top of the page. It contains these
+sub-components (top to bottom):
+
+  1. "What is a Recurrence Relation?" paragraph
+     Defines recurrence as an equation describing recursive algorithm runtime.
+     Uses Binary Search on a sorted list of 1000 entries as motivating example.
+     Shows T(n) = T(n/2) + 1.
+
+  2. "Why Do We Care?" paragraph
+     Explains that recurrences let us determine Big-O without running code.
+     Mentions the spectrum: O(log n) to O(2^n).
+
+  3. "How to Use This Tool" paragraph
+     Lists the three modules:
+       1. Recursion Tree — visual breakdown
+       2. Master Theorem — formula shortcut
+       3. Substitution Method — formal proof
+
+  4. "Suggested Learning Path" interactive buttons
+     Five clickable steps: Binary Search -> Merge Sort -> Fibonacci (naive)
+     -> Fibonacci (memo) -> Tower of Hanoi
+
+  5. "The Big Picture: How Complexity Classes Compare" table + chart
+     Shows concrete numbers for n=10,20,30,50,100 across O(log n), O(n),
+     O(n log n), O(2^n). Includes the dramatic note about 2^100 having
+     30 digits.
+
+
+TEACHING STEPS
+--------------
+1. Open the tool in a browser. The intro section is expanded by default.
+
+2. Read/paraphrase component 1 ("What is a Recurrence Relation?"). Frame it:
+   "Imagine you're looking up a name in a phone book with 1,000 pages. Instead
+   of checking every page, you open to the middle and throw away half. How many
+   steps? That 'how many steps' question is exactly what a recurrence relation
+   answers."
+
+3. Show component 2 ("Why Do We Care?"). Emphasize:
+   "Recurrences let us predict performance without running the code. We can
+   determine if an algorithm scales gracefully or catastrophically."
+
+4. Briefly overview component 3 ("How to Use This Tool"). Point out the three
+   modules we'll visit in order:
+   "First we'll SEE how recursion works with trees. Then we'll learn a FORMULA
+   shortcut called the Master Theorem. Finally we'll learn to PROVE our answers
+   using the substitution method."
+
+5. Show the learning path buttons (component 4). Say:
+   "We'll follow this exact progression — simple to complex. By the end, you'll
+   understand why Fibonacci is exponential and how memoization makes it linear."
+
+6. Show the complexity comparison table (component 5). Draw attention to the
+   O(2^n) column:
+   "Look at the last column. At n=30, the exponential algorithm does over a
+   billion operations. At n=100, it's a number with 30 digits — more than the
+   atoms in a human body. This is why we care about solving recurrences."
+
+7. Click the "Collapse" button to hide the intro section. This reveals the
+   main interactive area cleanly.
+
+>> Transition: The Recursion Tree tab is already active. Proceed to Act 1.
+   Load 02_module_recursion_tree_basics.txt.
+
+================================================================================

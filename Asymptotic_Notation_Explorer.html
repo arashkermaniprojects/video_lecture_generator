@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Asymptotic Notation Explorer — BCS 309</title>
+<style>
+:root{--bg:#0b1020;--text:#e8ecff;--muted:#b7c0ff;--c1:#6aa9ff;--c2:#64f0c8;--c3:#ffd166;--c4:#ff9f43;--c5:#ff5c7a;--c6:#c77dff;--c7:#ff6b6b;--card:rgba(255,255,255,0.06);--border:rgba(255,255,255,0.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;font-size:13px;line-height:1.55;min-height:100vh}
+button{cursor:pointer;font-family:inherit}
+.tabs{display:flex;gap:2px;background:rgba(0,0,0,.25);padding:4px;border-radius:14px;margin:14px 18px 0}
+.tab{flex:1;text-align:center;padding:10px 8px;border:none;background:transparent;color:var(--muted);font-size:12px;font-weight:600;border-radius:12px;transition:.2s}
+.tab:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.tab.active{background:rgba(106,169,255,.15);color:var(--c1)}
+.wrap{display:grid;grid-template-columns:420px 1fr;gap:14px;padding:14px 18px 18px;min-height:calc(100vh - 52px)}
+@media(max-width:980px){.wrap{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;overflow-y:auto;max-height:calc(100vh - 70px)}
+.module{display:none}.module.active{display:block}
+h2{font-size:16px;font-weight:700;margin-bottom:12px}
+h3{font-size:14px;font-weight:600;margin:14px 0 8px;color:var(--c1)}
+h4{font-size:13px;font-weight:600;margin:10px 0 6px}
+.sub{color:var(--muted);font-size:12px;margin-bottom:10px}
+.card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.insight{padding:12px 14px;border-radius:12px;border-left:3px solid var(--c1);background:rgba(106,169,255,.08);margin:10px 0;font-size:12px}
+.insight.warn{border-left-color:var(--c3);background:rgba(255,209,102,.08)}
+.insight.good{border-left-color:var(--c2);background:rgba(100,240,200,.08)}
+.insight.bad{border-left-color:var(--c5);background:rgba(255,92,122,.08)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:12px;font-size:12px;font-weight:600;transition:.15s}
+.btn.primary{background:var(--c1);color:#0b1020}
+.btn.secondary{background:rgba(255,255,255,.1);color:var(--text)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn-sm{padding:5px 10px;font-size:11px;border-radius:8px}
+.btn-group{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;font-size:11px;font-weight:600}
+.pill.blue{background:rgba(106,169,255,.15);color:var(--c1)}
+.pill.green{background:rgba(100,240,200,.15);color:var(--c2)}
+.pill.yellow{background:rgba(255,209,102,.15);color:var(--c3)}
+.pill.red{background:rgba(255,92,122,.15);color:var(--c5)}
+.pill.purple{background:rgba(199,125,255,.15);color:var(--c6)}
+select,input[type=number]{background:rgba(0,0,0,.3);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;font-family:inherit}
+input[type=range]{width:100%;accent-color:var(--c1)}
+label{font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px}
+.field{margin-bottom:10px}
+.math{font-family:"Courier New",Courier,monospace;background:rgba(106,169,255,.1);padding:2px 6px;border-radius:4px;font-size:12px;white-space:nowrap}
+.math-block{font-family:"Courier New",Courier,monospace;background:rgba(106,169,255,.08);padding:12px 16px;border-radius:10px;font-size:13px;margin:8px 0;line-height:1.8;overflow-x:auto;white-space:pre-wrap}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{text-align:left;padding:8px 10px;background:rgba(0,0,0,.2);color:var(--muted);font-weight:600;border-bottom:1px solid var(--border)}
+td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.05)}
+tr:hover td{background:rgba(255,255,255,.03)}
+svg text{font-family:system-ui,-apple-system,sans-serif}
+.notation-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px;cursor:pointer;transition:.2s}
+.notation-card:hover{background:rgba(255,255,255,.07)}
+.notation-card.selected{border-color:var(--c1);background:rgba(106,169,255,.1)}
+.notation-card .symbol{font-size:22px;font-weight:750;margin-bottom:2px}
+.notation-card .name{font-size:12px;color:var(--muted);margin-bottom:4px}
+.step{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;opacity:0;transform:translateY(8px);transition:.3s}
+.step.revealed{opacity:1;transform:translateY(0)}
+.step-head{padding:10px 14px;font-weight:600;font-size:12px;display:flex;align-items:center;gap:8px}
+.step-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.step-body{padding:0 14px 12px;font-size:12px;line-height:1.7}
+.code-block{background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-family:"Courier New",monospace;font-size:12px;line-height:1.7;overflow-x:auto;margin:8px 0;white-space:pre}
+.code-line{display:block;padding:2px 4px;border-radius:3px;transition:.3s}
+.code-line.active{background:rgba(255,209,102,.2)}
+.code-line.done{background:rgba(100,240,200,.08)}
+.algo-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:6px;cursor:pointer;transition:.2s}
+.algo-card:hover{background:rgba(255,255,255,.07)}
+.algo-card.selected{border-color:var(--c2);background:rgba(100,240,200,.08)}
+.algo-card .algo-name{font-weight:600;font-size:13px}
+.algo-card .algo-type{font-size:11px;color:var(--muted)}
+.collapsible{margin-bottom:10px}
+.collapsible-toggle{width:100%;text-align:left;padding:10px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.collapsible-toggle::after{content:"▸";transition:.2s;font-size:10px}
+.collapsible.open .collapsible-toggle::after{transform:rotate(90deg)}
+.collapsible-body{max-height:0;overflow:hidden;transition:.3s}
+.collapsible.open .collapsible-body{max-height:4000px}
+.collapsible-inner{padding:12px 14px 4px}
+.quiz-option{display:block;width:100%;text-align:left;padding:10px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:12px;margin-bottom:6px;transition:.2s}
+.quiz-option:hover:not(:disabled){background:rgba(255,255,255,.08)}
+.quiz-option.correct{border-color:var(--c2);background:rgba(100,240,200,.15);color:var(--c2)}
+.quiz-option.wrong{border-color:var(--c5);background:rgba(255,92,122,.1);color:var(--c5)}
+.quiz-option:disabled{cursor:default}
+.progress-bar{height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;background:var(--c1);border-radius:2px;transition:.3s}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .3s ease forwards}
+.header{padding:14px 18px 0;display:flex;align-items:center;gap:12px}
+.header h1{font-size:18px;font-weight:750}
+.header .badge{font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(106,169,255,.15);color:var(--c1);font-weight:600}
+.slider-row{display:flex;align-items:center;gap:10px;margin:6px 0}
+.slider-row input[type=range]{flex:1}
+.slider-row .val{min-width:40px;text-align:right;font-weight:700;font-size:13px;color:var(--c1)}
+.op-counter{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+.op-counter .op-box{flex:1;min-width:80px;background:rgba(0,0,0,.2);border-radius:10px;padding:10px;text-align:center}
+.op-counter .op-val{font-size:20px;font-weight:750}
+.op-counter .op-label{font-size:10px;color:var(--muted);margin-top:2px}
+/* Fixed heights prevent layout shifts (page jumping) during algorithm step-through */
+#iter-array-container{min-height:95px}
+#iter-ops-display{min-height:68px}
+.array-viz{display:flex;gap:2px;align-items:flex-end;margin:10px 0;height:60px}
+.array-viz .bar{flex:1;background:var(--c1);border-radius:3px 3px 0 0;transition:.3s;min-width:4px;position:relative}
+.array-viz .bar.compare{background:var(--c3)}
+.array-viz .bar.swap{background:var(--c5)}
+.array-viz .bar.sorted{background:var(--c2)}
+.array-viz .bar.pivot{background:var(--c6)}
+/* ─── Case selector ───────────────────────────────── */
+.case-btns{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}
+.case-btn{flex:1;min-width:80px;padding:8px 6px;border:2px solid var(--border);border-radius:10px;background:rgba(255,255,255,.03);color:var(--text);font-size:11px;font-weight:600;text-align:center;transition:.2s;line-height:1.4}
+.case-btn:hover{background:rgba(255,255,255,.07)}
+.case-btn.active{border-color:var(--c1);background:rgba(106,169,255,.1)}
+.case-btn .case-label{font-size:10px;color:var(--muted);margin-top:2px}
+.case-btn .case-notation{font-size:11px;font-weight:700;margin-top:3px}
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:10px 0}
+.compare-cell{background:rgba(0,0,0,.2);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--border)}
+.compare-cell .cc-label{font-size:10px;color:var(--muted);margin-bottom:4px}
+.compare-cell .cc-ops{font-size:18px;font-weight:750}
+.compare-cell .cc-notation{font-size:11px;font-weight:600;margin-top:4px}
+.case-insight{padding:10px 14px;border-radius:10px;margin:6px 0;font-size:12px;line-height:1.6;border-left:3px solid}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Asymptotic Notation Explorer</h1>
+  <span class="badge">BCS 309 — Algorithms I</span>
+</div>
+
+<div class="tabs" id="tabs">
+  <button class="tab active" data-mod="notations">Notation Guide</button>
+  <button class="tab" data-mod="iterative">Iterative Analysis</button>
+  <button class="tab" data-mod="recursive">Recursive Analysis</button>
+  <button class="tab" data-mod="prover">Proof Builder</button>
+  <button class="tab" data-mod="challenge">Challenge Mode</button>
+</div>
+
+<div class="wrap">
+<!-- LEFT PANEL -->
+<div class="panel modulePanel">
+
+<!-- MODULE 1: NOTATION GUIDE -->
+<div class="module active" id="mod-notations">
+  <h2>Asymptotic Notations</h2>
+  <p class="sub">Select a notation, then <b>drag the sliders</b> to adjust c and n₀ and watch the graph update live.</p>
+
+  <div class="collapsible open" id="intro-collapse">
+    <button class="collapsible-toggle" onclick="this.parentElement.classList.toggle('open')">Start Here — What Are Asymptotic Notations?</button>
+    <div class="collapsible-body"><div class="collapsible-inner">
+      <p style="margin-bottom:8px">When we analyse algorithms, we care about how their running time <b>grows</b> as input size <b>n</b> increases. Asymptotic notations give us precise mathematical language for describing this growth.</p>
+      <div class="insight">Instead of "3n² + 5n + 2 steps", we say <span class="math">O(n²)</span> — capturing the <b>essential growth rate</b> while ignoring constants and lower-order terms.</div>
+      <h4>The Five Notations</h4>
+      <table>
+        <tr><th>Notation</th><th>Meaning</th><th>Analogy</th></tr>
+        <tr><td style="color:var(--c5)">O (Big-O)</td><td>Upper bound — at most</td><td>≤</td></tr>
+        <tr><td style="color:var(--c2)">Ω (Big-Omega)</td><td>Lower bound — at least</td><td>≥</td></tr>
+        <tr><td style="color:var(--c6)">Θ (Theta)</td><td>Tight bound — exactly</td><td>=</td></tr>
+        <tr><td style="color:var(--c3)">o (Small-o)</td><td>Strict upper — strictly less</td><td>&lt;</td></tr>
+        <tr><td style="color:var(--c4)">ω (Small-omega)</td><td>Strict lower — strictly greater</td><td>&gt;</td></tr>
+      </table>
+      <div class="insight good"><b>Key:</b> f(n) = Θ(g(n)) ⟺ f(n) = O(g(n)) AND f(n) = Ω(g(n))</div>
+    </div></div>
+  </div>
+
+  <div id="notation-cards"></div>
+  <div id="notation-sliders" style="display:none"></div>
+  <div id="notation-detail"></div>
+</div>
+
+<!-- MODULE 2: ITERATIVE ANALYSIS -->
+<div class="module" id="mod-iterative">
+  <h2>Iterative Algorithm Analysis</h2>
+  <p class="sub">Step through each algorithm line-by-line. Watch operations being counted live with array visualisation.</p>
+  <div id="iter-algo-cards"></div>
+  <div id="iter-case-selector" style="display:none"></div>
+  <div id="iter-detail"></div>
+  <div id="iter-controls" style="display:none" class="btn-group">
+    <button class="btn primary btn-sm" onclick="iterStep()">▶ Next Step</button>
+    <button class="btn secondary btn-sm" onclick="iterPlayAll()">▶▶ Auto Play</button>
+    <button class="btn secondary btn-sm" onclick="iterPause()">⏸ Pause</button>
+    <button class="btn secondary btn-sm" onclick="iterReset()">↺ Reset</button>
+  </div>
+  <div id="iter-ops-display"></div>
+  <div id="iter-summary"></div>
+  <div id="iter-compare" style="display:none"></div>
+</div>
+
+<!-- MODULE 3: RECURSIVE ANALYSIS -->
+<div class="module" id="mod-recursive">
+  <h2>Recursive Algorithm Analysis</h2>
+  <p class="sub">Watch the recursion tree build level-by-level. Adjust n to see how the tree grows.</p>
+  <div id="rec-algo-cards"></div>
+  <div id="rec-case-selector" style="display:none"></div>
+  <div id="rec-detail"></div>
+  <div class="field" id="rec-n-field" style="display:none">
+    <label>Input size n</label>
+    <div class="slider-row">
+      <input type="range" id="rec-n-slider" min="2" max="16" value="8" oninput="recNChange()">
+      <span class="val" id="rec-n-val">8</span>
+    </div>
+  </div>
+  <div id="rec-controls" style="display:none" class="btn-group">
+    <button class="btn primary btn-sm" onclick="recStepLevel()">▶ Next Level</button>
+    <button class="btn secondary btn-sm" onclick="recAnimateAll()">▶▶ Animate All</button>
+    <button class="btn secondary btn-sm" onclick="recReset()">↺ Reset</button>
+  </div>
+  <div id="rec-summary"></div>
+</div>
+
+<!-- MODULE 4: PROOF BUILDER -->
+<div class="module" id="mod-prover">
+  <h2>Proof Builder</h2>
+  <p class="sub">Walk through formal proofs step-by-step. The graph is <b>always visible</b> — steps highlight what to look at.</p>
+  <div class="field">
+    <label>Choose a Proof</label>
+    <select id="proof-select" onchange="loadProof()"><option value="">— select —</option></select>
+  </div>
+  <div id="proof-steps"></div>
+  <div id="proof-controls" style="display:none" class="btn-group">
+    <button class="btn primary btn-sm" onclick="proofNext()">▶ Next Step</button>
+    <button class="btn secondary btn-sm" onclick="proofShowAll()">Show All</button>
+    <button class="btn secondary btn-sm" onclick="proofReset()">↺ Reset</button>
+  </div>
+</div>
+
+<!-- MODULE 5: CHALLENGE -->
+<div class="module" id="mod-challenge">
+  <h2>Challenge Mode</h2>
+  <p class="sub">Test your understanding of all five notations.</p>
+  <div id="challenge-progress"></div>
+  <div id="challenge-content"></div>
+  <div id="challenge-score"></div>
+</div>
+
+</div><!-- /modulePanel -->
+
+<!-- RIGHT PANEL — VISUALISATION -->
+<div class="panel vizPanel" style="display:flex;flex-direction:column;height:calc(100vh - 70px)">
+  <div id="viz-notations" class="module active" style="flex:1;display:flex;flex-direction:column">
+    <svg id="svg-notations" width="100%" style="flex:0 0 auto;min-height:280px;max-height:400px"></svg>
+    <div id="viz-notations-legend" style="flex:1;margin-top:10px;font-size:16px;overflow-y:auto;padding:0 4px"></div>
+  </div>
+  <div id="viz-iterative" class="module" style="flex:1;display:none;flex-direction:column">
+    <div id="iter-array-container" style="padding:0 10px"></div>
+    <svg id="svg-iterative" width="100%" style="flex:0 0 auto;min-height:220px;max-height:340px"></svg>
+    <div id="iter-chart-legend" style="flex:1;margin-top:10px;font-size:16px;padding:0 4px;overflow-y:auto"></div>
+    <div id="iter-table-container" style="overflow-y:auto;max-height:160px"></div>
+  </div>
+  <div id="viz-recursive" class="module" style="flex:1;display:none;flex-direction:column">
+    <svg id="svg-recursive" width="100%" style="flex:1;min-height:220px;max-height:420px"></svg>
+    <div id="rec-level-table" style="overflow-y:auto;max-height:180px"></div>
+  </div>
+  <div id="viz-prover" class="module" style="flex:1;display:none;flex-direction:column">
+    <svg id="svg-prover" width="100%" style="flex:0 0 auto;min-height:280px;max-height:400px"></svg>
+    <div id="prover-legend" style="flex:1;margin-top:10px;font-size:16px;overflow-y:auto;padding:0 4px"></div>
+  </div>
+  <div id="viz-challenge" class="module" style="flex:1;display:none;flex-direction:column">
+    <svg id="svg-challenge" width="100%" style="flex:1;min-height:220px;max-height:420px"></svg>
+  </div>
+</div>
+
+</div>
+
+<script>
+const SVG_NS="http://www.w3.org/2000/svg";
+const C={c1:"#6aa9ff",c2:"#64f0c8",c3:"#ffd166",c4:"#ff9f43",c5:"#ff5c7a",c6:"#c77dff",c7:"#ff6b6b",muted:"#b7c0ff",text:"#e8ecff"};
+function svgEl(tag,a={}){const e=document.createElementNS(SVG_NS,tag);for(const[k,v]of Object.entries(a))e.setAttribute(k,String(v));return e}
+function $(s){return document.querySelector(s)}
+function $$(s){return [...document.querySelectorAll(s)]}
+function fmtN(n){if(Math.abs(n)>=1e6)return n.toExponential(1);if(Number.isInteger(n))return n.toLocaleString();return n.toFixed(1)}
+function escH(s){return s.replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+
+/* ═══════ TAB SWITCHING ═══════ */
+const MODS=["notations","iterative","recursive","prover","challenge"];
+$$(".tab").forEach(t=>t.addEventListener("click",()=>{
+  $$(".tab").forEach(x=>x.classList.remove("active"));t.classList.add("active");
+  const m=t.dataset.mod;
+  MODS.forEach(id=>{
+    const c=$(`#mod-${id}`),v=$(`#viz-${id}`);
+    if(c)c.classList.toggle("active",id===m);
+    if(v){v.classList.toggle("active",id===m);v.style.display=id===m?"flex":"none"}
+  });
+  if(m==="challenge"&&!challengeState.started)startChallenge();
+}));
+
+/* ── Hash-based tab activation (used by recorder: page.goto('...#tab=iterative'))
+   This guarantees the correct tab is active from frame 0 of every recording. ── */
+(function(){
+  const m=(location.hash||"").replace(/^#tab=/,"");
+  if(m&&MODS.includes(m)){
+    const btn=document.querySelector(`.tab[data-mod="${m}"]`);
+    if(btn)btn.click();
+  }
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   MODULE 1 — NOTATION GUIDE (Interactive c, n₀ sliders)
+   ═══════════════════════════════════════════════════════════════ */
+const NOTATIONS=[
+  {id:"bigO",symbol:"O",name:"Big-O (Upper Bound)",color:C.c5,
+   formal:"f(n) = O(g(n))  ⟺  ∃ c > 0, n₀ > 0 such that\n0 ≤ f(n) ≤ c·g(n)  for all n ≥ n₀",
+   intuition:"f(n) grows <b>no faster</b> than g(n). Past n₀, f(n) stays below c·g(n).",
+   fExpr:"2n² + 3n + 1", gExpr:"n²",
+   f:n=>2*n*n+3*n+1, g:n=>n*n,
+   cMin:1,cMax:8,cDefault:3, n0Min:1,n0Max:15,n0Default:4,
+   shadeMode:"upper",
+   keyPoints:["Most commonly used notation","Gives a <b>ceiling</b> on growth rate","Saying O(n³) when it's O(n²) is technically true but not tight","Used for worst-case analysis"]},
+  {id:"bigOmega",symbol:"Ω",name:"Big-Omega (Lower Bound)",color:C.c2,
+   formal:"f(n) = Ω(g(n))  ⟺  ∃ c > 0, n₀ > 0 such that\n0 ≤ c·g(n) ≤ f(n)  for all n ≥ n₀",
+   intuition:"f(n) grows <b>at least as fast</b> as g(n). Past n₀, f(n) stays above c·g(n).",
+   fExpr:"2n² + 3n + 1", gExpr:"n²",
+   f:n=>2*n*n+3*n+1, g:n=>n*n,
+   cMin:0.5,cMax:5,cDefault:2, n0Min:1,n0Max:10,n0Default:1,
+   shadeMode:"lower",
+   keyPoints:["Mirror of Big-O — gives a <b>floor</b>","Often used for best-case or lower-bound proofs","Comparison-based sorting is Ω(n log n)"]},
+  {id:"theta",symbol:"Θ",name:"Theta (Tight Bound)",color:C.c6,
+   formal:"f(n) = Θ(g(n))  ⟺  ∃ c₁, c₂ > 0, n₀ > 0 such that\nc₁·g(n) ≤ f(n) ≤ c₂·g(n)  for all n ≥ n₀",
+   intuition:"f(n) grows at <b>exactly the same rate</b> as g(n) — sandwiched between two multiples.",
+   fExpr:"2n² + 3n + 1", gExpr:"n²",
+   f:n=>2*n*n+3*n+1, g:n=>n*n,
+   cMin:1,cMax:8,cDefault:2, c2Min:2,c2Max:10,c2Default:6, n0Min:1,n0Max:10,n0Default:1,
+   shadeMode:"band",
+   keyPoints:["The <b>strongest</b> notation — both upper and lower","f = Θ(g) ⟺ f = O(g) AND f = Ω(g)","Merge Sort is Θ(n log n) in <b>all</b> cases"]},
+  {id:"smallO",symbol:"o",name:"Small-o (Strict Upper)",color:C.c3,
+   formal:"f(n) = o(g(n))  ⟺  for ALL c > 0, ∃ n₀ such that\n0 ≤ f(n) < c·g(n)  for all n ≥ n₀\n\nEquivalently: lim(n→∞) f(n)/g(n) = 0",
+   intuition:"f(n) grows <b>strictly slower</b> than g(n). Even tiny c works eventually.",
+   fExpr:"n", gExpr:"n²",
+   f:n=>n, g:n=>n*n,
+   cMin:0.01,cMax:2,cDefault:0.5, n0Min:1,n0Max:20,n0Default:3,
+   shadeMode:"upper",
+   keyPoints:["Stronger than Big-O: strictly less, not ≤","n = o(n²) but n ≠ o(n)","Limit test: lim f/g = 0 ⟹ f = o(g)","<b>Try dragging c very small</b> — it still works if n₀ is big enough!"]},
+  {id:"smallOmega",symbol:"ω",name:"Small-omega (Strict Lower)",color:C.c4,
+   formal:"f(n) = ω(g(n))  ⟺  for ALL c > 0, ∃ n₀ such that\n0 ≤ c·g(n) < f(n)  for all n ≥ n₀\n\nEquivalently: lim(n→∞) f(n)/g(n) = ∞",
+   intuition:"f(n) grows <b>strictly faster</b> than g(n). Exceeds any multiple eventually.",
+   fExpr:"n²", gExpr:"n",
+   f:n=>n*n, g:n=>n,
+   cMin:1,cMax:50,cDefault:5, n0Min:1,n0Max:30,n0Default:6,
+   shadeMode:"lower",
+   keyPoints:["Mirror of small-o — strictly faster","n² = ω(n) but n² ≠ ω(n²)","Limit test: lim f/g = ∞ ⟹ f = ω(g)","<b>Try dragging c to 50</b> — n² still wins if n₀ big enough!"]}
+];
+
+let selNotation=null, notC=3, notC2=6, notN0=4;
+
+function renderNotationCards(){
+  $("#notation-cards").innerHTML=NOTATIONS.map(n=>`
+    <div class="notation-card" data-id="${n.id}" onclick="selectNotation('${n.id}')">
+      <div class="symbol" style="color:${n.color}">${n.symbol}</div>
+      <div class="name">${n.name}</div>
+    </div>`).join("");
+}
+
+function selectNotation(id){
+  selNotation=NOTATIONS.find(n=>n.id===id);
+  $$(".notation-card").forEach(c=>c.classList.toggle("selected",c.dataset.id===id));
+  const n=selNotation;
+  notC=n.cDefault; notN0=n.n0Default;
+  if(n.c2Default) notC2=n.c2Default;
+
+  // Build interactive sliders
+  let html=`<div class="card fade-in" style="margin-top:10px">
+    <h4>Adjust the constants — watch the graph change!</h4>`;
+  if(n.id==="theta"){
+    html+=`<div class="field"><label>c₁ (lower constant) = <span id="not-c-val">${notC}</span></label>
+      <div class="slider-row"><input type="range" min="${n.cMin}" max="${n.cMax}" step="0.1" value="${notC}" oninput="notC=+this.value;$('#not-c-val').textContent=this.value;drawNotationGraph()"><span class="val" style="color:${C.c2}">${n.cMin}–${n.cMax}</span></div></div>`;
+    html+=`<div class="field"><label>c₂ (upper constant) = <span id="not-c2-val">${notC2}</span></label>
+      <div class="slider-row"><input type="range" min="${n.c2Min}" max="${n.c2Max}" step="0.1" value="${notC2}" oninput="notC2=+this.value;$('#not-c2-val').textContent=this.value;drawNotationGraph()"><span class="val" style="color:${C.c5}">${n.c2Min}–${n.c2Max}</span></div></div>`;
+  } else {
+    html+=`<div class="field"><label>c = <span id="not-c-val">${notC}</span></label>
+      <div class="slider-row"><input type="range" min="${n.cMin}" max="${n.cMax}" step="${n.cMin<1?0.01:0.1}" value="${notC}" oninput="notC=+this.value;$('#not-c-val').textContent=(+this.value).toFixed(2);drawNotationGraph()"><span class="val">${n.cMin}–${n.cMax}</span></div></div>`;
+  }
+  html+=`<div class="field"><label>n₀ = <span id="not-n0-val">${notN0}</span></label>
+    <div class="slider-row"><input type="range" min="${n.n0Min}" max="${n.n0Max}" step="1" value="${notN0}" oninput="notN0=+this.value;$('#not-n0-val').textContent=this.value;drawNotationGraph()"><span class="val">${n.n0Min}–${n.n0Max}</span></div></div>`;
+
+  // Validity check indicator
+  html+=`<div id="validity-check" style="margin-top:6px"></div>`;
+  html+=`</div>`;
+  $("#notation-sliders").innerHTML=html;
+  $("#notation-sliders").style.display="block";
+
+  // Detail + Algorithm examples
+  const algoExamples={
+    bigO:[
+      {algo:"Linear Search",bound:"O(n)",input:"Target not in array",why:"Must scan all n elements in worst case"},
+      {algo:"Binary Search",bound:"O(log n)",input:"Target at end",why:"Halves search space each step → log n steps"},
+      {algo:"Bubble Sort",bound:"O(n²)",input:"Reverse sorted",why:"n(n-1)/2 comparisons + swaps"},
+      {algo:"Merge Sort",bound:"O(n log n)",input:"Any input",why:"Always splits and merges → log n levels × n work"},
+      {algo:"Quick Sort",bound:"O(n²)",input:"Sorted + first pivot",why:"Degenerate partition → n levels × n work"}
+    ],
+    bigOmega:[
+      {algo:"Linear Search",bound:"Ω(1)",input:"Target at index 0",why:"Found immediately — can't do less than 1 check"},
+      {algo:"Binary Search",bound:"Ω(1)",input:"Target at midpoint",why:"First check hits — best possible"},
+      {algo:"Insertion Sort",bound:"Ω(n)",input:"Already sorted",why:"Still must scan each element once — no shifts"},
+      {algo:"Selection Sort",bound:"Ω(n²)",input:"Any input",why:"Always does n(n-1)/2 comparisons"},
+      {algo:"Merge Sort",bound:"Ω(n log n)",input:"Any input",why:"Must always read all elements + produce sorted output"}
+    ],
+    theta:[
+      {algo:"Selection Sort",bound:"Θ(n²)",input:"Any input",why:"Always exactly n(n-1)/2 comparisons — no variation!"},
+      {algo:"Merge Sort",bound:"Θ(n log n)",input:"Any input",why:"Same work in all cases — both O and Ω are n log n"},
+      {algo:"Insertion (worst)",bound:"Θ(n²)",input:"Reverse sorted",why:"Worst case is both O(n²) and Ω(n²)"},
+      {algo:"Tower of Hanoi",bound:"Θ(2ⁿ)",input:"Any n",why:"Exactly 2ⁿ-1 moves — tight in all cases"}
+    ],
+    smallO:[
+      {algo:"Binary Search",bound:"o(n)",input:"vs Linear Search",why:"log n / n → 0: strictly slower than linear"},
+      {algo:"Merge Sort",bound:"o(n²)",input:"vs Bubble Sort",why:"n log n / n² = log n / n → 0: strictly better than quadratic"},
+      {algo:"Linear Search",bound:"o(n²)",input:"Any",why:"n / n² = 1/n → 0: linear is strictly less than quadratic"},
+      {algo:"Any Θ(n²)",bound:"o(n³)",input:"Any",why:"n² / n³ = 1/n → 0: quadratic is strictly less than cubic"}
+    ],
+    smallOmega:[
+      {algo:"Binary Search",bound:"ω(1)",input:"Worst case",why:"log n / 1 → ∞: strictly more than constant"},
+      {algo:"Bubble Sort",bound:"ω(n)",input:"Worst case",why:"n² / n = n → ∞: strictly more than linear"},
+      {algo:"Fibonacci (naive)",bound:"ω(n²)",input:"Any n",why:"φⁿ / n² → ∞: exponential dominates polynomial"},
+      {algo:"Quick Sort worst",bound:"ω(n log n)",input:"Sorted",why:"n² / (n log n) = n/log n → ∞"}
+    ]
+  };
+  const exKey=n.id==="bigO"?"bigO":n.id==="bigOmega"?"bigOmega":n.id==="theta"?"theta":n.id==="smallO"?"smallO":"smallOmega";
+  const exs=algoExamples[exKey]||[];
+
+  $("#notation-detail").innerHTML=`<div class="card fade-in">
+    <h3 style="color:${n.color}">${n.symbol} — ${n.name}</h3>
+    <div class="math-block">${n.formal}</div>
+    <div class="insight">${n.intuition}</div>
+    <h4>Example: f(n) = ${n.fExpr}, g(n) = ${n.gExpr}</h4>
+    <h4>Key Points</h4>
+    <ul style="font-size:12px;padding-left:16px;line-height:1.8">${n.keyPoints.map(p=>`<li>${p}</li>`).join("")}</ul>
+    <h4 style="margin-top:12px">Algorithm Examples for ${n.symbol}</h4>
+    <table>
+      <tr><th>Algorithm</th><th>${n.symbol} Bound</th><th>Input</th><th>Why</th></tr>
+      ${exs.map(e=>`<tr><td><b>${e.algo}</b></td><td style="color:${n.color}">${e.bound}</td><td>${e.input}</td><td>${e.why}</td></tr>`).join("")}
+    </table>
+  </div>`;
+  drawNotationGraph();
+}
+
+function drawNotationGraph(){
+  const n=selNotation;if(!n)return;
+  const svg=$("#svg-notations");
+  const W=svg.clientWidth||600,H=svg.clientHeight||420;
+  svg.innerHTML="";svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  const pad={l:75,r:20,t:30,b:45},gW=W-pad.l-pad.r,gH=H-pad.t-pad.b;
+  const maxN=n.id==="smallOmega"?Math.max(notN0+20,40):30;
+
+  // Compute points
+  const fPts=[],gPts=[],g2Pts=[];
+  for(let x=1;x<=maxN;x++){
+    fPts.push({x,y:n.f(x)});
+    gPts.push({x,y:notC*n.g(x)});
+    if(n.id==="theta") g2Pts.push({x,y:notC2*n.g(x)});
+  }
+  const allY=[...fPts.map(p=>p.y),...gPts.map(p=>p.y),...g2Pts.map(p=>p.y)];
+  const maxY=Math.max(...allY)*1.1||1;
+  const scX=x=>pad.l+(x-1)/(maxN-1)*gW;
+  const scY=y=>pad.t+gH-Math.max(0,Math.min(y,maxY))/maxY*gH;
+
+  const g=svgEl("g");svg.appendChild(g);
+
+  // Grid
+  for(let i=0;i<=5;i++){
+    const y=pad.t+gH*i/5;
+    g.appendChild(svgEl("line",{x1:pad.l,x2:W-pad.r,y1:y,y2:y,stroke:"rgba(255,255,255,.06)"}));
+    g.appendChild(Object.assign(svgEl("text",{x:pad.l-8,y:y+4,"text-anchor":"end",fill:C.muted,"font-size":18}),{textContent:fmtN(Math.round(maxY*(5-i)/5))}));
+  }
+  for(let x=1;x<=maxN;x+=Math.max(1,Math.ceil(maxN/10))){
+    const sx=scX(x);
+    g.appendChild(svgEl("line",{x1:sx,x2:sx,y1:pad.t,y2:pad.t+gH,stroke:"rgba(255,255,255,.04)"}));
+    g.appendChild(Object.assign(svgEl("text",{x:sx,y:H-8,"text-anchor":"middle",fill:C.muted,"font-size":18}),{textContent:x}));
+  }
+  g.appendChild(Object.assign(svgEl("text",{x:W/2,y:H-2,"text-anchor":"middle",fill:C.muted,"font-size":14}),{textContent:"n"}));
+
+  // n₀ vertical line
+  if(notN0>=1&&notN0<=maxN){
+    const n0x=scX(notN0);
+    g.appendChild(svgEl("line",{x1:n0x,x2:n0x,y1:pad.t,y2:pad.t+gH,stroke:"rgba(255,255,255,.3)","stroke-dasharray":"5,4","stroke-width":1.5}));
+    g.appendChild(Object.assign(svgEl("text",{x:n0x+5,y:pad.t+14,fill:"rgba(255,255,255,.6)","font-size":14,"font-weight":600}),{textContent:`n₀ = ${notN0}`}));
+  }
+
+  // Shaded region (after n₀)
+  if(n.shadeMode==="upper"){
+    // shade between f(n) and c·g(n) where f < cg
+    let path="";
+    for(let x=Math.max(1,notN0);x<=maxN;x++){
+      const fy=n.f(x),gy=notC*n.g(x);
+      if(x===Math.max(1,notN0))path=`M ${scX(x)} ${scY(gy)}`;
+      else path+=` L ${scX(x)} ${scY(gy)}`;
+    }
+    for(let x=maxN;x>=Math.max(1,notN0);x--) path+=` L ${scX(x)} ${scY(n.f(x))}`;
+    path+=" Z";
+    g.appendChild(svgEl("path",{d:path,fill:n.color+"18"}));
+  } else if(n.shadeMode==="lower"){
+    let path="";
+    for(let x=Math.max(1,notN0);x<=maxN;x++){
+      if(x===Math.max(1,notN0))path=`M ${scX(x)} ${scY(n.f(x))}`;
+      else path+=` L ${scX(x)} ${scY(n.f(x))}`;
+    }
+    for(let x=maxN;x>=Math.max(1,notN0);x--) path+=` L ${scX(x)} ${scY(notC*n.g(x))}`;
+    path+=" Z";
+    g.appendChild(svgEl("path",{d:path,fill:n.color+"18"}));
+  } else if(n.shadeMode==="band"){
+    let path="";
+    for(let x=Math.max(1,notN0);x<=maxN;x++){
+      if(x===Math.max(1,notN0))path=`M ${scX(x)} ${scY(notC2*n.g(x))}`;
+      else path+=` L ${scX(x)} ${scY(notC2*n.g(x))}`;
+    }
+    for(let x=maxN;x>=Math.max(1,notN0);x--) path+=` L ${scX(x)} ${scY(notC*n.g(x))}`;
+    path+=" Z";
+    g.appendChild(svgEl("path",{d:path,fill:n.color+"18"}));
+  }
+
+  // Draw f(n) — solid
+  let fPath="";fPts.forEach((p,i)=>{fPath+=(i?"L":"M")+` ${scX(p.x)} ${scY(p.y)}`});
+  g.appendChild(svgEl("path",{d:fPath,fill:"none",stroke:n.color,"stroke-width":2.5}));
+
+  // Draw c·g(n) — dashed
+  let gPath="";gPts.forEach((p,i)=>{gPath+=(i?"L":"M")+` ${scX(p.x)} ${scY(p.y)}`});
+  if(n.id==="theta"){
+    g.appendChild(svgEl("path",{d:gPath,fill:"none",stroke:C.c2,"stroke-width":2,"stroke-dasharray":"6,4"}));
+    let g2Path="";g2Pts.forEach((p,i)=>{g2Path+=(i?"L":"M")+` ${scX(p.x)} ${scY(p.y)}`});
+    g.appendChild(svgEl("path",{d:g2Path,fill:"none",stroke:C.c5,"stroke-width":2,"stroke-dasharray":"6,4"}));
+  } else {
+    g.appendChild(svgEl("path",{d:gPath,fill:"none",stroke:"rgba(255,255,255,.6)","stroke-width":2,"stroke-dasharray":"6,4"}));
+  }
+
+  // Dots at n₀
+  if(notN0<=maxN){
+    g.appendChild(svgEl("circle",{cx:scX(notN0),cy:scY(n.f(notN0)),r:5,fill:n.color,stroke:"#fff","stroke-width":1.5}));
+    g.appendChild(svgEl("circle",{cx:scX(notN0),cy:scY(notC*n.g(notN0)),r:5,fill:"rgba(255,255,255,.6)",stroke:"#fff","stroke-width":1.5}));
+  }
+
+  // Legend + formal definition (always visible below the chart)
+  const leg=$("#viz-notations-legend");
+  const curveLine=n.id==="theta"
+    ?`<span style="color:${n.color}">━━</span> f(n) = ${n.fExpr} &nbsp;
+       <span style="color:${C.c2}">┅┅</span> c₁·g = ${notC}·${n.gExpr} &nbsp;
+       <span style="color:${C.c5}">┅┅</span> c₂·g = ${notC2}·${n.gExpr} &nbsp;
+       <span style="color:var(--muted)">Shaded = Θ region past n₀</span>`
+    :`<span style="color:${n.color}">━━</span> f(n) = ${n.fExpr} &nbsp;
+       <span style="color:rgba(255,255,255,.6)">┅┅</span> c·g(n) = ${(+notC).toFixed(2)}·${n.gExpr} &nbsp;
+       <span style="color:var(--muted)">│ n₀ = ${notN0}</span>`;
+  const keyPointsHtml=(n.keyPoints||[]).map(p=>`<li style="margin-bottom:10px">${p}</li>`).join('');
+  leg.innerHTML=`<div style="font-size:16px;margin-bottom:4px">${curveLine}</div>
+    <div style="margin-top:14px;padding:18px 20px;background:rgba(255,255,255,.06);border-radius:12px;border-left:5px solid ${n.color};font-family:'Courier New',monospace;font-size:20px;line-height:2.1;white-space:pre-wrap">${n.formal}</div>
+    <div style="margin-top:18px;font-size:24px;line-height:1.6;color:var(--accent);padding:4px 2px;font-weight:600">${n.intuition}</div>
+    ${keyPointsHtml?`<ul style="margin-top:18px;padding-left:24px;font-size:19px;line-height:2;color:var(--muted)">${keyPointsHtml}</ul>`:''}`;
+
+  // Validity check: does the bound hold for all n >= n0?
+  let valid=true;
+  for(let x=notN0;x<=maxN;x++){
+    const fv=n.f(x);
+    if(n.id==="bigO"||n.id==="smallO"){if(fv>notC*n.g(x)+0.01){valid=false;break}}
+    else if(n.id==="bigOmega"||n.id==="smallOmega"){if(fv<notC*n.g(x)-0.01){valid=false;break}}
+    else if(n.id==="theta"){if(fv<notC*n.g(x)-0.01||fv>notC2*n.g(x)+0.01){valid=false;break}}
+  }
+  const vc=$("#validity-check");
+  if(vc){
+    if(valid){
+      vc.innerHTML=`<div class="insight good">✓ <b>Valid!</b> The bound holds for all n ≥ ${notN0} with these constants.</div>`;
+    } else {
+      vc.innerHTML=`<div class="insight bad">✗ <b>Not valid!</b> The bound is violated. Try adjusting c${n.id==="theta"?" or c₁/c₂":""} and n₀.</div>`;
+    }
+  }
+}
+
+renderNotationCards();
+selectNotation("bigO");
+
+/* ═══════════════════════════════════════════════════════════════
+   MODULE 2 — ITERATIVE ANALYSIS (live stepping with array viz)
+   ═══════════════════════════════════════════════════════════════ */
+// Helper: generate sorted array of size n
+function sortedArr(n){const a=[];let v=1;for(let i=0;i<n;i++){v+=Math.floor(Math.random()*4)+1;a.push(v)}return a}
+function revArr(n){return sortedArr(n).reverse()}
+function randArr(n){const a=[];for(let i=0;i<n;i++)a.push(Math.floor(Math.random()*40)+1);return a}
+function nearSorted(n){const a=sortedArr(n);const i=Math.floor(Math.random()*(n-1));[a[i],a[i+1]]=[a[i+1],a[i]];return a}
+
+// Run helpers for search algorithms
+function runLinear(arr,target){
+  const steps=[];const a=[...arr];
+  for(let i=0;i<a.length;i++){
+    steps.push({type:"compare",indices:[i],msg:`Compare A[${i}]=${a[i]} with target=${target}`,ops:i+1});
+    if(a[i]===target){steps.push({type:"found",indices:[i],msg:`Found at index ${i}! (${i+1} comparisons)`,ops:i+1});return steps}
+  }
+  steps.push({type:"notfound",indices:[],msg:`Not found (${a.length} comparisons)`,ops:a.length});return steps;
+}
+function runBinary(arr,target){
+  const steps=[];const a=[...arr];let lo=0,hi=a.length-1,ops=0;
+  while(lo<=hi){
+    ops++;const mid=Math.floor((lo+hi)/2);
+    steps.push({type:"compare",indices:[mid],range:[lo,hi],msg:`lo=${lo} hi=${hi} mid=${mid}: A[${mid}]=${a[mid]} vs ${target}`,ops});
+    if(a[mid]===target){steps.push({type:"found",indices:[mid],msg:`Found at index ${mid}! (${ops} comparisons)`,ops});return steps}
+    else if(a[mid]<target){lo=mid+1;steps.push({type:"narrow",range:[lo,hi],msg:`${a[mid]} < ${target} → right half [${lo}..${hi}]`,ops})}
+    else{hi=mid-1;steps.push({type:"narrow",range:[lo,hi],msg:`${a[mid]} > ${target} → left half [${lo}..${hi}]`,ops})}
+  }
+  steps.push({type:"notfound",msg:`Not found (${ops} comparisons)`,ops});return steps;
+}
+function runBubble(arr){
+  const steps=[];const a=[...arr];let ops=0;
+  for(let i=0;i<a.length-1;i++){
+    for(let j=0;j<a.length-i-1;j++){
+      ops++;
+      steps.push({type:"compare",indices:[j,j+1],msg:`Pass ${i+1}: compare A[${j}]=${a[j]} vs A[${j+1}]=${a[j+1]}`,ops,array:[...a]});
+      if(a[j]>a[j+1]){[a[j],a[j+1]]=[a[j+1],a[j]];
+        steps.push({type:"swap",indices:[j,j+1],msg:`  Swap! → [...${a[j]}, ${a[j+1]}...]`,ops,array:[...a]})}
+    }
+    steps.push({type:"sorted",indices:[a.length-1-i],msg:`Pass ${i+1} done — A[${a.length-1-i}] in place`,ops,array:[...a]});
+  }
+  steps.push({type:"done",msg:`Sorted! Total comparisons: ${ops}`,ops,array:[...a]});return steps;
+}
+function runInsertion(arr){
+  const steps=[];const a=[...arr];let ops=0;
+  steps.push({type:"sorted",indices:[0],msg:`A[0]=${a[0]} trivially sorted`,ops,array:[...a]});
+  for(let i=1;i<a.length;i++){
+    let key=a[i],j=i-1;
+    steps.push({type:"pick",indices:[i],msg:`Pick key = A[${i}] = ${key}`,ops,array:[...a]});
+    while(j>=0&&a[j]>key){ops++;
+      steps.push({type:"shift",indices:[j,j+1],msg:`  Shift A[${j}]=${a[j]} right`,ops,array:[...a]});
+      a[j+1]=a[j];j--}
+    a[j+1]=key;ops++;
+    steps.push({type:"insert",indices:[j+1],msg:`  Insert ${key} at pos ${j+1}`,ops,array:[...a]});
+  }
+  steps.push({type:"done",msg:`Sorted! Total operations: ${ops}`,ops,array:[...a]});return steps;
+}
+function runSelection(arr){
+  const steps=[];const a=[...arr];let ops=0;
+  for(let i=0;i<a.length-1;i++){
+    let minIdx=i;
+    for(let j=i+1;j<a.length;j++){ops++;
+      steps.push({type:"compare",indices:[minIdx,j],msg:`Find min [${i}..${a.length-1}]: A[${minIdx}]=${a[minIdx]} vs A[${j}]=${a[j]}`,ops,array:[...a]});
+      if(a[j]<a[minIdx])minIdx=j}
+    if(minIdx!==i){[a[i],a[minIdx]]=[a[minIdx],a[i]];
+      steps.push({type:"swap",indices:[i,minIdx],msg:`Swap A[${i}] ↔ A[${minIdx}]`,ops,array:[...a]})}
+    steps.push({type:"sorted",indices:[i],msg:`A[${i}]=${a[i]} now in final position`,ops,array:[...a]});
+  }
+  steps.push({type:"done",msg:`Sorted! Total comparisons: ${ops}`,ops,array:[...a]});return steps;
+}
+
+const ITER_ALGOS=[
+  {id:"linear_search",name:"Linear Search",type:"O(n) worst / Ω(1) best",
+   code:["function linearSearch(A, target):","  for i = 0 to n-1:          // O(n)","    if A[i] == target:        // O(1) each","      return i","  return -1"],
+   growthF:n=>n,
+   cases:[
+     {id:"best",name:"Best Case",notation:"Ω(1)",color:C.c2,
+      desc:"Target is the <b>first element</b> → found in 1 comparison.",
+      why:"This demonstrates <b>Ω (Big-Omega)</b>: the minimum work the algorithm ever does. No matter the input, it can't do better than checking at least 1 element.",
+      genArray:()=>randArr(12), genTarget:a=>a[0],
+      run:(a,t)=>runLinear(a,t)},
+     {id:"worst",name:"Worst Case",notation:"O(n)",color:C.c5,
+      desc:"Target is <b>not in the array</b> → must check all n elements.",
+      why:"This demonstrates <b>O (Big-O)</b>: the maximum work. We check every element before concluding it's absent. T(n) = n comparisons.",
+      genArray:()=>randArr(12), genTarget:a=>-1,
+      run:(a,t)=>runLinear(a,t)},
+     {id:"avg",name:"Average Case",notation:"Θ(n/2) = Θ(n)",color:C.c6,
+      desc:"Target is at a <b>random position</b> → on average n/2 comparisons.",
+      why:"This demonstrates <b>Θ (Theta)</b>: on average we scan half the array. n/2 = Θ(n) since constants are dropped. Both O(n) and Ω(1) hold, but the typical behaviour is Θ(n).",
+      genArray:()=>randArr(12), genTarget:a=>a[Math.floor(a.length/2)],
+      run:(a,t)=>runLinear(a,t)},
+     {id:"smallo",name:"vs Binary Search",notation:"o(n) for BS",color:C.c3,
+      desc:"Same array (sorted), same target — compare Linear vs Binary Search ops.",
+      why:"Binary Search = O(log n) = <b>o(n)</b>. Linear = Θ(n). Since log n / n → 0, Binary Search is <b>strictly faster</b> (small-o). This shows the power of the o notation.",
+      genArray:()=>sortedArr(15), genTarget:a=>a[a.length-1],
+      run:(a,t)=>runLinear(a,t), runExtra:(a,t)=>runBinary(a,t), extraLabel:"Binary Search"}
+   ]},
+
+  {id:"binary_search",name:"Binary Search",type:"O(log n) worst / Ω(1) best",
+   code:["function binarySearch(A, target):","  lo = 0, hi = n-1","  while lo ≤ hi:              // O(log n)","    mid = (lo+hi)/2","    if A[mid] == target: return mid","    else if A[mid] < target: lo = mid+1","    else: hi = mid-1","  return -1"],
+   growthF:n=>Math.ceil(Math.log2(n+1)),
+   cases:[
+     {id:"best",name:"Best Case",notation:"Ω(1)",color:C.c2,
+      desc:"Target is at the <b>exact midpoint</b> → found in 1 comparison.",
+      why:"This demonstrates <b>Ω (Big-Omega)</b>: the lower bound. The best possible case is finding the target immediately at the midpoint.",
+      genArray:()=>sortedArr(15), genTarget:a=>a[Math.floor(a.length/2)],
+      run:(a,t)=>runBinary(a,t)},
+     {id:"worst",name:"Worst Case",notation:"O(log n)",color:C.c5,
+      desc:"Target is the <b>last element</b> → need ⌊log₂n⌋ + 1 halvings.",
+      why:"This demonstrates <b>O (Big-O)</b>: each comparison eliminates half. After log₂n halvings, only 1 element remains. For n=15: log₂15 ≈ 4 comparisons.",
+      genArray:()=>sortedArr(15), genTarget:a=>a[a.length-1],
+      run:(a,t)=>runBinary(a,t)},
+     {id:"tight",name:"Worst = Tight",notation:"Θ(log n) worst",color:C.c6,
+      desc:"In worst case, Binary Search <b>always</b> does exactly ⌊log₂n⌋ + 1 comparisons.",
+      why:"This demonstrates <b>Θ (Theta)</b> for worst-case: the worst case is both O(log n) and Ω(log n). It always halves the space — no better or worse.",
+      genArray:()=>sortedArr(15), genTarget:a=>a[0],
+      run:(a,t)=>runBinary(a,t)},
+     {id:"smallo",name:"o(n) — Strictly < Linear",notation:"o(n)",color:C.c3,
+      desc:"log n grows <b>strictly slower</b> than n. lim (log n)/n = 0.",
+      why:"This demonstrates <b>o (small-o)</b>: Binary Search is not just O(n) — it's <b>strictly less</b> than linear. For n=15: ~4 ops vs 15 ops. As n grows, the gap widens dramatically.",
+      genArray:()=>sortedArr(15), genTarget:a=>a[a.length-1],
+      run:(a,t)=>runBinary(a,t), runExtra:(a,t)=>runLinear(a,t), extraLabel:"Linear Search"},
+     {id:"smallomega",name:"ω(1) — Strictly > Constant",notation:"ω(1)",color:C.c4,
+      desc:"log n grows <b>strictly faster</b> than constant. lim log n / 1 = ∞.",
+      why:"This demonstrates <b>ω (small-omega)</b>: Binary Search worst-case is not constant — it grows (slowly). For any c, eventually log₂n > c.",
+      genArray:()=>sortedArr(15), genTarget:a=>a[a.length-1],
+      run:(a,t)=>runBinary(a,t)}
+   ]},
+
+  {id:"bubble_sort",name:"Bubble Sort",type:"O(n²) worst / Ω(n) best*",
+   code:["function bubbleSort(A):","  for i = 0 to n-2:            // n passes","    for j = 0 to n-i-2:        // shrinking","      if A[j] > A[j+1]:        // compare","        swap(A[j], A[j+1])     // swap"],
+   growthF:n=>n*(n-1)/2,
+   cases:[
+     {id:"best",name:"Best Case (Sorted)",notation:"Ω(n) optimised*",color:C.c2,
+      desc:"Array is <b>already sorted</b>. Still does n(n-1)/2 comparisons (no swaps). With optimisation: Ω(n).",
+      why:"Without early-exit optimisation: always Θ(n²) comparisons. <b>With</b> a 'swapped' flag, stops after 1 pass if no swaps → Ω(n). This shows the same algorithm can have different bounds depending on implementation!",
+      genArray:()=>sortedArr(10), genTarget:()=>null,
+      run:(a)=>runBubble(a)},
+     {id:"worst",name:"Worst Case (Reversed)",notation:"O(n²)",color:C.c5,
+      desc:"Array is <b>reverse sorted</b> → maximum swaps: n(n-1)/2 comparisons and swaps.",
+      why:"This demonstrates <b>O (Big-O)</b>: every pair is out of order, so every comparison triggers a swap. Total work = n(n-1)/2 = Θ(n²). This is the ceiling.",
+      genArray:()=>revArr(10), genTarget:()=>null,
+      run:(a)=>runBubble(a)},
+     {id:"avg",name:"Average Case (Random)",notation:"Θ(n²)",color:C.c6,
+      desc:"Random array → ~n²/4 swaps on average, n(n-1)/2 comparisons always.",
+      why:"This demonstrates <b>Θ (Theta)</b>: comparisons are always n(n-1)/2 regardless. Swaps vary, but comparisons = Θ(n²) tight.",
+      genArray:()=>randArr(10), genTarget:()=>null,
+      run:(a)=>runBubble(a)},
+     {id:"smallo",name:"o(n³) — Strictly < Cubic",notation:"o(n³)",color:C.c3,
+      desc:"n² is <b>strictly less</b> than n³. lim n²/n³ = lim 1/n = 0.",
+      why:"This demonstrates <b>o (small-o)</b>: Bubble Sort's n² is strictly less than any cubic algorithm. The gap grows with n.",
+      genArray:()=>revArr(10), genTarget:()=>null,
+      run:(a)=>runBubble(a)}
+   ]},
+
+  {id:"insertion_sort",name:"Insertion Sort",type:"O(n²) worst / Ω(n) best",
+   code:["function insertionSort(A):","  for i = 1 to n-1:","    key = A[i]","    j = i-1","    while j≥0 and A[j]>key:   // shift","      A[j+1] = A[j]; j--","    A[j+1] = key               // insert"],
+   growthF:n=>n*(n-1)/2,
+   cases:[
+     {id:"best",name:"Best Case (Sorted)",notation:"Ω(n)",color:C.c2,
+      desc:"Array is <b>already sorted</b> → each element is already in place. Only n-1 comparisons, 0 shifts.",
+      why:"This demonstrates <b>Ω (Big-Omega)</b>: the lower bound is n-1 comparisons = Θ(n). The inner while-loop never executes. This is why Insertion Sort is great for nearly-sorted data!",
+      genArray:()=>sortedArr(10), genTarget:()=>null,
+      run:(a)=>runInsertion(a)},
+     {id:"worst",name:"Worst Case (Reversed)",notation:"O(n²)",color:C.c5,
+      desc:"Array is <b>reverse sorted</b> → each element shifts all the way left. Total shifts: n(n-1)/2.",
+      why:"This demonstrates <b>O (Big-O)</b>: every insertion requires shifting all previously sorted elements. 1+2+...+(n-1) = n(n-1)/2 = Θ(n²).",
+      genArray:()=>revArr(10), genTarget:()=>null,
+      run:(a)=>runInsertion(a)},
+     {id:"avg",name:"Average Case (Random)",notation:"Θ(n²)",color:C.c6,
+      desc:"Random array → on average each element shifts ~i/2 positions. Total: ~n²/4.",
+      why:"This demonstrates <b>Θ (Theta)</b>: average case is n²/4 which is Θ(n²). Both upper and lower bounds are quadratic.",
+      genArray:()=>randArr(10), genTarget:()=>null,
+      run:(a)=>runInsertion(a)},
+     {id:"nearsorted",name:"Near-Sorted Input",notation:"Close to Ω(n)",color:C.c2,
+      desc:"Nearly sorted → very few shifts needed. Shows why Insertion Sort is preferred for nearly-sorted data.",
+      why:"With k inversions, Insertion Sort does n + k operations. For nearly-sorted data, k is small → <b>close to linear</b>. This is why it's used as a sub-routine in TimSort!",
+      genArray:()=>nearSorted(10), genTarget:()=>null,
+      run:(a)=>runInsertion(a)}
+   ]},
+
+  {id:"selection_sort",name:"Selection Sort",type:"Θ(n²) always",
+   code:["function selectionSort(A):","  for i = 0 to n-2:","    minIdx = i","    for j = i+1 to n-1:       // find min","      if A[j] < A[minIdx]:","        minIdx = j","    swap(A[i], A[minIdx])"],
+   growthF:n=>n*(n-1)/2,
+   cases:[
+     {id:"sorted",name:"Sorted Input",notation:"Θ(n²)",color:C.c6,
+      desc:"Already sorted → still does n(n-1)/2 comparisons. Only <b>0 swaps</b>.",
+      why:"This demonstrates <b>Θ (Theta)</b>: Selection Sort ALWAYS scans the remaining array to find the minimum. Comparisons = n(n-1)/2 regardless of input order.",
+      genArray:()=>sortedArr(10), genTarget:()=>null,
+      run:(a)=>runSelection(a)},
+     {id:"reversed",name:"Reversed Input",notation:"Θ(n²)",color:C.c5,
+      desc:"Reverse sorted → same n(n-1)/2 comparisons. Maximum <b>n-1 swaps</b>.",
+      why:"Same Θ(n²) comparisons as sorted input! Only swaps differ (0 vs n-1). This shows Selection Sort's Θ is truly <b>tight for all inputs</b>.",
+      genArray:()=>revArr(10), genTarget:()=>null,
+      run:(a)=>runSelection(a)},
+     {id:"random",name:"Random Input",notation:"Θ(n²)",color:C.c6,
+      desc:"Random array → still exactly n(n-1)/2 comparisons. Swaps vary.",
+      why:"Regardless of input: <b>Θ(n²)</b>. This is the clearest example of a tight bound — the algorithm's structure guarantees the same comparison count always.",
+      genArray:()=>randArr(10), genTarget:()=>null,
+      run:(a)=>runSelection(a)},
+     {id:"compare",name:"All Same → All Different",notation:"Θ(n²) both",color:C.c4,
+      desc:"Even with all identical elements, comparisons are still n(n-1)/2.",
+      why:"The comparison count is determined by the <b>loop structure</b>, not the data. This is what makes it Θ — both O(n²) AND Ω(n²) unconditionally. Neither o(n²) nor ω(n²).",
+      genArray:()=>{const v=Math.floor(Math.random()*20)+5;return Array(10).fill(v)}, genTarget:()=>null,
+      run:(a)=>runSelection(a)}
+   ]}
+];
+
+let iterState={algo:null,caseId:null,steps:[],stepIdx:0,timer:null,array:[],target:null,sortedIndices:new Set(),caseResults:{}};
+
+function renderIterCards(){
+  $("#iter-algo-cards").innerHTML=ITER_ALGOS.map(a=>`
+    <div class="algo-card" data-id="${a.id}" onclick="selectIterAlgo('${a.id}')">
+      <div class="algo-name">${a.name}</div><div class="algo-type">${a.type}</div>
+    </div>`).join("");
+}
+
+function selectIterAlgo(id){
+  if(iterState.timer)clearInterval(iterState.timer);
+  const algo=ITER_ALGOS.find(a=>a.id===id);
+  $$("#mod-iterative .algo-card").forEach(c=>c.classList.toggle("selected",c.dataset.id===id));
+  iterState.algo=algo;
+  iterState.caseId=null;
+  iterState.caseResults={};
+  $("#iter-controls").style.display="none";
+  $("#iter-detail").innerHTML="";
+  $("#iter-ops-display").innerHTML="";
+  $("#iter-summary").innerHTML="";
+  $("#iter-compare").style.display="none";
+
+  // Show case selector
+  const cs=$("#iter-case-selector");
+  cs.style.display="block";
+  cs.innerHTML=`<div class="card fade-in">
+    <h4>Choose an input scenario to explore:</h4>
+    <p class="sub" style="margin:4px 0 8px">Each scenario demonstrates a different asymptotic notation.</p>
+    <div class="case-btns">${algo.cases.map(c=>`
+      <button class="case-btn" data-case="${c.id}" onclick="selectIterCase('${c.id}')">
+        <div>${c.name}</div>
+        <div class="case-notation" style="color:${c.color}">${c.notation}</div>
+      </button>`).join("")}</div>
+    <button class="btn secondary btn-sm" style="margin-top:6px" onclick="runAllCases()">▶▶ Compare All Cases</button>
+  </div>`;
+  drawIterViz();
+}
+
+function selectIterCase(caseId){
+  if(iterState.timer)clearInterval(iterState.timer);
+  const algo=iterState.algo;if(!algo)return;
+  const cs=algo.cases.find(c=>c.id===caseId);if(!cs)return;
+  iterState.caseId=caseId;
+
+  $$("#iter-case-selector .case-btn").forEach(b=>b.classList.toggle("active",b.dataset.case===caseId));
+
+  iterState.array=cs.genArray();
+  iterState.target=cs.genTarget?cs.genTarget(iterState.array):null;
+  iterState.steps=cs.run(iterState.array,iterState.target);
+  iterState.stepIdx=0;
+  iterState.sortedIndices=new Set();
+  $("#iter-controls").style.display="flex";
+  $("#iter-compare").style.display="none";
+
+  // Show detail with case explanation
+  let detail=`<div class="card fade-in"><h3>${algo.name} — ${cs.name}</h3>`;
+  detail+=`<div class="case-insight" style="border-color:${cs.color};background:${cs.color}11">${cs.desc}</div>`;
+  if(iterState.target!==null&&iterState.target!==-1)detail+=`<div class="insight">Array: [${iterState.array.join(", ")}] &nbsp; Target: <b>${iterState.target}</b></div>`;
+  else if(iterState.target===-1)detail+=`<div class="insight">Array: [${iterState.array.join(", ")}] &nbsp; Target: <b>NOT IN ARRAY</b></div>`;
+  else detail+=`<div class="insight">Array: [${iterState.array.join(", ")}]</div>`;
+  detail+=`<div class="code-block" id="iter-code">${algo.code.map((l,i)=>`<span class="code-line" id="iline-${i}">${escH(l)}</span>`).join("\n")}</div></div>`;
+  $("#iter-detail").innerHTML=detail;
+  $("#iter-summary").innerHTML="";
+  $("#iter-ops-display").innerHTML="";
+  drawIterViz();
+}
+
+function runAllCases(){
+  const algo=iterState.algo;if(!algo)return;
+  iterState.caseResults={};
+  const results=[];
+  algo.cases.forEach(cs=>{
+    const arr=cs.genArray();
+    const tgt=cs.genTarget?cs.genTarget(arr):null;
+    const steps=cs.run(arr,tgt);
+    const lastStep=steps[steps.length-1];
+    const ops=lastStep?lastStep.ops:0;
+    results.push({name:cs.name,notation:cs.notation,color:cs.color,ops,n:arr.length,why:cs.why});
+    // Run extra comparison if exists
+    if(cs.runExtra){
+      const extraSteps=cs.runExtra(arr,tgt);
+      const extraLast=extraSteps[extraSteps.length-1];
+      results.push({name:cs.extraLabel||"Comparison",notation:"",color:C.muted,ops:extraLast?extraLast.ops:0,n:arr.length,isExtra:true});
+    }
+  });
+
+  // Show comparison
+  const cmp=$("#iter-compare");
+  cmp.style.display="block";
+  cmp.innerHTML=`<div class="card fade-in">
+    <h4>Case Comparison — ${algo.name} (n ≈ ${results[0].n})</h4>
+    <div class="compare-grid">${results.map(r=>`
+      <div class="compare-cell" style="${r.isExtra?"opacity:.7":""}">
+        <div class="cc-label">${r.name}</div>
+        <div class="cc-ops" style="color:${r.color}">${r.ops}</div>
+        <div style="font-size:10px;color:var(--muted)">operations</div>
+        ${r.notation?`<div class="cc-notation" style="color:${r.color}">${r.notation}</div>`:""}
+      </div>`).join("")}</div>
+    <div class="insight" style="margin-top:10px">
+      <b>What this shows:</b> The <b>same algorithm</b> on the <b>same size input</b> can have vastly different operation counts depending on the input structure. This is exactly why we need different notations: O for the worst case ceiling, Ω for the best case floor, and Θ when they match.
+    </div>
+  </div>`;
+}
+
+function iterStep(){
+  if(!iterState.algo||iterState.stepIdx>=iterState.steps.length)return;
+  const s=iterState.steps[iterState.stepIdx];
+  iterState.stepIdx++;
+
+  // Update sorted tracking
+  if(s.type==="sorted"&&s.indices)s.indices.forEach(i=>iterState.sortedIndices.add(i));
+  if(s.type==="done"){
+    for(let i=0;i<iterState.array.length;i++)iterState.sortedIndices.add(i);
+    if(iterState.timer){clearInterval(iterState.timer);iterState.timer=null}
+    showIterSummary();
+  }
+
+  // Show step message
+  $("#iter-ops-display").innerHTML=`
+    <div class="card fade-in" style="padding:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>${s.msg}</span>
+        <span class="pill blue">ops: ${s.ops||0}</span>
+      </div>
+      <div class="progress-bar" style="margin-top:6px"><div class="progress-fill" style="width:${iterState.stepIdx/iterState.steps.length*100}%"></div></div>
+    </div>`;
+  drawIterViz(s);
+}
+
+function iterPlayAll(){
+  if(iterState.timer)clearInterval(iterState.timer);
+  iterState.timer=setInterval(()=>{
+    if(iterState.stepIdx>=iterState.steps.length){clearInterval(iterState.timer);iterState.timer=null;return}
+    iterStep();
+  },350);
+}
+function iterPause(){if(iterState.timer){clearInterval(iterState.timer);iterState.timer=null}}
+function iterReset(){
+  iterPause();
+  if(iterState.algo&&iterState.caseId)selectIterCase(iterState.caseId);
+  else if(iterState.algo)selectIterAlgo(iterState.algo.id);
+}
+
+function drawIterViz(currentStep){
+  const algo=iterState.algo;if(!algo)return;
+  const arr=currentStep&&currentStep.array?currentStep.array:iterState.array;
+  const maxVal=Math.max(...arr);
+
+  // Array bar visualisation
+  const container=$("#iter-array-container");
+  let html=`<div style="font-size:11px;color:var(--muted);margin-bottom:4px">Array state (step ${iterState.stepIdx}/${iterState.steps.length})</div><div class="array-viz">`;
+  arr.forEach((v,i)=>{
+    let cls="bar";
+    if(currentStep){
+      if(currentStep.type==="compare"&&currentStep.indices&&currentStep.indices.includes(i))cls+=" compare";
+      else if((currentStep.type==="swap"||currentStep.type==="shift")&&currentStep.indices&&currentStep.indices.includes(i))cls+=" swap";
+      else if(currentStep.type==="pick"&&currentStep.indices&&currentStep.indices.includes(i))cls+=" pivot";
+      else if(currentStep.type==="found"&&currentStep.indices&&currentStep.indices.includes(i))cls+=" sorted";
+    }
+    if(iterState.sortedIndices.has(i))cls+=" sorted";
+    const h=Math.max(8,(v/maxVal)*55);
+    html+=`<div class="${cls}" style="height:${h}px" title="A[${i}]=${v}"></div>`;
+  });
+  html+=`</div><div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);padding:0 2px">`;
+  arr.forEach((v,i)=>{html+=`<span style="flex:1;text-align:center">${v}</span>`});
+  html+=`</div>`;
+  container.innerHTML=html;
+
+  // Growth chart
+  const svg=$("#svg-iterative");
+  const W=svg.clientWidth||600,H=260;
+  svg.innerHTML="";svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  const pad={l:65,r:15,t:25,b:40},gW=W-pad.l-pad.r,gH=H-pad.t-pad.b;
+  const maxN=25;
+  const pts=[];for(let x=1;x<=maxN;x++)pts.push({x,y:algo.growthF(x)});
+  const maxY=Math.max(...pts.map(p=>p.y))*1.15||1;
+  const scX=x=>pad.l+(x-1)/(maxN-1)*gW;
+  const scY=y=>pad.t+gH-y/maxY*gH;
+
+  const g=svgEl("g");svg.appendChild(g);
+  for(let i=0;i<=4;i++){
+    const y=pad.t+gH*i/4;
+    g.appendChild(svgEl("line",{x1:pad.l,x2:W-pad.r,y1:y,y2:y,stroke:"rgba(255,255,255,.06)"}));
+    g.appendChild(Object.assign(svgEl("text",{x:pad.l-6,y:y+4,"text-anchor":"end",fill:C.muted,"font-size":17}),{textContent:fmtN(Math.round(maxY*(4-i)/4))}));
+  }
+  for(let x=1;x<=maxN;x+=4)
+    g.appendChild(Object.assign(svgEl("text",{x:scX(x),y:H-8,"text-anchor":"middle",fill:C.muted,"font-size":17}),{textContent:x}));
+
+  let d="";pts.forEach((p,i)=>{d+=(i?"L":"M")+` ${scX(p.x)} ${scY(p.y)}`});
+  g.appendChild(svgEl("path",{d,fill:"none",stroke:C.c1,"stroke-width":2}));
+
+  // Current n marker
+  const curN=arr.length;
+  if(curN<=maxN){
+    const cy=scY(algo.growthF(curN));
+    g.appendChild(svgEl("circle",{cx:scX(curN),cy,r:5,fill:C.c3,stroke:"#fff","stroke-width":1.5}));
+    g.appendChild(Object.assign(svgEl("text",{x:scX(curN)+8,y:cy+4,fill:C.c3,"font-size":13,"font-weight":600}),{textContent:`n=${curN}`}));
+  }
+
+  // Label
+  g.appendChild(Object.assign(svgEl("text",{x:W-pad.r-4,y:pad.t+14,"text-anchor":"end",fill:C.c1,"font-size":13,"font-weight":600}),{textContent:algo.type}));
+
+  // Explanation text under chart — always visible
+  const cs=algo.cases.find(c=>c.id===iterState.caseId)||algo.cases[0];
+  const explainer=document.getElementById("iter-chart-legend");
+  if(explainer&&cs){
+    explainer.innerHTML=`<div style="font-size:20px;font-weight:700;color:${C.c1}">${algo.name} <span style="font-weight:400;color:var(--muted)">— ${algo.type}</span></div>
+      <div style="margin-top:14px;padding:18px 20px;background:rgba(255,255,255,.06);border-radius:12px;border-left:5px solid ${cs.color||C.c1}">
+        <div style="font-size:22px;font-weight:700"><b>${cs.name}:</b> <span style="color:${cs.color||C.c1}">${cs.notation}</span></div>
+        ${cs.desc?`<div style="margin-top:10px;font-size:19px;color:var(--accent);line-height:1.7">${cs.desc}</div>`:''}
+        <div style="margin-top:12px;font-size:20px;color:var(--muted);line-height:1.8">${cs.why||''}</div>
+      </div>`;
+  }
+}
+
+function showIterSummary(){
+  const a=iterState.algo;if(!a)return;
+  const cs=a.cases.find(c=>c.id===iterState.caseId);
+  const lastStep=iterState.steps[iterState.steps.length-1];
+  const ops=lastStep?lastStep.ops:0;
+
+  let html=`<div class="card fade-in">
+    <h4>Result: ${ops} operations (n = ${iterState.array.length})</h4>`;
+
+  // Show case-specific notation explanation
+  if(cs){
+    html+=`<div class="case-insight" style="border-color:${cs.color};background:${cs.color}11">
+      <span class="pill" style="background:${cs.color}22;color:${cs.color};margin-bottom:6px">${cs.notation}</span><br>
+      ${cs.why}
+    </div>`;
+
+    // If there's an extra comparison, run it and show
+    if(cs.runExtra){
+      const extraSteps=cs.runExtra(iterState.array,iterState.target);
+      const extraLast=extraSteps[extraSteps.length-1];
+      const extraOps=extraLast?extraLast.ops:0;
+      html+=`<div class="compare-grid" style="margin-top:8px">
+        <div class="compare-cell"><div class="cc-label">${a.name}</div><div class="cc-ops" style="color:${cs.color}">${ops}</div><div style="font-size:10px;color:var(--muted)">ops</div></div>
+        <div class="compare-cell"><div class="cc-label">${cs.extraLabel}</div><div class="cc-ops" style="color:${C.c3}">${extraOps}</div><div style="font-size:10px;color:var(--muted)">ops</div></div>
+      </div>`;
+    }
+  }
+
+  // Show all notations for this algorithm
+  html+=`<h4 style="margin-top:10px">All Asymptotic Bounds</h4>`;
+  a.cases.forEach(c=>{
+    html+=`<div style="display:flex;align-items:center;gap:8px;margin:4px 0">
+      <span class="pill" style="background:${c.color}22;color:${c.color};min-width:100px;justify-content:center">${c.notation}</span>
+      <span style="font-size:11px">${c.name}</span>
+    </div>`;
+  });
+  html+=`</div>`;
+  $("#iter-summary").innerHTML=html;
+}
+
+renderIterCards();
+
+/* ═══════════════════════════════════════════════════════════════
+   MODULE 3 — RECURSIVE ANALYSIS (tree animation)
+   ═══════════════════════════════════════════════════════════════ */
+const REC_ALGOS=[
+  {id:"merge_sort",name:"Merge Sort",type:"Θ(n log n) always",
+   recurrence:"T(n) = 2T(n/2) + O(n)",
+   desc:"Splits array in half, recurses on both halves, merges in O(n).",
+   analysis:[
+     {label:"O(n log n)",desc:"log n levels, each does O(n) work merging",color:C.c5},
+     {label:"Ω(n log n)",desc:"Must always split and merge — no early exit",color:C.c2},
+     {label:"Θ(n log n)",desc:"Tight bound — same in best, worst, avg cases",color:C.c6},
+     {label:"o(n²)",desc:"n log n is strictly slower than n²",color:C.c3}
+   ],
+   build(n,lvl,max){
+     if(n<=1||lvl>=max)return{size:n,work:n,lvl,ch:[]};
+     return{size:n,work:n,lvl,ch:[this.build(Math.floor(n/2),lvl+1,max),this.build(Math.ceil(n/2),lvl+1,max)]};
+   }},
+  {id:"binary_search_rec",name:"Binary Search (Recursive)",type:"O(log n) worst",
+   recurrence:"T(n) = T(n/2) + O(1)",
+   desc:"Checks midpoint, recurses on one half only.",
+   analysis:[
+     {label:"Best Ω(1)",desc:"Target at midpoint",color:C.c2},
+     {label:"Worst O(log n)",desc:"Single branch, log n levels",color:C.c5},
+     {label:"Tight Θ(log n)",desc:"Worst case is exactly logarithmic",color:C.c6},
+     {label:"o(n)",desc:"log n is strictly slower than n",color:C.c3}
+   ],
+   build(n,lvl,max){
+     if(n<=1||lvl>=max)return{size:n,work:1,lvl,ch:[]};
+     return{size:n,work:1,lvl,ch:[this.build(Math.floor(n/2),lvl+1,max)]};
+   }},
+  {id:"quick_sort_best",name:"Quick Sort — Best Pivot",type:"Θ(n log n) best/avg",
+   recurrence:"T(n) = 2T(n/2) + O(n)  [balanced partition]",
+   desc:"Pivot splits array into two equal halves every time. Same structure as Merge Sort → Θ(n log n).",
+   analysis:[
+     {label:"Best/Avg Θ(n log n)",desc:"Balanced partitions → log n levels × O(n) work each",color:C.c6},
+     {label:"o(n²)",desc:"n log n is strictly slower than n² — small-o!",color:C.c3},
+     {label:"ω(n)",desc:"n log n is strictly faster than linear — small-omega!",color:C.c4}
+   ],
+   build(n,lvl,max){
+     if(n<=1||lvl>=max)return{size:n,work:n,lvl,ch:[]};
+     return{size:n,work:n,lvl,ch:[this.build(Math.floor(n/2),lvl+1,max),this.build(Math.ceil(n/2),lvl+1,max)]};
+   }},
+  {id:"quick_sort_worst",name:"Quick Sort — Worst Pivot",type:"O(n²) worst case",
+   recurrence:"T(n) = T(n-1) + O(n)  [worst partition]",
+   desc:"Pivot is always the smallest (or largest) element → one partition has n-1 elements, the other has 0. This happens when array is already sorted and we pick the first element as pivot.",
+   analysis:[
+     {label:"Worst O(n²)",desc:"n levels × O(n) work each → n² total",color:C.c5},
+     {label:"Ω(n log n) overall",desc:"Best case is still n log n — lower bound for Quick Sort",color:C.c2},
+     {label:"Not Θ for QS overall",desc:"Best ≠ Worst → cannot say Θ for Quick Sort in general",color:C.c3}
+   ],
+   build(n,lvl,max){
+     if(n<=1||lvl>=max)return{size:n,work:n,lvl,ch:[]};
+     return{size:n,work:n,lvl,ch:[this.build(n-1,lvl+1,max)]};
+   }},
+  {id:"fibonacci",name:"Fibonacci (Naive)",type:"O(2ⁿ) exponential",
+   recurrence:"T(n) = T(n-1) + T(n-2) + O(1)",
+   desc:"Two recursive calls with overlapping subproblems. No memoisation → exponential blowup.",
+   analysis:[
+     {label:"O(2ⁿ)",desc:"Tree roughly doubles each level",color:C.c5},
+     {label:"Θ(φⁿ)",desc:"Tight bound with φ ≈ 1.618 (golden ratio)",color:C.c6},
+     {label:"Ω(2^(n/2))",desc:"Even smaller branch is exponential",color:C.c2},
+     {label:"ω(n²)",desc:"Exponential is strictly faster than polynomial",color:C.c4}
+   ],
+   build(n,lvl,max){
+     if(n<=1||lvl>=max)return{size:n,work:1,lvl,ch:[],label:`fib(${n})`};
+     return{size:n,work:1,lvl,label:`fib(${n})`,ch:[this.build(n-1,lvl+1,max),this.build(n-2,lvl+1,max)]};
+   }},
+  {id:"tower_hanoi",name:"Tower of Hanoi",type:"Θ(2ⁿ) always",
+   recurrence:"T(n) = 2T(n-1) + O(1)",
+   desc:"Move n-1 disks, move bottom disk, move n-1 disks back. Two recursive calls of size n-1.",
+   analysis:[
+     {label:"Θ(2ⁿ)",desc:"Exactly 2ⁿ - 1 moves — Θ drops the constant",color:C.c6},
+     {label:"O(2ⁿ)",desc:"Upper bound: exponential",color:C.c5},
+     {label:"Ω(2ⁿ)",desc:"Lower bound: must move every config",color:C.c2},
+     {label:"ω(n²)",desc:"Exponential dominates any polynomial",color:C.c4}
+   ],
+   build(n,lvl,max){
+     if(n<=1||lvl>=max)return{size:n,work:1,lvl,ch:[],label:`H(${n})`};
+     return{size:n,work:1,lvl,label:`H(${n})`,ch:[this.build(n-1,lvl+1,max),this.build(n-1,lvl+1,max)]};
+   }}
+];
+
+let recState={algo:null,revLvl:0,tree:null,maxLvl:0,timer:null};
+
+function renderRecCards(){
+  $("#rec-algo-cards").innerHTML=REC_ALGOS.map(a=>`
+    <div class="algo-card" data-id="${a.id}" onclick="selectRecAlgo('${a.id}')">
+      <div class="algo-name">${a.name}</div><div class="algo-type">${a.type}</div>
+    </div>`).join("");
+}
+
+function selectRecAlgo(id){
+  if(recState.timer)clearInterval(recState.timer);
+  recState.algo=REC_ALGOS.find(a=>a.id===id);
+  $$("#mod-recursive .algo-card").forEach(c=>c.classList.toggle("selected",c.dataset.id===id));
+  recState.revLvl=0;
+  $("#rec-n-field").style.display="block";
+  $("#rec-controls").style.display="flex";
+
+  const a=recState.algo;
+
+  // Show case selector for Quick Sort pair
+  const rcs=$("#rec-case-selector");
+  if(a.id==="quick_sort_best"||a.id==="quick_sort_worst"){
+    rcs.style.display="block";
+    rcs.innerHTML=`<div class="case-btns" style="margin:6px 0">
+      <button class="case-btn ${a.id==="quick_sort_best"?"active":""}" onclick="selectRecAlgo('quick_sort_best')">
+        <div>Best Pivot</div><div class="case-notation" style="color:${C.c2}">Θ(n log n)</div></button>
+      <button class="case-btn ${a.id==="quick_sort_worst"?"active":""}" onclick="selectRecAlgo('quick_sort_worst')">
+        <div>Worst Pivot</div><div class="case-notation" style="color:${C.c5}">O(n²)</div></button>
+    </div>
+    <div class="insight warn" style="font-size:11px">Compare the tree shapes! Best pivot = balanced (wide & shallow). Worst pivot = degenerate (tall & skinny). Same algorithm, different input → different complexity class.</div>`;
+  } else rcs.style.display="none";
+
+  $("#rec-detail").innerHTML=`<div class="card fade-in">
+    <h3>${a.name}</h3>
+    <div class="math-block">${a.recurrence}</div>
+    <p style="font-size:12px;margin-top:6px">${a.desc}</p>
+  </div>`;
+  $("#rec-summary").innerHTML="";
+  recBuild();
+}
+
+function recNChange(){
+  $("#rec-n-val").textContent=$("#rec-n-slider").value;
+  recState.revLvl=0;
+  recBuild();
+}
+
+function recBuild(){
+  const a=recState.algo;if(!a)return;
+  const n=+$("#rec-n-slider").value;
+  const maxL=a.id==="fibonacci"||a.id==="tower_hanoi"?Math.min(n,6):a.id==="quick_sort_worst"?Math.min(n-1,7):Math.min(Math.ceil(Math.log2(n))+1,7);
+  recState.maxLvl=maxL;
+  recState.tree=a.build(n,0,maxL);
+  markCriticalPath(recState.tree);
+  layTree(recState.tree);
+  drawRecTree();
+}
+
+// Mark the critical (deepest/heaviest) path from root to leaf
+// Two passes: 1) compute subtree depths, 2) mark one path from root to deepest leaf
+function markCriticalPath(root){
+  // Pass 1: compute subtreeDepth for every node (bottom-up)
+  function computeDepth(nd){
+    nd.onCritPath=false; // reset all to false
+    if(!nd.ch||!nd.ch.length){nd.subtreeDepth=0;return}
+    nd.ch.forEach(c=>computeDepth(c));
+    nd.subtreeDepth=Math.max(...nd.ch.map(c=>c.subtreeDepth))+1;
+  }
+  computeDepth(root);
+
+  // Pass 2: mark exactly one path from root to a deepest leaf (top-down)
+  function markDown(nd){
+    nd.onCritPath=true;
+    if(!nd.ch||!nd.ch.length)return; // leaf — stop
+    // Pick child with greatest subtreeDepth (ties: first/leftmost)
+    let best=nd.ch[0];
+    for(let i=1;i<nd.ch.length;i++){
+      if(nd.ch[i].subtreeDepth>best.subtreeDepth)best=nd.ch[i];
+    }
+    markDown(best);
+  }
+  markDown(root);
+}
+
+// Count how many branches are actually followed (1 vs all)
+function countBranching(nd){
+  if(!nd.ch||!nd.ch.length)return{allBranch:true,singleBranch:true};
+  return{allBranch:nd.ch.length>1,singleBranch:nd.ch.length===1};
+}
+
+function layTree(nd){
+  if(!nd.ch||!nd.ch.length){nd.sw=1;return}
+  nd.ch.forEach(c=>layTree(c));
+  nd.sw=nd.ch.reduce((s,c)=>s+c.sw,0)+0.3*(nd.ch.length-1);
+}
+function posTree(nd,x,y,sc){
+  nd.x=x;nd.y=y;
+  if(!nd.ch||!nd.ch.length)return;
+  let cx=x-nd.sw*sc/2;
+  nd.ch.forEach(c=>{const w=c.sw*sc;posTree(c,cx+w/2,y+55,sc);cx+=w+0.3*sc});
+}
+
+function drawRecTree(){
+  const svg=$("#svg-recursive");
+  const W=svg.clientWidth||600,H=svg.clientHeight||320;
+  svg.innerHTML="";svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  if(!recState.tree)return;
+  const sc=Math.min(W/(recState.tree.sw+2),55);
+  posTree(recState.tree,W/2,30,sc);
+
+  const pad={l:30,r:20,t:10,b:45};
+  const a=recState.algo;
+  // Determine if algorithm uses single branch (Binary Search, QS worst) or all branches
+  const isSingleBranch=a.id==="binary_search_rec"||a.id==="quick_sort_worst";
+  const allRevealed=recState.revLvl>=recState.maxLvl;
+
+  const COLS=[C.c1,"#5bc9b0",C.c2,C.c3,C.c4,C.c5,C.c6,C.c7];
+  const g=svgEl("g");svg.appendChild(g);
+
+  // DRAWING STRATEGY:
+  // - Single-branch (Binary Search, QS Worst): highlight the ONE executed path, dim the rest
+  // - Multi-branch (all others): ALL nodes are equally bright — no special path highlighting
+
+  function drawAllEdges(nd){
+    if(nd.lvl>recState.revLvl)return;
+    if(nd.ch)nd.ch.forEach(c=>{
+      if(c.lvl>recState.revLvl)return;
+      const my=(nd.y+12+c.y-12)/2;
+      if(isSingleBranch&&allRevealed){
+        // Single-branch: highlight executed path, dim non-executed
+        const isExecEdge=nd.onCritPath&&c.onCritPath;
+        if(isExecEdge){
+          g.appendChild(svgEl("path",{d:`M ${nd.x} ${nd.y+12} Q ${nd.x} ${my} ${c.x} ${c.y-12}`,fill:"none",stroke:C.c3,"stroke-width":4,opacity:0.2}));
+          g.appendChild(svgEl("path",{d:`M ${nd.x} ${nd.y+12} Q ${nd.x} ${my} ${c.x} ${c.y-12}`,fill:"none",stroke:C.c3,"stroke-width":2.5}));
+        } else {
+          g.appendChild(svgEl("path",{d:`M ${nd.x} ${nd.y+12} Q ${nd.x} ${my} ${c.x} ${c.y-12}`,fill:"none",stroke:"rgba(255,255,255,.1)","stroke-width":1.5}));
+        }
+      } else {
+        // Multi-branch: ALL edges equally visible
+        g.appendChild(svgEl("path",{d:`M ${nd.x} ${nd.y+12} Q ${nd.x} ${my} ${c.x} ${c.y-12}`,fill:"none",stroke:"rgba(255,255,255,.2)","stroke-width":1.5}));
+      }
+    });
+    if(nd.ch)nd.ch.forEach(drawAllEdges);
+  }
+
+  function drawAllNodes(nd){
+    if(nd.lvl>recState.revLvl)return;
+    const col=COLS[nd.lvl%COLS.length];
+
+    // Dynamic sizing: longer labels (fib(5), T(n), etc.) get bigger circles + smaller font
+    // so text always fits inside the node boundary.
+    const lbl=nd.label||String(nd.size);
+    const displayLbl=lbl.length>8?lbl.slice(0,8):lbl;
+    const nodeR=displayLbl.length>4?18:14;
+    const outerR=nodeR+2;
+    const glowR=nodeR+4;
+    const labelFS=displayLbl.length>5?8:displayLbl.length>3?9:11;
+
+    if(isSingleBranch&&allRevealed){
+      // Single-branch: highlight executed path, dim non-executed nodes
+      const isExec=nd.onCritPath;
+      if(isExec){
+        g.appendChild(svgEl("circle",{cx:nd.x,cy:nd.y,r:glowR,fill:C.c3+"15"}));
+        g.appendChild(svgEl("circle",{cx:nd.x,cy:nd.y,r:nodeR,fill:col+"33",stroke:C.c3,"stroke-width":2.5}));
+      } else {
+        const gEl=svgEl("g",{opacity:0.3});
+        gEl.appendChild(svgEl("circle",{cx:nd.x,cy:nd.y,r:outerR,fill:col+"11"}));
+        gEl.appendChild(svgEl("circle",{cx:nd.x,cy:nd.y,r:nodeR,fill:col+"22",stroke:col,"stroke-width":2}));
+        g.appendChild(gEl);
+      }
+      const op=isExec?1:0.35;
+      g.appendChild(Object.assign(svgEl("text",{x:nd.x,y:nd.y+4,"text-anchor":"middle",fill:isExec?C.c3:col,"font-size":labelFS,"font-weight":700,opacity:op}),{textContent:displayLbl}));
+      g.appendChild(Object.assign(svgEl("text",{x:nd.x,y:nd.y+24,"text-anchor":"middle",fill:C.muted,"font-size":10,opacity:op}),{textContent:`w=${nd.work}`}));
+    } else {
+      // Multi-branch: ALL nodes equally bright (every node executes!)
+      g.appendChild(svgEl("circle",{cx:nd.x,cy:nd.y,r:outerR,fill:col+"11"}));
+      g.appendChild(svgEl("circle",{cx:nd.x,cy:nd.y,r:nodeR,fill:col+"22",stroke:col,"stroke-width":2}));
+      g.appendChild(Object.assign(svgEl("text",{x:nd.x,y:nd.y+4,"text-anchor":"middle",fill:col,"font-size":labelFS,"font-weight":700}),{textContent:displayLbl}));
+      g.appendChild(Object.assign(svgEl("text",{x:nd.x,y:nd.y+24,"text-anchor":"middle",fill:C.muted,"font-size":10}),{textContent:`w=${nd.work}`}));
+    }
+
+    if(nd.ch)nd.ch.forEach(drawAllNodes);
+  }
+
+  drawAllEdges(recState.tree);
+  drawAllNodes(recState.tree);
+
+  // Draw depth annotation along the critical path when fully revealed
+  if(allRevealed){
+    // Find critical path nodes for depth label
+    const critNodes=[];
+    function collectCrit(nd){
+      if(!nd.onCritPath||nd.lvl>recState.revLvl)return;
+      critNodes.push(nd);
+      // Follow exactly ONE child on the critical path
+      if(nd.ch){const next=nd.ch.find(c=>c.onCritPath);if(next)collectCrit(next)}
+    }
+    collectCrit(recState.tree);
+
+    if(critNodes.length>1){
+      const topNode=critNodes[0];
+      const botNode=critNodes[critNodes.length-1];
+      const bx=pad.l-10;
+      const depthNum=critNodes.length-1;
+      // For single-branch: gold bracket (matches highlighted path)
+      // For multi-branch: muted bracket (just measuring depth, no special path)
+      const bracketColor=isSingleBranch?C.c3:C.muted;
+
+      g.appendChild(svgEl("line",{x1:bx,x2:bx,y1:topNode.y,y2:botNode.y,stroke:bracketColor,"stroke-width":2,opacity:0.7}));
+      g.appendChild(svgEl("line",{x1:bx,x2:bx+6,y1:topNode.y,y2:topNode.y,stroke:bracketColor,"stroke-width":2,opacity:0.7}));
+      g.appendChild(svgEl("line",{x1:bx,x2:bx+6,y1:botNode.y,y2:botNode.y,stroke:bracketColor,"stroke-width":2,opacity:0.7}));
+
+      const midY=(topNode.y+botNode.y)/2;
+      const depthEl=svgEl("text",{x:bx-6,y:midY,"text-anchor":"middle",fill:bracketColor,"font-size":10,"font-weight":700,transform:`rotate(-90,${bx-6},${midY})`});
+      depthEl.textContent=`depth = ${depthNum}`;
+      g.appendChild(depthEl);
+    }
+
+    // Bottom annotation: WHY depth matters
+    const pad2=8;
+    const depth=critNodes.length-1;
+    // Compute work-per-level info for the explanation
+    const rootWork=recState.tree.work;
+    const isMultiBranch=!isSingleBranch&&recState.tree.ch&&recState.tree.ch.length>1;
+    let whyLine1,whyLine2;
+    // Count total nodes in the revealed tree
+    let totalNodes=0;
+    function cntNodes(nd){if(nd.lvl>recState.revLvl)return;totalNodes++;if(nd.ch)nd.ch.forEach(cntNodes)}
+    cntNodes(recState.tree);
+
+    const isExponential=a.id==="fibonacci"||a.id==="tower_hanoi";
+    const isConstWorkPerLevel=a.id==="merge_sort"||a.id==="quick_sort_best"; // each level sums to ~n
+
+    if(isSingleBranch){
+      whyLine1=`Only 1 branch per level → total calls = depth = ${depth}`;
+      whyLine2=a.id==="binary_search_rec"?
+        `Each call does O(1) work → Total = ${depth} × O(1) = O(log n)`:
+        `Each call does O(n−k) work → Total = n+(n−1)+...+1 = O(n²)`;
+    } else if(isExponential){
+      whyLine1=`ALL ${totalNodes} nodes execute — nodes nearly double each level (1 → 2 → 4 → ...)`;
+      whyLine2=`Total work = total nodes ≈ 2^${depth} = O(2ⁿ) — exponential because EVERY call spawns 2 more`;
+    } else if(isConstWorkPerLevel){
+      whyLine1=`ALL nodes execute — but each level's work sums to O(n) (split among nodes)`;
+      whyLine2=`Total = O(n) per level × ${depth} levels = O(n × ${depth}) = O(n log n)`;
+    } else {
+      const branchFactor=recState.tree.ch?recState.tree.ch.length:2;
+      whyLine1=`All ${branchFactor} branches execute → total work = sum of ALL ${totalNodes} nodes`;
+      whyLine2=`${depth} levels of work → depth determines the complexity class`;
+    }
+    const boxY=H-38;
+    const boxColor=isSingleBranch?C.c3:C.c1;
+    g.appendChild(svgEl("rect",{x:pad.l,y:boxY-2,width:W-pad.l-pad.r,height:34,rx:6,fill:"rgba(0,0,0,.4)",stroke:boxColor+"44","stroke-width":1}));
+    g.appendChild(Object.assign(svgEl("text",{x:W/2,y:boxY+11,"text-anchor":"middle",fill:boxColor,"font-size":10,"font-weight":600}),{textContent:whyLine1}));
+    g.appendChild(Object.assign(svgEl("text",{x:W/2,y:boxY+25,"text-anchor":"middle",fill:boxColor,"font-size":9,opacity:0.8}),{textContent:whyLine2}));
+  }
+
+  // Level table
+  renderRecTable();
+}
+
+function renderRecTable(){
+  const t=recState.tree;if(!t)return;
+  const levels=[];
+  function collect(nd){
+    if(nd.lvl>recState.revLvl)return;
+    if(!levels[nd.lvl])levels[nd.lvl]={nodes:0,work:0};
+    levels[nd.lvl].nodes++;levels[nd.lvl].work+=nd.work;
+    if(nd.ch)nd.ch.forEach(collect);
+  }
+  collect(t);
+  const total=levels.reduce((s,l)=>s+(l?l.work:0),0);
+  const totalNodes2=levels.filter(Boolean).reduce((s,l)=>s+l.nodes,0);
+  let rows=levels.map((l,i)=>l?`<tr><td>${i}</td><td>${l.nodes}</td><td>${fmtN(l.work)}</td></tr>`:"").join("");
+  rows+=`<tr style="font-weight:700;border-top:2px solid var(--border)"><td>Total</td><td>${totalNodes2} nodes</td><td>${fmtN(total)} work</td></tr>`;
+  $("#rec-level-table").innerHTML=`<table><tr><th>Level</th><th>Nodes</th><th>Work</th></tr>${rows}</table>`;
+
+  if(recState.revLvl>=recState.maxLvl){
+    const a=recState.algo;
+    const isSingleBranch=a.id==="binary_search_rec"||a.id==="quick_sort_worst";
+    const depth=levels.length-1;
+
+    let summaryHtml=`<div class="card fade-in">
+      <h4>Asymptotic Analysis — ${a.name}</h4>
+      ${a.analysis.map(x=>`<div style="display:flex;align-items:center;gap:8px;margin:5px 0">
+        <span class="pill" style="background:${x.color}22;color:${x.color};min-width:100px;justify-content:center">${x.label}</span>
+        <span style="font-size:12px">${x.desc}</span>
+      </div>`).join("")}`;
+
+    // Compute per-level work from the table
+    const perLevelWork=levels.filter(Boolean).map(l=>l.work);
+    const allSameWork=perLevelWork.length>1&&perLevelWork.slice(0,-1).every(w=>Math.abs(w-perLevelWork[0])<2);
+
+    // Why depth matters explanation
+    summaryHtml+=`<div class="case-insight" style="border-color:${C.c3};background:${C.c3}11;margin-top:10px">
+      <b style="color:${C.c3}">Why does depth matter?</b><br>`;
+
+    if(isSingleBranch){
+      // Single-branch: depth = total calls
+      summaryHtml+=`This algorithm follows <b>only 1 branch</b> at each level (the other branches don't exist). The highlighted path IS the entire execution.<br><br>`;
+      if(a.id==="binary_search_rec"){
+        summaryHtml+=`<b>Depth = ${depth}</b> = total number of comparisons. Each level does O(1) work (one comparison). So:<br>
+        <b>Total work = depth × O(1) = ${depth} × 1 = O(log n)</b>`;
+      } else {
+        summaryHtml+=`<b>Depth = ${depth}</b> ≈ n. Each level does work proportional to the remaining problem size: n + (n-1) + ... + 1.<br>
+        <b>Total work = n(n+1)/2 = O(n²)</b> — the depth being n (instead of log n) is what makes this quadratic.`;
+      }
+    } else {
+      // Multi-branch: total work = sum of all nodes, but depth determines how many levels of work
+      summaryHtml+=`Yes, we sum the work across <b>ALL nodes</b> (not just the highlighted path). So why does depth matter?<br><br>`;
+
+      if(allSameWork){
+        // Merge Sort / QS best case: each level does ~same total work
+        summaryHtml+=`Look at the level table: <b>each level does roughly the same total work</b> (≈ ${perLevelWork[0]}). The nodes split the work among themselves — more nodes per level, but each does less.<br><br>
+        <b>Total = (work per level) × (number of levels) = O(n) × ${depth} = O(n × ${depth})</b><br><br>
+        A <b>balanced tree</b> (depth = log n) gives: O(n) × log n = <b>O(n log n)</b><br>
+        A <b>degenerate chain</b> (depth = n) gives: O(n) × n = <b>O(n²)</b><br><br>
+        <b>Lower depth → fewer levels to sum → less total work.</b> That's why balanced trees are better!`;
+      } else {
+        // Fibonacci / Hanoi: nodes DOUBLE each level, work explodes
+        summaryHtml+=`Look at the level table: the number of nodes <b>doubles</b> (or more) at each level. Unlike Merge Sort, the work per level is NOT constant — it <b>grows exponentially</b>.<br><br>
+        <b>Depth = ${depth}</b>. With ~2 branches per node and depth ≈ n, total nodes ≈ 2ⁿ.<br>
+        Each node does O(1) work → <b>Total = O(2ⁿ)</b>.<br><br>
+        Deeper tree = exponentially more nodes = exponentially more work.`;
+      }
+    }
+    summaryHtml+=`</div>`;
+
+    summaryHtml+=`</div>`;
+    $("#rec-summary").innerHTML=summaryHtml;
+  }
+}
+
+function recStepLevel(){
+  if(recState.revLvl<=recState.maxLvl){recState.revLvl++;drawRecTree()}
+}
+function recAnimateAll(){
+  if(recState.timer)clearInterval(recState.timer);
+  recState.revLvl=0;drawRecTree();
+  recState.timer=setInterval(()=>{
+    recState.revLvl++;drawRecTree();
+    if(recState.revLvl>recState.maxLvl){clearInterval(recState.timer);recState.timer=null}
+  },600);
+}
+function recReset(){
+  if(recState.timer)clearInterval(recState.timer);
+  recState.revLvl=0;drawRecTree();$("#rec-summary").innerHTML="";
+}
+
+renderRecCards();
+
+/* ═══════════════════════════════════════════════════════════════
+   MODULE 4 — PROOF BUILDER (graph ALWAYS visible)
+   ═══════════════════════════════════════════════════════════════ */
+const PROOFS=[
+  {id:"bigO_nsq",title:"Prove: 2n² + 3n + 1 = O(n²)",
+   graph:{f:n=>2*n*n+3*n+1,g:n=>n*n,c:6,n0:1,fLbl:"f(n) = 2n²+3n+1",gLbl:"c·g(n) = 6n²",color:C.c5,shade:"upper"},
+   steps:[
+     {head:"Goal",body:"Show ∃ c > 0, n₀ > 0 such that\n2n² + 3n + 1 ≤ c·n²  for all n ≥ n₀",color:C.c1},
+     {head:"Strategy",body:"Bound each lower-order term by n²:\n• For n ≥ 1: 3n ≤ 3n²  (since n ≤ n²)\n• For n ≥ 1: 1 ≤ n²  (since 1 ≤ n²)",color:C.c3},
+     {head:"Combine",body:"2n² + 3n + 1\n  ≤ 2n² + 3n² + n²\n  = 6n²",color:C.c6},
+     {head:"Choose constants",body:"c = 6,  n₀ = 1\n\nFor all n ≥ 1:  2n² + 3n + 1 ≤ 6n² ✓",color:C.c2},
+     {head:"Conclusion",body:"By definition, 2n² + 3n + 1 = O(n²).  □",color:C.c1}
+   ]},
+  {id:"bigOmega_nsq",title:"Prove: 2n² + 3n + 1 = Ω(n²)",
+   graph:{f:n=>2*n*n+3*n+1,g:n=>n*n,c:2,n0:1,fLbl:"f(n) = 2n²+3n+1",gLbl:"c·g(n) = 2n²",color:C.c2,shade:"lower"},
+   steps:[
+     {head:"Goal",body:"Show ∃ c > 0, n₀ > 0 such that\n2n² + 3n + 1 ≥ c·n²  for all n ≥ n₀",color:C.c1},
+     {head:"Observe",body:"2n² + 3n + 1 ≥ 2n²\n(since 3n + 1 > 0 for all n ≥ 1)",color:C.c3},
+     {head:"Choose constants",body:"c = 2,  n₀ = 1\n\nFor all n ≥ 1:  2n² + 3n + 1 ≥ 2n² ✓",color:C.c2},
+     {head:"Conclusion",body:"By definition, 2n² + 3n + 1 = Ω(n²).  □",color:C.c1}
+   ]},
+  {id:"theta_nsq",title:"Prove: 2n² + 3n + 1 = Θ(n²)",
+   graph:{f:n=>2*n*n+3*n+1,g:n=>n*n,c:2,c2:6,n0:1,fLbl:"f(n) = 2n²+3n+1",gLbl1:"c₁·g = 2n²",gLbl2:"c₂·g = 6n²",color:C.c6,shade:"band"},
+   steps:[
+     {head:"Goal",body:"Show ∃ c₁, c₂ > 0, n₀ > 0 such that\nc₁·n² ≤ 2n² + 3n + 1 ≤ c₂·n²  for all n ≥ n₀",color:C.c1},
+     {head:"Lower (from Ω proof)",body:"2n² + 3n + 1 ≥ 2n²  →  c₁ = 2",color:C.c2},
+     {head:"Upper (from O proof)",body:"2n² + 3n + 1 ≤ 6n²  →  c₂ = 6",color:C.c5},
+     {head:"Combine",body:"For all n ≥ 1:\n2n² ≤ 2n² + 3n + 1 ≤ 6n²\n\nc₁ = 2,  c₂ = 6,  n₀ = 1",color:C.c6},
+     {head:"Conclusion",body:"Since both O(n²) and Ω(n²) hold:\n2n² + 3n + 1 = Θ(n²).  □",color:C.c1}
+   ]},
+  {id:"smallO_n",title:"Prove: n = o(n²)",
+   graph:{f:n=>n,g:n=>n*n,c:0.5,n0:3,fLbl:"f(n) = n",gLbl:"c·g(n) = 0.5·n²",color:C.c3,shade:"upper"},
+   steps:[
+     {head:"Goal",body:"Show for ALL c > 0, ∃ n₀ such that\nn < c·n²  for all n ≥ n₀\n\nOR show lim(n→∞) n/n² = 0",color:C.c1},
+     {head:"Limit approach",body:"lim(n→∞) n/n² = lim(n→∞) 1/n = 0  ✓\n\nSince limit = 0, by definition f = o(g).",color:C.c2},
+     {head:"Direct (for any c)",body:"Need: n < c·n²\nDivide by n (n > 0): 1 < c·n\nSo: n > 1/c\n\nChoose n₀ = ⌈1/c⌉ + 1",color:C.c3},
+     {head:"Example: c = 0.01",body:"n₀ = 101\nFor n = 101: 101 < 0.01 × 101² = 102.01 ✓\n\nNo matter how small c is, it works!",color:C.c4},
+     {head:"Key distinction",body:"Big-O: ∃ ONE c that works\nSmall-o: for ALL c > 0\n\nn = O(n) is TRUE\nn = o(n) is FALSE (lim n/n = 1 ≠ 0)",color:C.c5}
+   ]},
+  {id:"smallOmega_n",title:"Prove: n² = ω(n)",
+   graph:{f:n=>n*n,g:n=>n,c:10,n0:11,fLbl:"f(n) = n²",gLbl:"c·g(n) = 10n",color:C.c4,shade:"lower"},
+   steps:[
+     {head:"Goal",body:"Show for ALL c > 0, ∃ n₀ such that\nn² > c·n  for all n ≥ n₀\n\nOR show lim(n→∞) n²/n = ∞",color:C.c1},
+     {head:"Limit approach",body:"lim(n→∞) n²/n = lim(n→∞) n = ∞  ✓\n\nSince limit = ∞, by definition f = ω(g).",color:C.c2},
+     {head:"Direct (for any c)",body:"Need: n² > c·n\nDivide by n: n > c\nChoose n₀ = ⌈c⌉ + 1",color:C.c3},
+     {head:"Mirror property",body:"n² = ω(n)  ⟺  n = o(n²)\n\nThese are equivalent statements!\nSmall-o and small-omega are mirrors.",color:C.c4},
+     {head:"Conclusion",body:"n² = ω(n) — grows strictly faster than linear.\n\nThis means any Θ(n²) algorithm is\nfundamentally slower than any Θ(n) algorithm.  □",color:C.c1}
+   ]},
+  {id:"mergesort_proof",title:"Prove: Merge Sort = O(n log n) (Recursive)",
+   graph:{f:n=>n<=1?1:n*Math.ceil(Math.log2(n)),g:n=>n<=1?1:2*n*Math.log2(n||1),c:1,n0:2,fLbl:"T(n) ≈ n⌈log₂n⌉",gLbl:"2n·log₂n",color:C.c5,shade:"upper"},
+   steps:[
+     {head:"Recurrence",body:"T(n) = 2T(n/2) + cn\nT(1) = 1",color:C.c1},
+     {head:"Guess",body:"Guess T(n) ≤ d·n·log₂n for some d > 0",color:C.c3},
+     {head:"Inductive hypothesis",body:"Assume T(k) ≤ d·k·log₂k for all k < n",color:C.c6},
+     {head:"Substitute",body:"T(n) = 2T(n/2) + cn\n     ≤ 2·d·(n/2)·log₂(n/2) + cn\n     = d·n·(log₂n − 1) + cn\n     = d·n·log₂n − dn + cn",color:C.c4},
+     {head:"Verify",body:"Need: d·n·log₂n − dn + cn ≤ d·n·log₂n\n⟹  −dn + cn ≤ 0\n⟹  d ≥ c\n\nChoose d = c.  ✓",color:C.c2},
+     {head:"Conclusion",body:"T(n) = O(n log n) for Merge Sort.\n\nSince Ω(n log n) also holds (must read all elements\nand produce sorted output), Merge Sort = Θ(n log n).  □",color:C.c1}
+   ]},
+  {id:"sum_proof",title:"Prove: 1+2+...+n = O(n²) (Iterative loops)",
+   graph:{f:n=>n*(n+1)/2,g:n=>n*n,c:1,n0:1,fLbl:"n(n+1)/2",gLbl:"n²",color:C.c5,shade:"upper"},
+   steps:[
+     {head:"Context",body:"Nested loops like Bubble Sort do:\n1 + 2 + ... + (n-1) comparisons.\nThis sum = n(n-1)/2. Let's prove it's O(n²).",color:C.c1},
+     {head:"Closed form",body:"S(n) = n(n+1)/2 = n²/2 + n/2",color:C.c3},
+     {head:"Bound it",body:"n²/2 + n/2 ≤ n²/2 + n²/2 = n²\n(since n ≤ n² for n ≥ 1)",color:C.c6},
+     {head:"Constants",body:"c = 1,  n₀ = 1\n\nS(n) = n(n+1)/2 ≤ n²  for all n ≥ 1  ✓",color:C.c2},
+     {head:"Conclusion",body:"S(n) = O(n²).\n\nThis is why algorithms with nested loops\n(Bubble, Selection, Insertion worst-case)\nare O(n²).  □",color:C.c1}
+   ]}
+];
+
+let proofState={proof:null,step:0};
+
+function populateProofs(){
+  const sel=$("#proof-select");
+  PROOFS.forEach(p=>{const o=document.createElement("option");o.value=p.id;o.textContent=p.title;sel.appendChild(o)});
+}
+
+function loadProof(){
+  const id=$("#proof-select").value;
+  proofState.proof=PROOFS.find(p=>p.id===id)||null;
+  proofState.step=0;
+  if(!proofState.proof){$("#proof-steps").innerHTML="";$("#proof-controls").style.display="none";drawProofGraph();return}
+  $("#proof-controls").style.display="flex";
+  renderProofSteps();
+  drawProofGraph(); // ALWAYS draw the full graph immediately
+}
+
+function renderProofSteps(){
+  const p=proofState.proof;if(!p)return;
+  $("#proof-steps").innerHTML=p.steps.map((s,i)=>`
+    <div class="step${i<proofState.step?" revealed":""}" id="ps-${i}">
+      <div class="step-head"><span class="step-num" style="background:${s.color}22;color:${s.color}">${i+1}</span><span>${s.head}</span></div>
+      <div class="step-body" style="white-space:pre-wrap">${s.body}</div>
+    </div>`).join("");
+}
+
+function proofNext(){
+  const p=proofState.proof;if(!p||proofState.step>=p.steps.length)return;
+  $(`#ps-${proofState.step}`).classList.add("revealed");
+  proofState.step++;
+  drawProofGraph(); // update annotation highlight
+}
+function proofShowAll(){
+  const p=proofState.proof;if(!p)return;
+  proofState.step=p.steps.length;
+  p.steps.forEach((_,i)=>$(`#ps-${i}`).classList.add("revealed"));
+  drawProofGraph();
+}
+function proofReset(){proofState.step=0;renderProofSteps();drawProofGraph()}
+
+function drawProofGraph(){
+  const svg=$("#svg-prover");
+  const W=svg.clientWidth||600,H=svg.clientHeight||420;
+  svg.innerHTML="";svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  const p=proofState.proof;
+  if(!p){
+    // Empty state message
+    const g=svgEl("g");svg.appendChild(g);
+    g.appendChild(Object.assign(svgEl("text",{x:W/2,y:H/2,"text-anchor":"middle",fill:C.muted,"font-size":14}),{textContent:"← Select a proof to see the graph"}));
+    return;
+  }
+  const d=p.graph;
+  const pad={l:75,r:25,t:30,b:45},gW=W-pad.l-pad.r,gH=H-pad.t-pad.b;
+  const maxN=30;
+
+  // ALWAYS compute and draw ALL points (full graph visible from start)
+  const fPts=[],gPts=[],g2Pts=[];
+  for(let x=1;x<=maxN;x++){
+    fPts.push({x,y:d.f(x)});
+    gPts.push({x,y:d.c*(d.g(x))});
+    if(d.c2)g2Pts.push({x,y:d.c2*d.g(x)});
+  }
+  const allY=[...fPts.map(p=>p.y),...gPts.map(p=>p.y),...g2Pts.map(p=>p.y)];
+  const maxY=Math.max(...allY)*1.1||1;
+  const scX=x=>pad.l+(x-1)/(maxN-1)*gW;
+  const scY=y=>pad.t+gH-Math.max(0,Math.min(y,maxY))/maxY*gH;
+
+  const g=svgEl("g");svg.appendChild(g);
+
+  // Grid
+  for(let i=0;i<=5;i++){
+    const y=pad.t+gH*i/5;
+    g.appendChild(svgEl("line",{x1:pad.l,x2:W-pad.r,y1:y,y2:y,stroke:"rgba(255,255,255,.06)"}));
+    g.appendChild(Object.assign(svgEl("text",{x:pad.l-8,y:y+4,"text-anchor":"end",fill:C.muted,"font-size":18}),{textContent:fmtN(Math.round(maxY*(5-i)/5))}));
+  }
+  for(let x=1;x<=maxN;x+=4)
+    g.appendChild(Object.assign(svgEl("text",{x:scX(x),y:H-8,"text-anchor":"middle",fill:C.muted,"font-size":18}),{textContent:x}));
+  g.appendChild(Object.assign(svgEl("text",{x:W/2,y:H-2,"text-anchor":"middle",fill:C.muted,"font-size":14}),{textContent:"n"}));
+
+  // n₀ line
+  const n0x=scX(d.n0);
+  g.appendChild(svgEl("line",{x1:n0x,x2:n0x,y1:pad.t,y2:pad.t+gH,stroke:"rgba(255,255,255,.3)","stroke-dasharray":"5,4","stroke-width":1.5}));
+  g.appendChild(Object.assign(svgEl("text",{x:n0x+5,y:pad.t+14,fill:"rgba(255,255,255,.6)","font-size":14,"font-weight":600}),{textContent:`n₀ = ${d.n0}`}));
+
+  // Shaded region — show it ALWAYS but dim it, brighten when steps progress
+  const shadeOpacity=proofState.step>=2?0.15:0.06;
+  if(d.shade==="upper"){
+    let path=`M ${scX(d.n0)} ${scY(d.c*d.g(d.n0))}`;
+    for(let x=d.n0;x<=maxN;x++)path+=` L ${scX(x)} ${scY(d.c*d.g(x))}`;
+    for(let x=maxN;x>=d.n0;x--)path+=` L ${scX(x)} ${scY(d.f(x))}`;
+    path+=" Z";
+    g.appendChild(svgEl("path",{d:path,fill:d.color,opacity:shadeOpacity}));
+  } else if(d.shade==="lower"){
+    let path=`M ${scX(d.n0)} ${scY(d.f(d.n0))}`;
+    for(let x=d.n0;x<=maxN;x++)path+=` L ${scX(x)} ${scY(d.f(x))}`;
+    for(let x=maxN;x>=d.n0;x--)path+=` L ${scX(x)} ${scY(d.c*d.g(x))}`;
+    path+=" Z";
+    g.appendChild(svgEl("path",{d:path,fill:d.color,opacity:shadeOpacity}));
+  } else if(d.shade==="band"){
+    let path=`M ${scX(d.n0)} ${scY(d.c2*d.g(d.n0))}`;
+    for(let x=d.n0;x<=maxN;x++)path+=` L ${scX(x)} ${scY(d.c2*d.g(x))}`;
+    for(let x=maxN;x>=d.n0;x--)path+=` L ${scX(x)} ${scY(d.c*d.g(x))}`;
+    path+=" Z";
+    g.appendChild(svgEl("path",{d:path,fill:d.color,opacity:shadeOpacity}));
+  }
+
+  // ALWAYS draw f(n) — full, solid
+  let fPath="";fPts.forEach((pt,i)=>{fPath+=(i?"L":"M")+` ${scX(pt.x)} ${scY(pt.y)}`});
+  g.appendChild(svgEl("path",{d:fPath,fill:"none",stroke:d.color,"stroke-width":2.5}));
+
+  // ALWAYS draw bound line(s) — dashed
+  let gPath="";gPts.forEach((pt,i)=>{gPath+=(i?"L":"M")+` ${scX(pt.x)} ${scY(pt.y)}`});
+  if(d.c2){
+    g.appendChild(svgEl("path",{d:gPath,fill:"none",stroke:C.c2,"stroke-width":2,"stroke-dasharray":"6,4"}));
+    let g2Path="";g2Pts.forEach((pt,i)=>{g2Path+=(i?"L":"M")+` ${scX(pt.x)} ${scY(pt.y)}`});
+    g.appendChild(svgEl("path",{d:g2Path,fill:"none",stroke:C.c5,"stroke-width":2,"stroke-dasharray":"6,4"}));
+  } else {
+    g.appendChild(svgEl("path",{d:gPath,fill:"none",stroke:"rgba(255,255,255,.6)","stroke-width":2,"stroke-dasharray":"6,4"}));
+  }
+
+  // Animated marker that moves as steps progress
+  const progress=proofState.step/p.steps.length;
+  const markerN=Math.max(1,Math.round(progress*(maxN-1))+1);
+  g.appendChild(svgEl("circle",{cx:scX(markerN),cy:scY(d.f(markerN)),r:6,fill:d.color,stroke:"#fff","stroke-width":2}));
+  if(markerN>1){
+    g.appendChild(svgEl("circle",{cx:scX(markerN),cy:scY(d.c*d.g(markerN)),r:5,fill:"rgba(255,255,255,.6)",stroke:"#fff","stroke-width":1.5}));
+  }
+
+  // Step annotation on graph
+  if(proofState.step>0&&proofState.step<=p.steps.length){
+    const stepLabel=p.steps[proofState.step-1].head;
+    const boxX=W-pad.r-10,boxY=pad.t+40;
+    g.appendChild(svgEl("rect",{x:boxX-120,y:boxY-12,width:130,height:24,rx:6,fill:"rgba(0,0,0,.5)",stroke:d.color,"stroke-width":1}));
+    g.appendChild(Object.assign(svgEl("text",{x:boxX-55,y:boxY+4,"text-anchor":"middle",fill:d.color,"font-size":11,"font-weight":600}),{textContent:`Step ${proofState.step}: ${stepLabel}`}));
+  }
+
+  // Legend + proof statement (always visible below chart)
+  const leg=$("#prover-legend");
+  const curvePart=d.c2
+    ?`<span style="color:${d.color}">━━</span> ${d.fLbl} &nbsp;
+       <span style="color:${C.c2}">┅┅</span> ${d.gLbl1} &nbsp;
+       <span style="color:${C.c5}">┅┅</span> ${d.gLbl2}`
+    :`<span style="color:${d.color}">━━</span> ${d.fLbl} &nbsp;
+       <span style="color:rgba(255,255,255,.6)">┅┅</span> ${d.gLbl}`;
+  leg.innerHTML=`<div style="font-size:16px">${curvePart}</div>
+    <div style="margin-top:14px;padding:18px 20px;background:rgba(255,255,255,.06);border-radius:12px;border-left:5px solid ${d.color};font-family:'Courier New',monospace;font-size:20px;line-height:2.1">
+      <b>Claim:</b> ${p.title.replace(/^Prove:\s*/,'')}<br>
+      <b>Witness:</b> c = ${d.c}${d.c2?`, c₂ = ${d.c2}`:''}, n₀ = ${d.n0}<br>
+      <b>To show:</b> ${d.shade==="upper"?`${d.fLbl} ≤ ${d.c}·${d.gLbl}`:d.shade==="lower"?`${d.fLbl} ≥ ${d.c}·${d.gLbl}`:`${d.c}·${d.gLbl1} ≤ ${d.fLbl} ≤ ${d.c2}·${d.gLbl2}`} for all n ≥ ${d.n0}
+    </div>`;
+}
+
+populateProofs();
+drawProofGraph();
+
+/* ═══════════════════════════════════════════════════════════════
+   MODULE 5 — CHALLENGE MODE
+   ═══════════════════════════════════════════════════════════════ */
+const CHALLENGES=[
+  {q:"Bubble Sort worst-case is O(n²). Is it also o(n²)?",
+   opts:["Yes","No — it's Θ(n²), so the ratio → constant, not 0"],correct:1,
+   explain:"Bubble Sort worst case = Θ(n²). lim T(n)/n² = constant ≠ 0, so it's NOT o(n²). Small-o means strictly slower growth."},
+  {q:"Given f(n) = 5n² + 10n, which is TRUE?",
+   opts:["f(n) = O(n)","f(n) = O(n²)","f(n) = o(n²)","f(n) = ω(n²)"],correct:1,
+   explain:"5n² + 10n ≤ 6n² for n ≥ 10, so O(n²). Not O(n) since n² dominates. Not o(n²) since lim→5≠0."},
+  {q:"If f(n) = Θ(n log n), which MUST be true?",
+   opts:["f = O(n log n) only","f = Ω(n log n) only","Both O(n log n) AND Ω(n log n)","f = o(n log n)"],correct:2,
+   explain:"Θ = O ∩ Ω by definition. If f = Θ(g), then both f = O(g) and f = Ω(g) hold."},
+  {q:"Binary Search is O(log n). Which is also true?",
+   opts:["Binary Search = o(n)","Binary Search = ω(n)","Binary Search = Θ(n)","Binary Search = Ω(n)"],correct:0,
+   explain:"log n = o(n) because lim(log n)/n = 0. So Binary Search (worst) is strictly slower than linear."},
+  {q:"Selection Sort does n(n-1)/2 comparisons always. What's the tightest bound?",
+   opts:["O(n²)","Ω(n²)","Θ(n²)","o(n²)"],correct:2,
+   explain:"Since it's ALWAYS n(n-1)/2 regardless of input, both O(n²) and Ω(n²) hold → Θ(n²)."},
+  {q:"Merge Sort is Θ(n log n). Insertion Sort worst-case is Θ(n²). What relates them?",
+   opts:["Merge Sort = o(Insertion worst)","Merge Sort = O(Insertion worst)","Merge Sort = ω(Insertion worst)","They're the same"],correct:0,
+   explain:"n log n = o(n²) since lim (n log n)/n² = lim (log n)/n = 0. Merge Sort is strictly faster asymptotically."},
+  {q:"For the loop: for i=1 to n { for j=1 to i { ... } }, total operations are:",
+   opts:["O(n)","Θ(n log n)","Θ(n²)","O(n³)"],correct:2,
+   explain:"Total = 1 + 2 + ... + n = n(n+1)/2 = Θ(n²). This triangular sum pattern appears in Bubble/Selection sort."},
+  {q:"Which is FALSE?",
+   opts:["n² = O(n³)","n² = o(n³)","n² = Ω(n³)","n² = ω(n)"],correct:2,
+   explain:"n² = Ω(n³) is FALSE because n² grows slower than n³, not faster. n²/n³ = 1/n → 0, so n² = o(n³) not Ω(n³)."},
+  {q:"Fibonacci naive is O(2ⁿ). Tower of Hanoi is Θ(2ⁿ). What can we say?",
+   opts:["Fibonacci is faster","They have the same asymptotic growth","Fibonacci is strictly Θ(φⁿ) where φ≈1.618, so it's o(2ⁿ)","Cannot compare"],correct:2,
+   explain:"Fibonacci tight bound is Θ(φⁿ) ≈ Θ(1.618ⁿ). Since 1.618ⁿ/2ⁿ → 0, Fibonacci = o(2ⁿ). Fibonacci grows strictly slower than Hanoi."},
+  {q:"Quick Sort average is Θ(n log n), worst is Θ(n²). What notation describes its general running time?",
+   opts:["Θ(n log n) always","O(n²) and Ω(n log n)","o(n²)","Θ(n²)"],correct:1,
+   explain:"O(n²) captures the worst case ceiling. Ω(n log n) captures the best case floor. We can't say Θ of a single function since best ≠ worst."}
+];
+
+let challengeState={qIdx:0,score:0,answered:false,started:false};
+
+function startChallenge(){
+  challengeState={qIdx:0,score:0,answered:false,started:true};
+  renderChallenge();
+}
+
+function renderChallenge(){
+  if(challengeState.qIdx>=CHALLENGES.length){renderChallengeEnd();return}
+  const ch=CHALLENGES[challengeState.qIdx];
+  $("#challenge-progress").innerHTML=`
+    <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+      <span class="pill blue">Question ${challengeState.qIdx+1}/${CHALLENGES.length}</span>
+      <span class="pill green">Score: ${challengeState.score}</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${challengeState.qIdx/CHALLENGES.length*100}%"></div></div>`;
+  $("#challenge-content").innerHTML=`<div class="card fade-in">
+    <h4 style="margin-bottom:12px">${ch.q}</h4>
+    ${ch.opts.map((o,i)=>`<button class="quiz-option" onclick="answerQ(${i})">${o}</button>`).join("")}
+    <div id="ch-explain"></div></div>`;
+  challengeState.answered=false;
+  drawChallengeViz();
+}
+
+function answerQ(idx){
+  if(challengeState.answered)return;
+  challengeState.answered=true;
+  const ch=CHALLENGES[challengeState.qIdx];
+  $$("#challenge-content .quiz-option").forEach((b,i)=>{
+    b.disabled=true;
+    if(i===ch.correct)b.classList.add("correct");
+    if(i===idx&&i!==ch.correct)b.classList.add("wrong");
+  });
+  if(idx===ch.correct)challengeState.score++;
+  $("#ch-explain").innerHTML=`<div class="insight ${idx===ch.correct?"good":"bad"} fade-in">
+    <b>${idx===ch.correct?"Correct!":"Incorrect."}</b> ${ch.explain}
+  </div><button class="btn primary btn-sm" style="margin-top:8px" onclick="challengeState.qIdx++;renderChallenge()">
+    ${challengeState.qIdx<CHALLENGES.length-1?"Next →":"See Results"}</button>`;
+}
+
+function renderChallengeEnd(){
+  const pct=Math.round(challengeState.score/CHALLENGES.length*100);
+  const col=pct>=90?C.c2:pct>=70?C.c3:pct>=50?C.c4:C.c5;
+  const msg=pct>=90?"Excellent!":pct>=70?"Good job!":pct>=50?"Keep reviewing!":"Study the notations and try again.";
+  $("#challenge-progress").innerHTML="";
+  $("#challenge-content").innerHTML=`<div class="card fade-in" style="text-align:center;padding:30px">
+    <h2 style="color:${col};font-size:28px">${challengeState.score}/${CHALLENGES.length}</h2>
+    <p style="font-size:15px;margin:6px 0">${msg} (${pct}%)</p>
+    <button class="btn primary" style="margin-top:12px" onclick="startChallenge()">Try Again</button></div>`;
+
+  // Score arc
+  const svg=$("#svg-challenge"),W=svg.clientWidth||600,HH=svg.clientHeight||400;
+  svg.innerHTML="";svg.setAttribute("viewBox",`0 0 ${W} ${HH}`);
+  const cx=W/2,cy=HH/2,r=90;
+  const ang=pct/100*360,rad=ang*Math.PI/180;
+  const g=svgEl("g");svg.appendChild(g);
+  g.appendChild(svgEl("circle",{cx,cy,r,fill:"none",stroke:"rgba(255,255,255,.1)","stroke-width":14}));
+  if(ang>0){
+    const ex=cx+r*Math.sin(rad),ey=cy-r*Math.cos(rad);
+    g.appendChild(svgEl("path",{d:`M ${cx} ${cy-r} A ${r} ${r} 0 ${ang>180?1:0} 1 ${ex} ${ey}`,fill:"none",stroke:col,"stroke-width":14,"stroke-linecap":"round"}));
+  }
+  g.appendChild(Object.assign(svgEl("text",{x:cx,y:cy+10,"text-anchor":"middle",fill:col,"font-size":38,"font-weight":750}),{textContent:`${pct}%`}));
+}
+
+function drawChallengeViz(){
+  const svg=$("#svg-challenge"),W=svg.clientWidth||600,H=svg.clientHeight||400;
+  svg.innerHTML="";svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  const pad={l:70,r:20,t:30,b:45},gW=W-pad.l-pad.r,gH=H-pad.t-pad.b;
+  const g=svgEl("g");svg.appendChild(g);
+
+  // Contextual graph per question
+  const vizData=[
+    {funcs:[{f:n=>n*(n-1)/2,l:"n²/2 (Bubble)",c:C.c5},{f:n=>n*n,l:"n²",c:C.c1}],N:12},
+    {funcs:[{f:n=>5*n*n+10*n,l:"5n²+10n",c:C.c1},{f:n=>6*n*n,l:"6n²",c:C.c5}],N:10},
+    {funcs:[{f:n=>n*Math.log2(n||1),l:"n log n",c:C.c6},{f:n=>2*n*Math.log2(n||1),l:"2n log n",c:C.c5},{f:n=>0.5*n*Math.log2(n||1),l:"0.5n log n",c:C.c2}],N:20},
+    {funcs:[{f:n=>Math.ceil(Math.log2(n||1)),l:"log₂n",c:C.c1},{f:n=>n,l:"n",c:C.c5}],N:20},
+    {funcs:[{f:n=>n*(n-1)/2,l:"n(n-1)/2",c:C.c1},{f:n=>n*n,l:"n²",c:C.c5}],N:12},
+    {funcs:[{f:n=>n*Math.log2(n||1),l:"n log n (Merge)",c:C.c2},{f:n=>n*n,l:"n² (Insertion worst)",c:C.c5}],N:15},
+    {funcs:[{f:n=>{let s=0;for(let i=1;i<=n;i++)s+=i;return s},l:"1+2+...+n",c:C.c1},{f:n=>n*n,l:"n²",c:C.c5}],N:12},
+    {funcs:[{f:n=>n*n,l:"n²",c:C.c1},{f:n=>n*n*n,l:"n³",c:C.c5}],N:8},
+    {funcs:[{f:n=>Math.pow(1.618,n),l:"φⁿ ≈ 1.618ⁿ",c:C.c3},{f:n=>Math.pow(2,n),l:"2ⁿ",c:C.c5}],N:10},
+    {funcs:[{f:n=>n*Math.log2(n||1),l:"n log n (best)",c:C.c2},{f:n=>n*n,l:"n² (worst)",c:C.c5}],N:15}
+  ];
+
+  const vd=vizData[challengeState.qIdx%vizData.length];
+  let maxY=0;
+  const all=vd.funcs.map(fn=>{
+    const pts=[];for(let x=1;x<=vd.N;x++){const y=fn.f(x);pts.push({x,y});if(y>maxY)maxY=y}
+    return pts;
+  });
+  maxY*=1.1;if(!maxY)maxY=1;
+  const scX=x=>pad.l+(x-1)/(vd.N-1)*gW;
+  const scY=y=>pad.t+gH-Math.min(y,maxY)/maxY*gH;
+
+  for(let i=0;i<=4;i++){
+    const y=pad.t+gH*i/4;
+    g.appendChild(svgEl("line",{x1:pad.l,x2:W-pad.r,y1:y,y2:y,stroke:"rgba(255,255,255,.06)"}));
+    g.appendChild(Object.assign(svgEl("text",{x:pad.l-6,y:y+4,"text-anchor":"end",fill:C.muted,"font-size":17}),{textContent:fmtN(Math.round(maxY*(4-i)/4))}));
+  }
+  for(let x=1;x<=vd.N;x+=Math.max(1,Math.floor(vd.N/8)))
+    g.appendChild(Object.assign(svgEl("text",{x:scX(x),y:H-8,"text-anchor":"middle",fill:C.muted,"font-size":17}),{textContent:x}));
+
+  all.forEach((pts,fi)=>{
+    let d="";pts.forEach((p,i)=>{d+=(i?"L":"M")+` ${scX(p.x)} ${scY(p.y)}`});
+    g.appendChild(svgEl("path",{d,fill:"none",stroke:vd.funcs[fi].c,"stroke-width":2.5,...(fi>0?{"stroke-dasharray":"6,4"}:{})}));
+  });
+
+  // Legend
+  vd.funcs.forEach((fn,i)=>{
+    g.appendChild(Object.assign(svgEl("text",{x:pad.l+8,y:pad.t+14+i*18,fill:fn.c,"font-size":13,"font-weight":600}),{textContent:(i?"┅ ":"━ ")+fn.l}));
+  });
+}
+
+/* ═══════ RESIZE ═══════ */
+window.addEventListener("resize",()=>{
+  if(selNotation)drawNotationGraph();
+  if(iterState.algo)drawIterViz();
+  if(recState.tree)drawRecTree();
+  drawProofGraph();
+});
+
+drawNotationGraph();
+</script>
+</body>
+</html>

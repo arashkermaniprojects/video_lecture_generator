@@ -1,0 +1,87 @@
+================================================================================
+  ACT 1: PIPELINE TAB (10 minutes)
+  Tab: Pipeline (first tab, active by default)
+================================================================================
+
+
+COMPONENTS — LEFT PANEL
+-----------------------
+  1. Phase bar ("RLHF Pipeline Overview")
+     A status/description box that updates when a pipeline stage is clicked.
+     Shows stage name and a paragraph-length explanation.
+     Use: Read or paraphrase the text that appears here for each stage.
+
+  2. Stat pills (Stage, Input, Output, Data Needed, Method)
+     Five pill-shaped readouts. Update dynamically when a stage is clicked.
+     Use: Point these out as a structured recap after explaining each diagram.
+
+
+COMPONENTS — RIGHT PANEL
+-------------------------
+  3. Colour legend — Three dots: SFT (blue), Reward Model (yellow), PPO (green).
+
+  4. Pipeline grid — Three clickable stage nodes with arrow separators:
+       - Stage 1: SFT (blue, tag "Pre-trained LLM -> SFT Model")
+       - Stage 2: Reward Model (yellow, tag "Preferences -> R(x,y)")
+       - Stage 3: PPO (green, tag "SFT + R -> Aligned Model")
+     Clicking a node: updates phase bar, stat pills, highlights the node,
+     and replaces the SVG diagram below.
+
+  5. SVG pipeline overview diagram (default state)
+     Five boxes: Pre-trained LLM -> SFT Model -> Reward Model -> PPO -> Aligned
+     Model, connected by dashed arrows, with data annotations above and loss
+     formulas below.
+
+  6. SVG stage detail diagrams (three variants, triggered by clicking nodes):
+
+     Stage 1 (SFT): Prompt x -> LLM -> Predicted y-hat, compared against
+       Ground Truth y via Cross-Entropy loss, with backpropagation arrow.
+
+     Stage 2 (Reward Model): Response A (winner, green) and Response B
+       (loser, red) -> Reward Model -> scalar scores (R=2.3, R=0.8) ->
+       Bradley-Terry loss.
+
+     Stage 3 (PPO): Prompt x -> Policy pi -> Reward R, pi_ref (frozen) ->
+       KL Penalty, both -> Objective (R - beta*KL), gradient loop back to
+       policy.
+
+
+TEACHING STEPS
+--------------
+1. Point to the colour legend (component 3). "We use blue for SFT, yellow for
+   the reward model, and green for PPO. These colours are consistent throughout
+   the entire tool."
+
+2. Look at the pipeline overview SVG (component 5). Walk through the five boxes
+   left to right. Point out the data annotations above and loss formulas below.
+
+3. Click Stage 1 (SFT) node. Walk through the detail diagram:
+   - "We have a prompt x on the left..."
+   - "It goes into the LLM which predicts token probabilities..."
+   - "The output is compared to a ground-truth expert response..."
+   - "Cross-entropy loss is computed, and gradients flow back."
+   Read the stat pills aloud: Input = Pre-trained LLM, Output = SFT Model,
+   Data = Demonstration pairs, Method = Cross-entropy loss.
+
+4. Click Stage 2 (Reward Model) node. Walk through the diagram:
+   - "Two responses are generated for the same prompt..."
+   - "Both go into the reward model, which outputs scalar scores..."
+   - "The scores go into the Bradley-Terry loss..."
+   - "Notice R=2.3 for the winner and R=0.8 for the loser."
+   Read the updated stat pills.
+
+5. Click Stage 3 (PPO) node. Walk through the diagram:
+   - "A prompt is sampled. The policy generates a response..."
+   - "The reward model scores it..."
+   - "A frozen copy of the SFT model (pi_ref) computes the KL divergence..."
+   - "The objective combines reward minus beta*KL..."
+   - "The gradient loops back to update the policy. Notice pi_ref stays frozen."
+   Read the updated stat pills.
+
+6. Pause. Ask: "What would happen if we removed the KL penalty entirely?"
+   Let students speculate. Say: "We'll answer this experimentally in a few
+   minutes."
+
+>> Transition: Click the "Reward Model" tab. Load 03_module_reward_model.txt.
+
+================================================================================

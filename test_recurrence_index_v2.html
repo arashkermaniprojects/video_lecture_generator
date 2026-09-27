@@ -1,0 +1,3098 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Recurrence Relations Explorer — BCS 309</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:rgba(255,255,255,0.05);
+      --stroke:rgba(255,255,255,0.12);
+      --text:#e8ecff;
+      --muted:#b7c0ff;
+      --c1:#6aa9ff;
+      --c2:#64f0c8;
+      --c3:#ffd166;
+      --c4:#ff9f43;
+      --c5:#ff5c7a;
+      --c6:#c77dff;
+      --c7:#ff6b6b;
+      --green:rgba(100,240,200,0.65);
+      --yellow:rgba(255,209,102,0.78);
+      --red:rgba(255,92,122,0.82);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:radial-gradient(1200px 800px at 20% 0%, #14204a 0%, var(--bg) 45%, #070a14 100%);
+      color:var(--text);
+      min-height:100vh;
+    }
+    h1{text-align:center;font-size:22px;font-weight:700;margin:18px 0 4px;letter-spacing:-.3px;}
+    .subtitle{text-align:center;font-size:12px;color:var(--muted);margin:0 0 14px;}
+    .wrap{max-width:1280px;margin:0 auto;padding:0 14px 18px;display:grid;grid-template-columns:420px 1fr;gap:14px;}
+    @media(max-width:980px){.wrap{grid-template-columns:1fr;}}
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03));
+      border:1px solid rgba(255,255,255,0.10);border-radius:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);overflow:hidden;
+    }
+    .card h2{margin:0;padding:14px 14px 10px;font-size:16px;background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.08);}
+
+    /* Tabs */
+    .tabBar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:10px 14px 0;}
+    .tab{padding:8px 6px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);color:var(--muted);font-size:11.5px;font-weight:600;cursor:pointer;transition:all .15s ease;text-align:center;}
+    .tab:hover{background:rgba(106,169,255,0.10);color:var(--text);}
+    .tab.active{background:rgba(106,169,255,0.18);border-color:rgba(106,169,255,0.35);color:#fff;}
+
+    /* Controls */
+    .controls{padding:12px 14px 14px;}
+    .modulePanel{display:none;} .modulePanel.active{display:block;}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;}
+    select,input[type="number"],input[type="range"],button{
+      width:100%;border-radius:12px;border:1px solid rgba(255,255,255,0.12);
+      background:rgba(0,0,0,0.20);color:var(--text);padding:10px 12px;outline:none;font-size:13px;
+    }
+    input[type="range"]{padding:10px 0;}
+    input[type="number"]{-moz-appearance:textfield;}
+    input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{opacity:1;}
+    select option{background:#1a1f36;color:var(--text);}
+    button{cursor:pointer;font-weight:650;background:rgba(106,169,255,0.14);transition:transform .08s ease,background .12s ease;}
+    button:hover{background:rgba(106,169,255,0.22);}
+    button:active{transform:scale(0.99);}
+    button.secondary{background:rgba(255,255,255,0.08);}
+    button.secondary:hover{background:rgba(255,255,255,0.13);}
+    button.danger{background:rgba(255,92,122,0.18);}
+    button.danger:hover{background:rgba(255,92,122,0.26);}
+
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;}
+    .row4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:10px;}
+    .btnRow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
+    @media(max-width:980px){.btnRow{grid-template-columns:repeat(2,1fr);}}
+    .mb10{margin-bottom:10px;} .mt10{margin-top:10px;}
+
+    .stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.10);}
+    .pill{border-radius:14px;border:1px solid rgba(255,255,255,0.10);background:rgba(0,0,0,0.18);padding:10px 12px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;}
+    .pill b{color:var(--text);font-weight:750;}
+    .pill.wide{grid-column:1/-1;}
+
+    /* Algorithm Info Card */
+    .algo-info{
+      border-radius:14px;border:1px solid rgba(106,169,255,0.15);
+      background:rgba(106,169,255,0.04);padding:14px;margin-bottom:12px;
+      font-size:12.5px;line-height:1.6;
+    }
+    .algo-info-title{font-weight:700;font-size:13px;color:var(--c1);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+    .algo-info-title .complexity-badge{
+      font-size:11px;padding:2px 8px;border-radius:6px;font-weight:700;margin-left:auto;
+    }
+    .algo-info svg{display:block;margin:10px auto;border-radius:8px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.05);}
+    .algo-info .why{color:var(--c3);font-size:11.5px;margin-top:8px;font-style:italic;}
+    .algo-info .level-desc{color:var(--muted);font-size:11.5px;margin-top:4px;}
+
+    /* Viz area */
+    .viz{padding:14px;min-height:500px;position:relative;}
+    .vizPanel{display:none;width:100%;height:100%;} .vizPanel.active{display:block;}
+    svg.tree-svg{width:100%;height:500px;border-radius:12px;background:rgba(0,0,0,0.15);border:1px solid rgba(255,255,255,0.06);}
+    .tree-node rect{rx:8;ry:8;stroke-width:1.5;transition:opacity .4s ease;}
+    .tree-node text{font-family:system-ui;fill:var(--text);text-anchor:middle;}
+    .tree-edge{fill:none;stroke-width:1.5;transition:opacity .4s ease;}
+    .level-label{font-family:system-ui;font-size:11px;fill:var(--muted);}
+    .level-work{font-family:system-ui;font-size:10px;fill:var(--c3);}
+
+    /* Master Theorem */
+    .case-card{border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);padding:16px 18px;margin-bottom:12px;transition:all .25s ease;}
+    .case-card.active-case{border-color:rgba(100,240,200,0.4);background:rgba(100,240,200,0.06);box-shadow:0 0 20px rgba(100,240,200,0.08);}
+    .case-card h3{margin:0 0 8px;font-size:14px;color:var(--muted);}
+    .case-card.active-case h3{color:var(--c2);}
+    .case-card .formula{font-size:16px;font-weight:700;margin:6px 0;}
+    .case-card .explanation{font-size:12px;color:var(--muted);line-height:1.5;margin-top:8px;}
+    .case-card.active-case .explanation{color:var(--text);}
+    .comparison-bar{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:14px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.08);margin-bottom:16px;font-size:13px;}
+    .comparison-bar .val{font-weight:700;font-size:15px;min-width:50px;text-align:center;}
+    .comparison-bar .vs{color:var(--muted);font-size:11px;font-weight:600;}
+    .bar-fill{height:8px;border-radius:4px;flex:1;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;}
+    .bar-fill-inner{position:absolute;left:0;top:0;height:100%;border-radius:4px;transition:width .4s ease,background .3s ease;}
+    .result-badge{display:inline-block;padding:10px 18px;border-radius:14px;font-weight:700;font-size:18px;margin-top:8px;}
+    .na-notice{border-radius:14px;border:1px solid rgba(255,92,122,0.25);background:rgba(255,92,122,0.06);padding:16px 18px;margin-bottom:16px;font-size:13px;color:var(--c5);line-height:1.6;}
+    .na-notice b{color:var(--c7);}
+
+    /* Substitution */
+    .step-card{border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);margin-bottom:10px;overflow:hidden;transition:all .25s ease;}
+    .step-card.revealed{border-color:rgba(106,169,255,0.25);background:rgba(106,169,255,0.04);}
+    .step-header{padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;}
+    .step-num{width:24px;height:24px;border-radius:50%;background:rgba(106,169,255,0.15);color:var(--c1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+    .step-card.revealed .step-num{background:rgba(100,240,200,0.2);color:var(--c2);}
+    .step-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+    .step-card.revealed .step-body{max-height:400px;}
+    .step-content{padding:0 16px 14px;font-size:13px;line-height:1.65;color:var(--text);}
+    .step-content .math{display:inline-block;padding:2px 8px;background:rgba(106,169,255,0.08);border-radius:6px;font-family:'Courier New',Courier,monospace;font-size:13px;color:var(--c1);margin:2px 0;}
+    .step-content .math-block{display:block;padding:10px 14px;background:rgba(0,0,0,0.2);border-radius:10px;border:1px solid rgba(255,255,255,0.06);font-family:'Courier New',Courier,monospace;font-size:13px;color:var(--c1);margin:8px 0;line-height:1.7;white-space:pre-wrap;}
+
+    /* Examples table */
+    .examples-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;}
+    .examples-table th{text-align:left;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.12);color:var(--muted);font-weight:600;}
+    .examples-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .examples-table tr:hover td{background:rgba(106,169,255,0.04);}
+    .case-tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;}
+    .case-tag.c1{background:rgba(106,169,255,0.15);color:var(--c1);}
+    .case-tag.c2{background:rgba(100,240,200,0.15);color:var(--c2);}
+    .case-tag.c3{background:rgba(255,209,102,0.15);color:var(--c3);}
+    .case-tag.exp{background:rgba(255,92,122,0.15);color:var(--c5);}
+
+    .speed-display{text-align:center;font-size:11px;color:var(--muted);margin-top:2px;}
+    ::-webkit-scrollbar{width:6px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:3px;}
+
+    /* Duplicate highlight in tree */
+    .dup-highlight rect{stroke-dasharray:4 2;}
+
+    /* Memo/cached node highlight */
+    .memo-node rect{stroke-dasharray:0;}
+    .memo-hit{opacity:0.6;}
+    .memo-hit rect{fill:rgba(100,240,200,0.12)!important;stroke:rgba(100,240,200,0.5)!important;}
+
+    /* ── Tutorial: Intro Section ── */
+    .intro-section{
+      max-width:1280px;margin:0 auto 14px;padding:0 14px;
+    }
+    .intro-card{
+      background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03));
+      border:1px solid rgba(255,255,255,0.10);border-radius:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);overflow:hidden;
+    }
+    .intro-header{
+      padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
+      cursor:pointer;background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+    .intro-header h2{margin:0;font-size:16px;}
+    .intro-toggle{
+      background:rgba(106,169,255,0.14);border:1px solid rgba(106,169,255,0.25);
+      color:var(--c1);border-radius:8px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;
+      transition:background .15s;
+    }
+    .intro-toggle:hover{background:rgba(106,169,255,0.22);}
+    .intro-body{padding:18px 20px;line-height:1.7;font-size:13px;overflow:hidden;max-height:2000px;transition:max-height .4s ease,padding .4s ease;}
+    .intro-body.collapsed{max-height:0!important;padding-top:0;padding-bottom:0;}
+    .intro-body h3{font-size:14px;color:var(--c1);margin:0 0 6px;font-weight:700;}
+    .intro-body p{margin:0 0 14px;color:var(--text);}
+    .math-inline{
+      display:inline-block;padding:1px 7px;background:rgba(106,169,255,0.08);
+      border-radius:5px;font-family:'Courier New',Courier,monospace;font-size:13px;color:var(--c1);
+    }
+    .learning-path{
+      display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0 4px;
+    }
+    .learning-path .lp-step{
+      padding:5px 12px;border-radius:10px;font-size:11.5px;font-weight:600;
+      border:1px solid rgba(255,255,255,0.10);background:rgba(0,0,0,0.18);color:var(--muted);
+      cursor:pointer;transition:all .15s;
+    }
+    .learning-path .lp-step:hover{background:rgba(106,169,255,0.12);color:var(--text);border-color:rgba(106,169,255,0.3);}
+    .learning-path .lp-arrow{color:var(--muted);font-size:12px;opacity:0.5;}
+
+    /* ── Tutorial: Module Banners ── */
+    .module-banner{
+      padding:12px 16px;margin-bottom:12px;border-radius:12px;
+      background:rgba(106,169,255,0.04);border:1px solid rgba(106,169,255,0.10);
+      font-size:12px;line-height:1.6;color:var(--muted);
+    }
+    .module-banner b{color:var(--text);}
+
+    /* ── Tutorial: Insight Box ── */
+    .insight-box{
+      margin-top:14px;padding:14px 16px;border-radius:12px;
+      border-left:3px solid var(--c2);
+      background:rgba(100,240,200,0.04);
+      font-size:12.5px;line-height:1.65;color:var(--text);
+    }
+    .insight-box.exp{border-left-color:var(--c5);background:rgba(255,92,122,0.04);}
+    .insight-box.log{border-left-color:var(--c1);background:rgba(106,169,255,0.04);}
+    .insight-box.nlogn{border-left-color:var(--c3);background:rgba(255,209,102,0.04);}
+    .insight-box.linear{border-left-color:var(--c2);background:rgba(100,240,200,0.04);}
+    .insight-box strong{font-weight:700;}
+    .insight-title{font-weight:700;font-size:12px;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;}
+
+    /* ── Tutorial: Try This ── */
+    .try-this{
+      font-size:11.5px;font-style:italic;color:var(--c3);
+      margin-top:6px;line-height:1.5;opacity:0.85;
+    }
+
+    /* ── Tutorial: Complexity Comparison ── */
+    .complexity-compare{margin-top:14px;}
+    .complexity-compare table{width:100%;border-collapse:collapse;font-size:12px;}
+    .complexity-compare th{text-align:center;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.12);color:var(--muted);font-weight:600;font-size:11px;}
+    .complexity-compare td{text-align:center;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Courier New',monospace;font-size:11.5px;}
+    .complexity-compare tr:hover td{background:rgba(106,169,255,0.04);}
+    .complexity-compare .clog{color:var(--c1);}
+    .complexity-compare .clin{color:var(--c2);}
+    .complexity-compare .cnlogn{color:var(--c3);}
+    .complexity-compare .cexp{color:var(--c5);}
+
+    /* ── Tutorial: Tooltips ── */
+    .tip{
+      position:relative;border-bottom:1px dotted rgba(106,169,255,0.4);cursor:help;color:var(--c1);
+    }
+    .tip::after{
+      content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;
+      transform:translateX(-50%);padding:6px 10px;border-radius:8px;
+      background:rgba(15,20,40,0.95);border:1px solid rgba(106,169,255,0.25);
+      color:var(--text);font-size:11px;font-style:normal;font-weight:400;
+      white-space:nowrap;max-width:260px;white-space:normal;
+      pointer-events:none;opacity:0;transition:opacity .2s;z-index:100;
+      line-height:1.4;box-shadow:0 4px 12px rgba(0,0,0,0.3);
+    }
+    .tip:hover::after{opacity:1;}
+
+    /* ── Algorithm Simulation ── */
+    #simContainer{
+      margin-bottom:14px;border-radius:14px;
+      border:1px solid rgba(255,209,102,0.15);
+      background:rgba(255,209,102,0.03);overflow:hidden;
+    }
+    .sim-header{
+      padding:10px 16px;display:flex;align-items:center;justify-content:space-between;
+      cursor:pointer;background:rgba(255,209,102,0.04);
+      border-bottom:1px solid rgba(255,209,102,0.08);
+    }
+    .sim-title{font-size:13px;font-weight:700;color:var(--c3);}
+    .sim-toggle{
+      background:rgba(255,209,102,0.14);border:1px solid rgba(255,209,102,0.25);
+      color:var(--c3);border-radius:8px;padding:3px 10px;font-size:11px;font-weight:600;
+      cursor:pointer;width:auto;
+    }
+    .sim-body{padding:14px;overflow:hidden;}
+    .sim-body.collapsed{max-height:0!important;padding-top:0;padding-bottom:0;overflow:hidden;transition:max-height .4s ease,padding .4s ease;}
+    .sim-svg{width:100%;border-radius:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.06);}
+    .sim-desc{
+      margin-top:10px;padding:10px 14px;border-radius:10px;
+      background:rgba(0,0,0,0.15);border:1px solid rgba(255,255,255,0.06);
+      font-size:13px;line-height:1.6;color:var(--text);min-height:40px;
+    }
+    .sim-controls{
+      display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;margin-top:10px;align-items:center;
+    }
+    .sim-controls button{padding:8px 12px;font-size:12px;}
+    .sim-progress{font-size:12px;color:var(--muted);text-align:center;padding:8px;}
+
+    /* Simulation element transitions */
+    .sim-disk{transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
+    .sim-cell{transition:opacity 0.4s ease,fill 0.3s ease;}
+    .sim-bracket{transition:x 0.3s ease,width 0.3s ease;}
+    .sim-pointer{transition:transform 0.3s ease;}
+
+    /* ── Tutorial: Footer ── */
+    .tut-footer{
+      max-width:1280px;margin:14px auto 24px;padding:0 14px;
+      font-size:11.5px;color:var(--muted);text-align:center;line-height:1.6;
+    }
+    .tut-footer a{color:var(--c1);text-decoration:none;}
+    .tut-footer a:hover{text-decoration:underline;}
+
+    /* ── Evolution: Binary Recursion Tree ── */
+    .rec-tree-evo-container {
+      margin: 24px 0 12px 0;
+      background: rgba(106,169,255,0.04);
+      border: 1px solid rgba(106,169,255,0.12);
+      border-radius: 14px;
+      padding: 18px 20px 16px 20px;
+      color: var(--text);
+      font-size: 13px;
+      position: relative;
+    }
+    .rec-tree-evo-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--c1);
+      margin-bottom: 8px;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rec-tree-evo-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 18px;
+      align-items: center;
+      margin-bottom: 10px;
+      margin-top: 8px;
+    }
+    .rec-tree-evo-controls label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 0;
+      margin-right: 6px;
+      font-weight: 600;
+    }
+    .rec-tree-evo-controls input[type="number"] {
+      width: 70px;
+      padding: 7px 10px;
+      font-size: 13px;
+      border-radius: 8px;
+      border: 1px solid rgba(106,169,255,0.18);
+      background: rgba(0,0,0,0.15);
+      color: var(--text);
+      margin-right: 8px;
+    }
+    .rec-tree-evo-controls button {
+      padding: 7px 16px;
+      font-size: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(106,169,255,0.18);
+      background: rgba(106,169,255,0.10);
+      color: var(--c1);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .rec-tree-evo-controls button:active {
+      background: rgba(106,169,255,0.18);
+    }
+    .rec-tree-evo-controls .rec-tree-evo-step {
+      background: rgba(255,209,102,0.10);
+      color: var(--c3);
+      border: 1px solid rgba(255,209,102,0.18);
+    }
+    .rec-tree-evo-controls .rec-tree-evo-reset {
+      background: rgba(255,92,122,0.10);
+      color: var(--c5);
+      border: 1px solid rgba(255,92,122,0.18);
+    }
+    .rec-tree-evo-svg-wrap {
+      width: 100%;
+      overflow-x: auto;
+      background: rgba(0,0,0,0.10);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      margin: 0 auto 0 auto;
+      padding: 0;
+      position: relative;
+    }
+    .rec-tree-evo-svg {
+      display: block;
+      margin: 0 auto;
+      background: none;
+      width: 100%;
+      height: 340px;
+      min-width: 480px;
+      max-width: 100%;
+      transition: height .3s;
+    }
+    .rec-tree-evo-legend {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .rec-tree-evo-legend .rec-tree-evo-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rec-tree-evo-legend .rec-tree-evo-legend-box {
+      width: 18px;
+      height: 14px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-right: 2px;
+      border: 2px solid #6aa9ff;
+      background: rgba(106,169,255,0.18);
+    }
+    .rec-tree-evo-legend .rec-tree-evo-legend-box-base {
+      border: 2px solid #ffd166;
+      background: rgba(255,209,102,0.18);
+    }
+    .rec-tree-evo-legend .rec-tree-evo-legend-box-current {
+      border: 2.5px solid #64f0c8;
+      background: rgba(100,240,200,0.18);
+    }
+    .rec-tree-evo-legend .rec-tree-evo-legend-plus {
+      color: var(--c3);
+      font-weight: 700;
+      font-size: 13px;
+      margin-left: 2px;
+      margin-right: 2px;
+    }
+    .rec-tree-evo-status {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--c2);
+      font-weight: 600;
+      min-height: 18px;
+    }
+    /* ── Evolution: Merge Sort Tree Level Sum ── */
+    .merge-level-sum-container {
+      margin: 18px 0 0 0;
+      background: rgba(255,209,102,0.04);
+      border: 1px solid rgba(255,209,102,0.12);
+      border-radius: 14px;
+      padding: 14px 18px 12px 18px;
+      color: var(--text);
+      font-size: 13px;
+      position: relative;
+    }
+    .merge-level-sum-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--c3);
+      margin-bottom: 8px;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .merge-level-sum-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      align-items: center;
+      margin-bottom: 8px;
+      margin-top: 6px;
+    }
+    .merge-level-sum-controls button {
+      padding: 7px 16px;
+      font-size: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,209,102,0.18);
+      background: rgba(255,209,102,0.10);
+      color: var(--c3);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .merge-level-sum-controls button:active {
+      background: rgba(255,209,102,0.18);
+    }
+    .merge-level-sum-svg-wrap {
+      width: 100%;
+      overflow-x: auto;
+      background: rgba(0,0,0,0.10);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      margin: 0 auto 0 auto;
+      padding: 0;
+      position: relative;
+    }
+    .merge-level-sum-svg {
+      display: block;
+      margin: 0 auto;
+      background: none;
+      width: 100%;
+      height: 340px;
+      min-width: 480px;
+      max-width: 100%;
+      transition: height .3s;
+    }
+    .merge-level-sum-bar {
+      height: 14px;
+      border-radius: 6px;
+      background: var(--c3);
+      margin-left: 8px;
+      margin-right: 8px;
+      display: inline-block;
+      vertical-align: middle;
+      transition: width .4s;
+    }
+    .merge-level-sum-status {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--c3);
+      font-weight: 600;
+      min-height: 18px;
+    }
+    .merge-level-sum-legend {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .merge-level-sum-legend .merge-level-sum-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .merge-level-sum-legend .merge-level-sum-legend-box-leaf {
+      width: 18px;
+      height: 14px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-right: 2px;
+      border: 2px solid #ffd166;
+      background: rgba(255,209,102,0.18);
+    }
+    .merge-level-sum-legend .merge-level-sum-legend-box-internal {
+      width: 18px;
+      height: 14px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-right: 2px;
+      border: 2px solid #6aa9ff;
+      background: rgba(106,169,255,0.18);
+    }
+    .merge-level-sum-legend .merge-level-sum-bar {
+      width: 24px;
+      height: 10px;
+      border-radius: 4px;
+      background: var(--c3);
+      margin-left: 2px;
+      margin-right: 2px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /* ── Evolution: Merge Sort Stepper ── */
+    .merge-stepper-container {
+      margin: 18px 0 0 0;
+      background: rgba(100,240,200,0.04);
+      border: 1px solid rgba(100,240,200,0.12);
+      border-radius: 14px;
+      padding: 14px 18px 12px 18px;
+      color: var(--text);
+      font-size: 13px;
+      position: relative;
+    }
+    .merge-stepper-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--c2);
+      margin-bottom: 8px;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .merge-stepper-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      align-items: center;
+      margin-bottom: 8px;
+      margin-top: 6px;
+    }
+    .merge-stepper-controls button {
+      padding: 7px 16px;
+      font-size: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(100,240,200,0.18);
+      background: rgba(100,240,200,0.10);
+      color: var(--c2);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .merge-stepper-controls button:active {
+      background: rgba(100,240,200,0.18);
+    }
+    .merge-stepper-svg-wrap {
+      width: 100%;
+      overflow-x: auto;
+      background: rgba(0,0,0,0.10);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      margin: 0 auto 0 auto;
+      padding: 0;
+      position: relative;
+    }
+    .merge-stepper-svg {
+      display: block;
+      margin: 0 auto;
+      background: none;
+      width: 100%;
+      height: 220px;
+      min-width: 380px;
+      max-width: 100%;
+      transition: height .3s;
+    }
+    .merge-stepper-status {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--c2);
+      font-weight: 600;
+      min-height: 18px;
+    }
+    .merge-stepper-tooltip {
+      display: none;
+      position: absolute;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+      background: rgba(15,20,40,0.97);
+      color: var(--text);
+      border: 1px solid rgba(106,169,255,0.25);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 12px;
+      z-index: 1000;
+      min-width: 220px;
+      max-width: 340px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      pointer-events: none;
+      transition: opacity .2s;
+      opacity: 0;
+    }
+    .merge-stepper-tooltip.active {
+      display: block;
+      opacity: 1;
+      pointer-events: auto;
+      animation: fadeInTooltip .25s;
+    }
+    @keyframes fadeInTooltip {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .merge-stepper-tooltip .merge-stepper-tooltip-title {
+      font-weight: 700;
+      color: var(--c1);
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+    .merge-stepper-tooltip .merge-stepper-tooltip-body {
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .merge-stepper-tooltip .merge-stepper-tooltip-close {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .merge-stepper-tooltip .merge-stepper-tooltip-close:hover {
+      color: var(--c5);
+    }
+    .merge-stepper-tooltip .merge-stepper-tooltip-body b {
+      color: var(--c3);
+    }
+    .merge-stepper-tooltip .merge-stepper-tooltip-body .math-inline {
+      background: rgba(106,169,255,0.08);
+      color: var(--c1);
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      margin: 0 2px;
+    }
+    /* ── Evolution: Master Theorem Dynamic ── */
+    .master-evo-container {
+      margin: 18px 0 0 0;
+      background: rgba(106,169,255,0.04);
+      border: 1px solid rgba(106,169,255,0.12);
+      border-radius: 14px;
+      padding: 14px 18px 12px 18px;
+      color: var(--text);
+      font-size: 13px;
+      position: relative;
+    }
+    .master-evo-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--c1);
+      margin-bottom: 8px;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .master-evo-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      align-items: center;
+      margin-bottom: 8px;
+      margin-top: 6px;
+    }
+    .master-evo-controls label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 0;
+      margin-right: 6px;
+      font-weight: 600;
+    }
+    .master-evo-controls input[type="number"], .master-evo-controls input[type="text"] {
+      width: 60px;
+      padding: 7px 10px;
+      font-size: 13px;
+      border-radius: 8px;
+      border: 1px solid rgba(106,169,255,0.18);
+      background: rgba(0,0,0,0.15);
+      color: var(--text);
+      margin-right: 8px;
+    }
+    .master-evo-controls .master-evo-analyze {
+      padding: 7px 16px;
+      font-size: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(100,240,200,0.18);
+      background: rgba(100,240,200,0.10);
+      color: var(--c2);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .master-evo-controls .master-evo-analyze:active {
+      background: rgba(100,240,200,0.18);
+    }
+    .master-evo-controls .master-evo-reset {
+      background: rgba(255,92,122,0.10);
+      color: var(--c5);
+      border: 1px solid rgba(255,92,122,0.18);
+    }
+    .master-evo-svg-wrap {
+      width: 100%;
+      overflow-x: auto;
+      background: rgba(0,0,0,0.10);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      margin: 0 auto 0 auto;
+      padding: 0;
+      position: relative;
+    }
+    .master-evo-svg {
+      display: block;
+      margin: 0 auto;
+      background: none;
+      width: 100%;
+      height: 320px;
+      min-width: 480px;
+      max-width: 100%;
+      transition: height .3s;
+    }
+    .master-evo-case-indicator {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--c1);
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+    .master-evo-status {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--c2);
+      font-weight: 600;
+      min-height: 18px;
+    }
+    .master-evo-case-list {
+      margin-top: 12px;
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+    .master-evo-case-card {
+      flex: 1 1 200px;
+      min-width: 200px;
+      background: rgba(0,0,0,0.10);
+      border-radius: 10px;
+      border: 1.5px solid rgba(255,255,255,0.08);
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      transition: border-color .3s, box-shadow .3s;
+      position: relative;
+    }
+    .master-evo-case-card.active {
+      border-color: var(--c2);
+      box-shadow: 0 0 12px 0 rgba(100,240,200,0.08);
+      background: rgba(100,240,200,0.06);
+    }
+    .master-evo-case-card .master-evo-case-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .master-evo-case-card.active .master-evo-case-title {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .master-evo-case-card.active .master-evo-case-desc {
+      color: var(--text);
+    }
+    .master-evo-na-indicator {
+      margin-top: 10px;
+      color: var(--c5);
+      font-size: 13px;
+      font-weight: 700;
+      background: rgba(255,92,122,0.08);
+      border: 1px solid rgba(255,92,122,0.18);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: inline-block;
+    }
+    .master-evo-fn-warning {
+      color: var(--c5);
+      font-size: 12px;
+      margin-top: 8px;
+      font-weight: 600;
+    }
+    .master-evo-case-card .master-evo-case-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(106,169,255,0.10);
+      color: var(--c1);
+      border-radius: 6px;
+      padding: 2px 8px;
+      margin-left: 6px;
+    }
+    .master-evo-case-card.active .master-evo-case-badge {
+      background: rgba(100,240,200,0.10);
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-arrow {
+      font-size: 15px;
+      font-weight: 700;
+      margin-left: 6px;
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-arrow.c1 { color: var(--c1);}
+    .master-evo-case-card .master-evo-case-arrow.c2 { color: var(--c2);}
+    .master-evo-case-card .master-evo-case-arrow.c3 { color: var(--c3);}
+    .master-evo-case-card .master-evo-case-arrow.na { color: var(--c5);}
+    .master-evo-case-card .master-evo-case-formula .math-inline {
+      background: rgba(106,169,255,0.08);
+      color: var(--c1);
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      margin: 0 2px;
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c5 {
+      color: var(--c5);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c1 {
+      color: var(--c1);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c2 {
+      color: var(--c2);
+    }
+    .master-evo-case-card .master-evo-case-formula .math-inline.c3 {
+      color: var(--c3);
+    }
+    .master-evo-case-card .master-evo-case-formula

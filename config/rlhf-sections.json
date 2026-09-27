@@ -1,0 +1,20 @@
+{
+  "lecture": {
+    "toolPath": "./rlhf_interactive.html",
+    "guidePath": "./lecture_guide"
+  },
+  "sections": [
+    {
+      "id": "placeholder",
+      "group": "intro",
+      "isAnimated": false,
+      "navActions": [],
+      "narration": "Placeholder — the section planner will auto-generate sections from the guide and tool."
+    }
+  ],
+  "defaults": {
+    "ttsVoice": "shimmer",
+    "ttsModel": "tts-1-hd",
+    "maxRetriesPerSection": 3
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "lecture-pipeline",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Agentic lecture production pipeline — tool creation, recording, QA, and assembly",
+  "scripts": {
+    "pipeline": "node pipeline.mjs",
+    "pipeline:section": "node pipeline.mjs --section",
+    "pipeline:resume": "node pipeline.mjs --resume",
+    "tool-qa": "node agents/tool-qa.mjs",
+    "record": "node agents/recorder.mjs",
+    "assemble": "node agents/assembler.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "openai": "^4.70.0",
+    "playwright": "^1.49.0",
+    "sharp": "^0.33.0"
+  }
+}

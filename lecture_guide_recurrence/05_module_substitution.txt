@@ -1,0 +1,104 @@
+================================================================================
+  ACT 4: SUBSTITUTION METHOD (10 minutes)
+  State: Click the "Substitution" tab.
+  Covers: Binary Search proof, Merge Sort proof, Fibonacci comparison
+================================================================================
+
+
+SUBSTITUTION TAB COMPONENTS (LEFT PANEL)
+-----------------------------------------
+  1. Example preset dropdown: Binary Search, Merge Sort, Fibonacci (memo),
+     Fibonacci (naive), Tower of Hanoi
+  2. Step controls: Next Step, Prev, Show All, Reset
+  3. Progress tracker: "0 / 6" etc.
+
+RIGHT PANEL:
+  - Module banner explaining the substitution method pattern
+  - Step cards that reveal one at a time with math blocks
+  - Pattern: guess -> assume -> substitute -> simplify -> verify base case
+
+
+TEACHING STEPS — BINARY SEARCH PROOF
+--------------------------------------
+1. Click the "Substitution" tab.
+
+2. Read the module banner:
+   "The substitution method is a formal proof technique. We GUESS the answer,
+   then PROVE it correct using mathematical induction. The pattern is always:
+   guess, assume, substitute, simplify, verify the base case."
+
+3. Select "Binary Search" from the preset dropdown if not already selected.
+
+4. Click "Next Step" to reveal Step 1 — "State the Recurrence":
+   "We want to solve T(n) = T(n/2) + 1 with T(1) = 1. We already KNOW from
+   the recursion tree that this is O(log n). Now we'll PROVE it."
+
+5. Click "Next Step" for Step 2 — "Guess the Solution":
+   "Our guess: T(n) <= c * log_2(n) for some constant c. The guess comes from
+   our recursion tree analysis — log n levels with O(1) work each."
+
+6. Click "Next Step" for Step 3 — "Assume Inductive Hypothesis":
+   "We assume our guess holds for all inputs smaller than n. In particular,
+   T(n/2) <= c * log_2(n/2). This is the inductive assumption."
+
+7. Click "Next Step" for Step 4 — "Substitute into Recurrence":
+   "Now plug the assumption into the recurrence:
+   T(n) = T(n/2) + 1 <= c*log(n/2) + 1 = c*log(n) - c + 1."
+
+8. Click "Next Step" for Step 5 — "Prove the bound":
+   "We need c*log(n) - c + 1 <= c*log(n). That simplifies to -c + 1 <= 0,
+   so c >= 1. Any c >= 1 works!"
+
+9. Click "Next Step" for Step 6 — "Verify Base Case":
+   "Check n=2: T(2) = 2, and c*log(2) = c. So c >= 2 works. Done!"
+
+10. Pause to reflect:
+    "This five-step pattern is the same every time. The creative part is
+    the GUESS. Everything else is mechanical algebra."
+
+
+TEACHING STEPS — MERGE SORT PROOF
+-----------------------------------
+11. Click "Reset" to clear the steps.
+
+12. Select "Merge Sort" from the preset dropdown.
+
+13. Click "Show All" to reveal all steps at once (faster pacing now):
+    "Let's go through Merge Sort more quickly since you know the pattern."
+
+14. Walk through the key steps:
+    - "We guess T(n) <= c*n*log(n)."
+    - "Substituting: 2*c*(n/2)*log(n/2) + n = c*n*log(n) - cn + n."
+    - "We need -cn + n <= 0, so c >= 1. Same condition!"
+
+15. Point to the final verified result:
+    "T(n) = O(n log n), proven rigorously. The recursion tree gave us the
+    guess; substitution gave us the proof."
+
+
+TEACHING STEPS — FIBONACCI COMPARISON
+---------------------------------------
+16. Click "Reset".
+
+17. Select "Fibonacci (naive)" from the preset dropdown.
+
+18. Click through steps one by one:
+    "Fibonacci is different — it's not divide-and-conquer, so we need
+    substitution. We guess T(n) <= c * 2^n."
+
+19. Advance through the steps:
+    "Substituting: c*2^(n-1) + c*2^(n-2) + 1 = c*2^n*(1/2 + 1/4) + 1
+    = c*2^n * 3/4 + 1. We need 3c/4 + 1/(2^n) <= c, which gives c >= 4."
+
+20. After all steps revealed:
+    "T(n) = O(2^n), proven. This is one case where the Master Theorem
+    can't help but substitution can."
+
+21. Optionally show the memoized Fibonacci proof too:
+    "For memoized Fibonacci, the proof is simpler — each of n subproblems
+    takes O(1), so total is O(n). No induction needed."
+
+
+>> Transition: Load 06_epilogue_summary.txt for the Epilogue.
+
+================================================================================

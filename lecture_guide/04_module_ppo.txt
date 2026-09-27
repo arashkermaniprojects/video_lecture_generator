@@ -1,0 +1,110 @@
+================================================================================
+  ACT 3: PPO TAB (20 minutes)
+  Tab: PPO (third tab)
+  This is the longest and most interactive act. You will run 4 experiments.
+================================================================================
+
+
+COMPONENTS — LEFT PANEL
+-----------------------
+  1. Beta slider (KL Penalty Coefficient)
+     Range: 0.00 to 1.00. Default: 0.20. Live readout next to label.
+     THE most important parameter in RLHF.
+
+  2. Learning Rate slider
+     Range: 0.001 to 0.050. Default: 0.010.
+     Controls policy update step size.
+
+  3. Training Steps slider
+     Range: 10 to 200. Default: 50.
+
+  4. "Run PPO" button — animated full training run (~60ms per step).
+
+  5. "Step" button — advances simulation by exactly one step.
+
+  6. "Reset" button (red) — clears all history and charts.
+
+  7. Stat pills (Step, Reward, KL Penalty, Net Objective)
+     Updated live during training. Net Objective = Reward - beta * KL.
+
+  8. Phase bar — changes colour and message based on training state:
+     - Blue "Waiting": before training
+     - Yellow "Optimising...": normal training
+     - Red "High KL Penalty": KL penalty > 50% of reward
+     - Green "Good Progress": net objective is high
+     - Green "Training Complete": all steps finished
+
+
+COMPONENTS — RIGHT PANEL
+-------------------------
+  9. Colour legend — Reward (blue), KL Penalty (red), Net Objective (green).
+
+  10. "Training Dynamics" line chart (SVG)
+      Three lines over training steps:
+        Blue:  Reward (increasing, diminishing returns)
+        Red:   Negative KL penalty (decreasing, growing magnitude)
+        Green: Net Objective = Reward - beta*KL
+      Zero line shown as dashed horizontal. End dots with numeric labels.
+
+  11. "Reward vs KL Trade-off Frontier" scatter plot (SVG)
+      X-axis: KL Divergence. Y-axis: Reward.
+      Purple dots (opacity increases with step), connected by faint line.
+      Current position highlighted with larger white-bordered dot.
+      "Ideal: High reward, low KL" label in top-left.
+
+
+TEACHING STEPS
+--------------
+1. Explain the controls briefly:
+   - "Beta controls how much we penalise drifting from the SFT baseline."
+   - "Learning rate controls step size."
+   - "Run animates full training, Step goes one at a time, Reset starts over."
+
+2. EXPERIMENT 1 — Baseline (beta=0.20, lr=0.010, steps=50):
+   Keep defaults. Click "Run PPO". Narrate as animation runs:
+   - "Blue reward line climbing... fast at first, then levels off."
+   - "Red KL penalty line dropping below zero — penalty growing."
+   - "Green net objective peaks then plateaus."
+   Point to frontier plot: "Started at origin, moved right (more KL) and up
+   (more reward). Ideal spot is top-left."
+   Read final stats. Note phase bar colour.
+
+3. Click "Reset".
+
+4. EXPERIMENT 2 — No KL penalty (beta=0.00, lr=0.010, steps=100):
+   Set beta to 0.00. Click "Run PPO". Narrate:
+   - "With no KL penalty, reward climbs unchecked..."
+   - "But look at the frontier — KL is exploding!"
+   - "This is reward hacking. The model finds degenerate outputs that score
+   high but are nonsensical."
+   This answers the question from Act 1.
+
+5. Click "Reset".
+
+6. EXPERIMENT 3 — Very high KL penalty (beta=0.80, lr=0.010, steps=100):
+   Set beta to 0.80. Click "Run PPO". Narrate:
+   - "KL penalty dominates. Red line drops steeply."
+   - "Net objective might go negative — penalty outweighs reward."
+   - "Frontier: policy barely moves from origin. Over-regularisation."
+
+7. Click "Reset".
+
+8. EXPERIMENT 4 — Sweet spot (beta=0.15, lr=0.020, steps=80):
+   Click "Run PPO". Narrate:
+   - "Moderate beta, slightly higher learning rate..."
+   - "Reward increases aggressively early, then the net objective peaks —
+   that peak is roughly where we'd want to stop in practice."
+   - "Frontier: fast vertical movement (reward gains), then mostly
+   horizontal (KL growth, diminishing returns)."
+
+9. Use "Step" button for 3-4 manual steps. For each step, read stat pills
+   aloud and point to the new dot on the frontier. This slow-motion version
+   helps students internalise per-step dynamics.
+
+10. Summary: "Beta is the single most important hyperparameter in RLHF. Too
+    low: reward hacking. Too high: no learning. These charts are the tools
+    practitioners use to monitor real RLHF training runs."
+
+>> Transition: Click the "KL Divergence" tab. Load 05_module_kl_divergence.txt.
+
+================================================================================

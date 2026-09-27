@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Agentic Systems: Theory &amp; Practice</title>
+  <style>
+
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Agentic Systems: Theory &amp; Practice</h1>
+</header>
+<div class="titlepage">
+<p><span> <strong>Agentic Systems:<br />
+Theory, Architecture, and<br />
+A Case Study in Automated Lecture Production</strong></span></p>
+<hr />
+<hr />
+<p><span>Technical Documentation<br />
+Lecture Production Pipeline v2</span></p>
+<p><span> Course: Algorithm Analysis<br />
+Agentic_lecture_01 System</span></p>
+<p><span> Generated with Claude Code — Anthropic</span></p>
+</div>
+<h1 id="introduction">Introduction</h1>
+<p>This document provides a comprehensive technical account of
+<em>agentic systems</em>: software architectures in which one or more
+AI-driven agents perceive an environment, reason about a goal, select
+and execute actions, and adapt to feedback—operating with a degree of
+autonomy that distinguishes them from conventional request-response
+pipelines.</p>
+<p>Part I (Sections <a href="#sec:theory" data-reference-type="ref" data-reference="sec:theory">2</a>–<a href="#sec:multiagent" data-reference-type="ref" data-reference="sec:multiagent">3</a>) covers
+the general theory. Part II (Sections <a href="#sec:ouroverview" data-reference-type="ref" data-reference="sec:ouroverview">4</a>–<a href="#sec:lessons" data-reference-type="ref" data-reference="sec:lessons">6</a>) describes the specific automated
+lecture-production system built for this course, analysing how the
+abstract concepts manifest in concrete engineering decisions.</p>
+<h1 id="sec:theory">Part I: Theory of Agentic Systems</h1>
+<h2 id="what-is-an-agent">What Is an Agent?</h2>
+<p>The term <em>agent</em> originates in philosophy of mind and
+economics; in computing it was formalised by Russell &amp; Norvig (1995)
+as:</p>
+<div class="mdframed">
+<p><strong>Definition (Rational Agent).</strong> An agent is any entity
+that <em>perceives</em> its environment through sensors and
+<em>acts</em> upon that environment through actuators, with the goal of
+maximising some performance measure over time.</p>
+</div>
+<p>In the context of large language model (LLM) systems, this definition
+extends to:</p>
+<ul>
+<li><p><strong>Perception:</strong> text, images, tool results, memory
+contents, conversation history</p></li>
+<li><p><strong>Reasoning:</strong> chain-of-thought generation,
+planning, self-reflection</p></li>
+<li><p><strong>Action:</strong> function/tool calls, code execution,
+file system operations, API requests, spawning sub-agents</p></li>
+<li><p><strong>Adaptation:</strong> adjusting strategy based on
+observation of action outcomes</p></li>
+</ul>
+<h2 id="the-perceptionreasoningaction-loop">The
+Perception–Reasoning–Action Loop</h2>
+<p>The core operational model of every agent is a loop:</p>
+<figure id="fig:pra" data-latex-placement="h">
+
+<figcaption>The core Perceive–Reason–Act loop. Memory feeds context into
+perception; actions produce observations that re-enter the
+loop.</figcaption>
+</figure>
+<p>Unlike a simple function call, the loop <em>repeats</em>: the outcome
+of each action (tool result, error, partial output) is fed back as a new
+observation, enabling the agent to react, correct course, or pursue
+multi-step strategies.</p>
+<h2 id="agent-architectures">Agent Architectures</h2>
+<p>Several architectural patterns have emerged:</p>
+<h3 id="react-reason-act">ReAct (Reason + Act)</h3>
+<p>ReAct <span class="citation" data-cites="yao2023react"></span>
+interleaves chain-of-thought reasoning with action steps in a single
+context window:</p>
+<pre data-language data-caption="ReAct trace fragment"><code>Thought: I need to find which section uses the iterative tab.
+Action: read_file(&quot;sections.json&quot;)
+Observation: [..., {&quot;id&quot;: &quot;15_linear_search&quot;, &quot;tab&quot;: &quot;iterative&quot;}, ...]
+Thought: Section 15 targets iterative tab. I should switch the tab first.
+Action: click_tab(&quot;iterative&quot;)
+Observation: {&quot;btnActive&quot;: true, &quot;panelVisible&quot;: true}</code></pre>
+<p>The model decides <em>what</em> to think and <em>what</em> to do in
+the same generation step. This is simple but vulnerable to long-horizon
+forgetting and accumulating errors in the context.</p>
+<h3 id="plan-and-execute">Plan-and-Execute</h3>
+<p>A <em>planner</em> agent decomposes the goal into a sequence of
+steps; separate <em>executor</em> agents carry out each step. The
+planner may revise the plan based on executor feedback.</p>
+<figure id="fig:planexec" data-latex-placement="h">
+
+<figcaption>Plan-and-Execute: a planner decomposes goals; executors
+report back.</figcaption>
+</figure>
+<h3 id="reflexion-self-critique">Reflexion / Self-Critique</h3>
+<p>The agent generates an output, then a second (or the same) LLM call
+evaluates it and produces a <em>reflection</em>. The reflection is
+stored in memory and used to improve the next attempt. This directly
+models the quality-assurance loop seen in our system.</p>
+<h3 id="tool-augmented-agents">Tool-Augmented Agents</h3>
+<p>Modern LLMs can invoke structured tools through function-calling
+APIs. The model emits a JSON payload; a host process executes the
+corresponding function and returns the result. This pattern is the
+foundation of our pipeline agents.</p>
+<figure data-latex-placement="h">
+
+<figcaption>Tool-augmented LLM: the model selects tools; a host process
+executes them.</figcaption>
+</figure>
+<h2 id="sec:memory">Memory Systems</h2>
+<p>Agents typically require multiple layers of memory:</p>
+<table>
+<caption>Memory layers in agentic systems.</caption>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Type</strong></th>
+<th style="text-align: left;"><strong>Scope</strong></th>
+<th style="text-align: left;"><strong>Storage</strong></th>
+<th style="text-align: left;"><strong>Example</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">In-context</td>
+<td style="text-align: left;">Current episode</td>
+<td style="text-align: left;">LLM context window</td>
+<td style="text-align: left;">Conversation history</td>
+</tr>
+<tr>
+<td style="text-align: left;">External/Episodic</td>
+<td style="text-align: left;">Cross-session</td>
+<td style="text-align: left;">Files, DB</td>
+<td style="text-align: left;">Memory markdown files</td>
+</tr>
+<tr>
+<td style="text-align: left;">Procedural</td>
+<td style="text-align: left;">Permanent</td>
+<td style="text-align: left;">System prompt / code</td>
+<td style="text-align: left;">Agent behaviour rules</td>
+</tr>
+<tr>
+<td style="text-align: left;">Semantic</td>
+<td style="text-align: left;">Domain facts</td>
+<td style="text-align: left;">Vector DB / docs</td>
+<td style="text-align: left;">Course content</td>
+</tr>
+<tr>
+<td style="text-align: left;">Working</td>
+<td style="text-align: left;">Computation</td>
+<td style="text-align: left;">Variable state</td>
+<td style="text-align: left;">Run directory, counters</td>
+</tr>
+</tbody>
+</table>
+<p>In our pipeline, <em>external episodic memory</em> is implemented as
+Markdown files in <code>.claude/projects/.../memory/</code>, while
+<em>working memory</em> is the <code>state.json</code> file persisted in
+each run directory.</p>
+<h2 id="sec:agentqa">Agent Evaluation and Quality Assurance</h2>
+<p>A fundamental challenge in agentic systems is verifying that actions
+produced the intended outcome. Three strategies exist:</p>
+<ol>
+<li><p><strong>Deterministic verification</strong> — check ground-truth
+state directly (e.g. DOM inspection, file existence, API status code).
+Fast and exact but requires programmatic access to state.</p></li>
+<li><p><strong>LLM-as-judge</strong> — pass the output to a second LLM
+call that evaluates it against a rubric. Flexible but probabilistic; the
+judge can err or be inconsistent across calls on identical
+input.</p></li>
+<li><p><strong>Human-in-the-loop</strong> — a person reviews and
+approves the output before the pipeline continues. Slowest but highest
+fidelity.</p></li>
+</ol>
+<p>Our system uses all three. DOM inspection is ground truth for tab
+correctness (deterministic); a vision-capable LLM judges screenshot
+quality (LLM-as-judge); an optional <code>--no-human-review</code> flag
+can bypass human checkpoints.</p>
+<h2 id="failure-modes-in-agentic-systems">Failure Modes in Agentic
+Systems</h2>
+<figure data-latex-placement="h">
+
+<figcaption>Common agentic failure modes (left) and mitigations used in
+this system (right).</figcaption>
+</figure>
+<h1 id="sec:multiagent">Multi-Agent Orchestration</h1>
+<h2 id="orchestratorworker-pattern">Orchestrator–Worker Pattern</h2>
+<p>The most common multi-agent topology is hierarchical: an
+<em>orchestrator</em> maintains the high-level goal and delegates
+subtasks to specialised <em>workers</em>.</p>
+<figure id="fig:orchworker" data-latex-placement="h">
+
+<figcaption>Orchestrator–worker topology used in the lecture production
+pipeline.</figcaption>
+</figure>
+<h2 id="inter-agent-communication-channels">Inter-Agent Communication
+Channels</h2>
+<p>Agents in our system communicate through three channels:</p>
+<ol>
+<li><p><strong>Direct function call</strong> — synchronous; the
+orchestrator calls a worker function and awaits its return value. Used
+for TTS, recording, QA.</p></li>
+<li><p><strong>Shared file state</strong> — <code>state.json</code> and
+the run directory act as a blackboard. Any agent can read or write; the
+orchestrator coordinates access. Enables crash recovery.</p></li>
+<li><p><strong>LLM context injection</strong> — worker prompts are
+constructed by the orchestrator, embedding relevant state (section
+config, previous QA scores, tab state) before calling the LLM
+API.</p></li>
+</ol>
+<h2 id="parallelism-and-sequential-constraints">Parallelism and
+Sequential Constraints</h2>
+<figure id="fig:timeline" data-latex-placement="h">
+
+<figcaption>Temporal dependencies in the pipeline. TTS for section <span class="math inline"><em>N</em> + 1</span> can overlap with recording of
+<span class="math inline"><em>N</em></span>; assembly is strictly after
+all sections.</figcaption>
+</figure>
+<h1 id="sec:ouroverview">Part II: The Lecture Production Pipeline</h1>
+<h2 id="system-overview-and-motivation">System Overview and
+Motivation</h2>
+<p>The system automates the production of narrated, screen-recorded
+lecture videos from an interactive HTML educational tool. The goal is to
+replace the hours of manual effort required to record, narrate, and edit
+a lecture with a fully agentic pipeline that: (a) generates narration
+scripts, (b) synthesises speech, (c) controls the browser tool to show
+the right content at the right time, (d) captures synchronized video,
+(e) performs quality assurance at each step, and (f) assembles the final
+video.</p>
+<figure id="fig:pipeline" data-latex-placement="h">
+
+<figcaption>High-level pipeline stages.</figcaption>
+</figure>
+<h2 id="input-interactive-html-tool">Input: Interactive HTML Tool</h2>
+<p>The tool is a single-page application
+(<code>Asymptotic_Notation_Explorer.html</code>) implementing five
+tabs:</p>
+<table>
+<caption>The five tabs of the interactive HTML tool.</caption>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Tab</strong></th>
+<th style="text-align: left;"><strong><code>data-mod</code></strong></th>
+<th style="text-align: left;"><strong>Content</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Notation Guide</td>
+<td style="text-align: left;"><code>notations</code></td>
+<td style="text-align: left;">Big-O/Ω/Θ definitions, comparison
+charts</td>
+</tr>
+<tr>
+<td style="text-align: left;">Iterative Analysis</td>
+<td style="text-align: left;"><code>iterative</code></td>
+<td style="text-align: left;">Step counters, complexity charts per
+sort</td>
+</tr>
+<tr>
+<td style="text-align: left;">Recursive Analysis</td>
+<td style="text-align: left;"><code>recursive</code></td>
+<td style="text-align: left;">Recursion trees, merge/quick/binary
+search</td>
+</tr>
+<tr>
+<td style="text-align: left;">Proof Builder</td>
+<td style="text-align: left;"><code>prover</code></td>
+<td style="text-align: left;">Interactive formal proof construction</td>
+</tr>
+<tr>
+<td style="text-align: left;">Challenge Mode</td>
+<td style="text-align: left;"><code>challenge</code></td>
+<td style="text-align: left;">Practice problems with feedback</td>
+</tr>
+</tbody>
+</table>
+<p>A critical engineering issue was discovered: space-utilisation fixes
+had added <code>display:flex</code> as an <em>inline style</em> to all
+tab panels. Because inline styles have higher CSS specificity than class
+rules, the class <code>.module{display:none}</code> was overridden,
+making all panels simultaneously visible. The fix was to explicitly set
+<code>display:none</code> in the inline style of inactive panels.</p>
+<h2 id="stage-1-tool-quality-assurance">Stage 1: Tool Quality
+Assurance</h2>
+<p>Before any recording, a vision-capable LLM inspects a screenshot of
+the loaded tool and evaluates it against a structured rubric (viewport
+overflow, interactive elements, tab accessibility). If the score falls
+below 75/100, the tool-fixer agent is invoked to patch the HTML.</p>
+<h2 id="sec:recording">Stage 3: Per-Section Recording Loop</h2>
+<p>This is the core of the pipeline. For each of the 45 sections:</p>
+<figure id="fig:sectionflow" data-latex-placement="h">
+
+<figcaption>Detailed flow for each section in Stage 3.</figcaption>
+</figure>
+<h3 id="tab-switching-engineering-vs-prompt-based-verification">Tab
+Switching: Engineering vs Prompt-Based Verification</h3>
+<p>The tab-switching problem illustrates a fundamental principle:
+<em>prompt-based verification cannot replace engineering
+verification</em>.</p>
+<p>Earlier versions asked the QA LLM to confirm the correct tab was
+showing. The LLM produced false positives (the Notation Guide header
+also appears as a panel title, confusing the vision model). The
+engineering solution is a DOM query executed in the page JavaScript
+context:</p>
+<div class="sourceCode" id="cb2" data-language="JavaScript" data-caption="DOM-verified tab check"><pre class="sourceCode JavaScript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> state <span class="op">=</span> <span class="cf">await</span> page<span class="op">.</span><span class="fu">evaluate</span>((tab) <span class="kw">=&gt;</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> btn   <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="vs">`.tab[data-mod=&quot;</span><span class="sc">${</span>tab<span class="sc">}</span><span class="vs">&quot;]`</span>)<span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> panel <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="vs">`#viz-</span><span class="sc">${</span>tab<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> {</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">btnActive</span><span class="op">:</span>    btn<span class="op">?.</span><span class="at">classList</span><span class="op">.</span><span class="fu">contains</span>(<span class="st">&#39;active&#39;</span>) <span class="op">??</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">panelVisible</span><span class="op">:</span> <span class="bu">window</span><span class="op">.</span><span class="fu">getComputedStyle</span>(panel)<span class="op">.</span><span class="at">display</span> <span class="op">!==</span> <span class="st">&#39;none&#39;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span> expectedTab)<span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">// Both must be true before recording starts</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="op">!</span>state<span class="op">.</span><span class="at">btnActive</span> <span class="op">||</span> <span class="op">!</span>state<span class="op">.</span><span class="at">panelVisible</span>) { <span class="co">/* retry click */</span> }</span></code></pre></div>
+<p>This is deterministic: it queries the live render tree, not a
+screenshot interpretation.</p>
+<h3 id="gpu-accelerated-rendering">GPU-Accelerated Rendering</h3>
+<p>The original implementation used Playwright’s default
+<code>chrome-headless-shell</code> binary. This binary forces
+<code>--disable-gpu</code> internally: CSS display changes applied in
+the DOM were not flushed to the compositor before screenshots were
+taken, causing stale frames to be captured despite correct DOM
+state.</p>
+<p>The fix uses <code>channel: ’chrome’</code> with
+<code>headless: true</code>, which invokes the real Chrome binary in
+&quot;new headless&quot; mode (introduced Chrome 112). This engages the full GPU
+compositing pipeline (Metal on Apple Silicon):</p>
+<figure id="fig:gpu" data-latex-placement="h">
+
+<figcaption>Old (headless-shell, software rendering) vs new (real
+Chrome, Metal GPU) rendering pipeline. The GPU path flushes composited
+frames before screenshot capture.</figcaption>
+</figure>
+<h3 id="http-server-vs-file-url">HTTP Server vs <code>file://</code>
+URL</h3>
+<p>Serving the tool over a local HTTP server (Node.js built-in
+<code>http</code> module, random port) resolves several
+<code>file://</code> URL limitations:</p>
+<ul>
+<li><p><code>waitUntil: ’networkidle’</code> is meaningful (real HTTP
+requests exist)</p></li>
+<li><p><code>Cache-Control: no-store</code> ensures each page load is
+fresh</p></li>
+<li><p>Query-string parameters and reload semantics behave as
+expected</p></li>
+</ul>
+<div class="sourceCode" id="cb3" data-language="JavaScript" data-caption="Embedded HTTP server"><pre class="sourceCode JavaScript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">startToolServer</span>(toolPath) {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> server <span class="op">=</span> <span class="fu">createServer</span>(<span class="kw">async</span> (req<span class="op">,</span> res) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> filePath <span class="op">=</span> <span class="fu">resolveFilePath</span>(req<span class="op">.</span><span class="at">url</span><span class="op">,</span> toolPath)<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    res<span class="op">.</span><span class="fu">writeHead</span>(<span class="dv">200</span><span class="op">,</span> {</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">&#39;Content-Type&#39;</span><span class="op">:</span> <span class="fu">mimeType</span>(filePath)<span class="op">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">&#39;Cache-Control&#39;</span><span class="op">:</span> <span class="st">&#39;no-store&#39;</span>       <span class="co">// always fresh</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">createReadStream</span>(filePath)<span class="op">.</span><span class="fu">pipe</span>(res)<span class="op">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  server<span class="op">.</span><span class="fu">listen</span>(<span class="dv">0</span><span class="op">,</span> <span class="st">&#39;127.0.0.1&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {  <span class="co">// port 0 = OS assigns free port</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resolveP</span>({ server<span class="op">,</span> <span class="dt">url</span><span class="op">:</span> <span class="vs">`http://127.0.0.1:</span><span class="sc">${</span>server<span class="op">.</span><span class="fu">address</span>()<span class="op">.</span><span class="at">port</span><span class="sc">}</span><span class="vs">/`</span> })<span class="op">;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="sec:qa">Stage 3c: Quality Assurance Agent</h2>
+<p>After each section is recorded, a vision-capable LLM receives a
+sample frame and evaluates a structured checklist:</p>
+<table>
+<caption>QA checklist items, verification method, and scoring
+impact.</caption>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Check</strong></th>
+<th style="text-align: left;"><strong>Type</strong></th>
+<th style="text-align: left;"><strong>Hard fail?</strong></th>
+<th style="text-align: left;"><strong>Score cap</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>correct_tab</code></td>
+<td style="text-align: left;">DOM (ground truth override)</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">0 if false</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>text_readable</code></td>
+<td style="text-align: left;">LLM vision</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Warning only</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>pointer_visible</code></td>
+<td style="text-align: left;">LLM vision</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;"><span class="math inline">−</span>10
+pts</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>content_matches</code></td>
+<td style="text-align: left;">LLM vision</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">0 if false</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>right_panel_active</code></td>
+<td style="text-align: left;">LLM vision</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;"><span class="math inline"> ≤ 50</span> if
+false</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>space_utilized</code></td>
+<td style="text-align: left;">LLM vision</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;"><span class="math inline">−</span>15
+pts</td>
+</tr>
+</tbody>
+</table>
+<p>A key design decision is that <code>correct_tab</code> is
+<em>overridden</em> with the DOM-verified result from
+<code>page.evaluate()</code>, regardless of what the LLM judge reports.
+This prevents vision hallucinations from masking a real tab error.</p>
+<h3 id="pitfall-retry-loops-on-unresolvable-failures">Pitfall: Retry
+Loops on Unresolvable Failures</h3>
+<p>An early version made <code>text_readable</code> a hard-fail trigger.
+Chart axis tick labels are rendered at  10px by Chart.js regardless of
+retries. This caused every chart section to exhaust all retries
+(recording the same content 3 times), wasting <span class="math inline">3 × 30s × 30 sections ≈ 45</span> minutes per run.
+The fix: only retry on failures that are <em>causal</em> (wrong tab,
+content mismatch); style issues become warnings.</p>
+<h2 id="stage-5-video-assembly">Stage 5: Video Assembly</h2>
+<p>After all sections complete, <code>assembleFullLecture()</code> uses
+FFmpeg to:</p>
+<ol>
+<li><p>Convert each section’s frame sequence + audio into a per-section
+<code>.mp4</code> segment (H.264, VideoToolbox hardware encoder on Apple
+Silicon)</p></li>
+<li><p>Concatenate all segments using FFmpeg’s <code>concat</code>
+demuxer</p></li>
+<li><p>Optionally burn subtitle bars via <code>drawtext</code>
+filter</p></li>
+</ol>
+<figure data-latex-placement="h">
+
+<figcaption>Assembly stage: per-section frame sequences are encoded and
+concatenated.</figcaption>
+</figure>
+<h1 id="sec:state">State Management and Crash Recovery</h1>
+<p>The pipeline writes a <code>state.json</code> file after each section
+completes. This enables resuming interrupted runs:</p>
+<div class="sourceCode" id="cb4" data-language="JavaScript" data-caption="State persistence pattern"><pre class="sourceCode JavaScript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// After each section</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>state<span class="op">.</span><span class="at">data</span><span class="op">.</span><span class="at">completedSections</span><span class="op">.</span><span class="fu">push</span>(sectionId)<span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>state<span class="op">.</span><span class="at">data</span><span class="op">.</span><span class="at">sections</span>[sectionId] <span class="op">=</span> {</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  framesDir<span class="op">,</span> audioPath<span class="op">,</span> qaScore<span class="op">,</span> qaChecklist<span class="op">,</span> timestamp</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> state<span class="op">.</span><span class="fu">save</span>()<span class="op">;</span>  <span class="co">// atomic write to state.json</span></span></code></pre></div>
+<p>On restart, the pipeline skips sections already present in
+<code>state.data.completedSections</code>, making every run
+<em>idempotent</em> with respect to completed work.</p>
+<h1 id="sec:lessons">Lessons Learned and Design Principles</h1>
+<h2 id="principle-1-engineering-verification-over-prompt-verification">Principle
+1: Engineering Verification Over Prompt Verification</h2>
+<p>Whenever the correctness of an action can be verified
+programmatically (DOM state, file existence, HTTP status), do so.
+LLM-as-judge is powerful but non-deterministic: the same frame can
+receive different scores across calls. Reserve LLM judgement for
+inherently subjective evaluations (readability, clarity, pacing).</p>
+<h2 id="principle-2-identify-the-root-cause-layer">Principle 2: Identify
+the Root Cause Layer</h2>
+<p>The wrong-tab bug existed at three layers simultaneously:</p>
+<ol>
+<li><p>HTML: <code>display:flex</code> inline style overriding CSS
+<code>display:none</code></p></li>
+<li><p>Rendering: software compositor not flushing CSS changes before
+screenshot</p></li>
+<li><p>Verification: LLM judge misidentifying the active tab from visual
+context</p></li>
+</ol>
+<p>Fixing only one layer left the others as latent failures. The
+permanent fix addressed all three.</p>
+<h2 id="principle-3-bound-retry-behaviour">Principle 3: Bound Retry
+Behaviour</h2>
+<p>Every retry loop must have:</p>
+<ul>
+<li><p>A maximum iteration count</p></li>
+<li><p>A check that the failure is <em>resolvable by retrying</em>
+(idempotent retries on a deterministically failing condition are pure
+waste)</p></li>
+<li><p>A fallback that logs and continues rather than hanging</p></li>
+</ul>
+<h2 id="principle-4-separate-concerns-between-agents">Principle 4:
+Separate Concerns Between Agents</h2>
+<p>Each agent has one responsibility:</p>
+<ul>
+<li><p>TTS Agent: text → audio file</p></li>
+<li><p>Recorder: browser state + audio → frame sequence</p></li>
+<li><p>QA Inspector: frame sample → structured quality report</p></li>
+<li><p>Assembler: frames + audio → <code>.mp4</code> segments → final
+video</p></li>
+</ul>
+<p>The orchestrator (<code>pipeline.mjs</code>) contains the control
+logic but no domain implementation. This separation makes each component
+testable and replaceable independently.</p>
+<h2 id="principle-5-use-infrastructure-not-workarounds">Principle 5: Use
+Infrastructure, Not Workarounds</h2>
+<p>Serving the HTML tool over a real HTTP server (instead of
+<code>file://</code> URLs with reload hacks) is an example of using the
+right infrastructure. Each workaround applied to a <code>file://</code>
+URL (<code>cache-bust</code> query strings, forced
+<code>page.reload()</code>, extended timeouts) was a symptom of using
+the wrong transport. One infrastructure change eliminated all of
+them.</p>
+<h1 id="system-architecture-summary">System Architecture Summary</h1>
+<figure id="fig:arch" data-latex-placement="h">
+
+<figcaption>Full system architecture showing agents, external services,
+storage, and data flow.</figcaption>
+</figure>
+<h1 id="conclusion">Conclusion</h1>
+<p>The lecture production pipeline demonstrates that agentic systems can
+automate complex, multi-step creative and technical workflows when
+designed with the following principles in mind: clear separation of
+agent responsibilities, deterministic verification where possible,
+bounded retry behaviour, proper infrastructure rather than workarounds,
+and persistent state for crash recovery.</p>
+<p>The recurring tab-switching bug—which caused hours of wasted runs—was
+ultimately a lesson in the difference between <em>symptoms</em> and
+<em>root causes</em>. Three separate layers each needed fixing. An agent
+that only patches the symptom (prompt-level instructions to “switch to
+the correct tab”) cannot fix a rendering pipeline deficiency. The
+engineering solution (HTML inline styles + DOM verification + GPU
+compositor) is permanent and unconditional.</p>
+<p>Future extensions to this system could include:</p>
+<ul>
+<li><p>Per-section video assembly immediately after recording for
+mid-run human or agent inspection</p></li>
+<li><p>Parallel TTS pre-generation for all sections before recording
+begins</p></li>
+<li><p>A scheduling agent to run overnight with remote status
+notifications</p></li>
+<li><p>Extension to other interactive HTML tools beyond the notation
+explorer</p></li>
+</ul>
+<h1 id="sec:cost">Cost Analysis: Claude API vs. Claude Code</h1>
+<h2 id="the-api-cost-problem">The API Cost Problem</h2>
+<p>Building the lecture production pipeline with direct calls to the
+Anthropic API (Claude API) incurs real, per-token costs at every stage.
+A single full run of the 45-section pipeline exercises the LLM multiple
+times per section:</p>
+<table>
+<caption>LLM calls per section and approximate token counts.</caption>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Agent</strong></th>
+<th style="text-align: left;"><strong>Model</strong></th>
+<th style="text-align: right;"><strong>Calls/section</strong></th>
+<th style="text-align: right;"><strong>Tokens/call (est.)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">QA Inspector (vision)</td>
+<td style="text-align: left;">claude-sonnet-4-6</td>
+<td style="text-align: right;">1–3</td>
+<td style="text-align: right;"><span class="math inline">∼</span>2 000
+input + 400 output</td>
+</tr>
+<tr>
+<td style="text-align: left;">Section Planner</td>
+<td style="text-align: left;">claude-opus-4-6</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><span class="math inline">∼</span>4 000
+input + 1 000 output</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tool Fixer</td>
+<td style="text-align: left;">claude-opus-4-6</td>
+<td style="text-align: right;">0–2</td>
+<td style="text-align: right;"><span class="math inline">∼</span>8 000
+input + 2 000 output</td>
+</tr>
+<tr>
+<td style="text-align: left;">Quality Loop</td>
+<td style="text-align: left;">claude-sonnet-4-6</td>
+<td style="text-align: right;">0–5</td>
+<td style="text-align: right;"><span class="math inline">∼</span>3 000
+input + 600 output</td>
+</tr>
+</tbody>
+</table>
+<p>For a 45-section run with typical retry rates, the cumulative token
+consumption can reach <strong>400 000–800 000 tokens per run</strong>
+across input and output. At current Anthropic API pricing (Sonnet: $3/M
+input, $15/M output; Opus: $15/M input, $75/M output), a single full run
+costs roughly <strong>$5–$20 USD</strong>. When the pipeline was being
+developed and many runs were aborted and restarted due to bugs, the
+total expenditure across all runs reached a significantly higher figure
+— costs that accumulate invisibly in the background.</p>
+<h2 id="claude-code-as-a-cost-free-alternative">Claude Code as a
+Cost-Free Alternative</h2>
+<p><strong>Claude Code</strong> is Anthropic’s official CLI for Claude,
+designed for software engineering tasks. Crucially, when operated within
+a paid Claude subscription (Max plan), Claude Code usage does
+<em>not</em> incur per-token charges — it is covered by the flat
+subscription fee.</p>
+<p>This changes the economics of agentic pipelines entirely:</p>
+<ul>
+<li><p><strong>Unlimited orchestration calls</strong> at no marginal
+cost</p></li>
+<li><p><strong>Persistent session context</strong> across the full
+pipeline run</p></li>
+<li><p><strong>Built-in tool use</strong>: file read/write, bash
+execution, web search, and glob/grep are native tools — no custom
+function-calling scaffolding needed</p></li>
+<li><p><strong>Multi-agent subprocesses</strong> via the
+<code>Agent</code> tool (spawns specialised subagents for parallel or
+focused tasks)</p></li>
+<li><p><strong>Memory system</strong>: a file-based persistent memory at
+<code>~/.claude/projects/.../memory/</code> survives across
+sessions</p></li>
+</ul>
+<h2 id="reimplementing-the-pipeline-with-claude-code">Reimplementing the
+Pipeline with Claude Code</h2>
+<p>The lecture production pipeline described in this document was
+<em>entirely orchestrated by Claude Code</em> running as the primary
+agent. The operator (a human) provided high-level instructions; Claude
+Code:</p>
+<ol>
+<li><p>Diagnosed and fixed the tab-switching bug (reading HTML, editing
+inline styles, verifying with Playwright)</p></li>
+<li><p>Implemented the HTTP server (writing Node.js code, adding
+imports, testing with a quick <code>node -e</code> check)</p></li>
+<li><p>Modified the QA pipeline (editing <code>pipeline.mjs</code> to
+remove the wasteful text_readable retry loop)</p></li>
+<li><p>Generated this very document (writing LaTeX, compiling to PDF via
+Chrome, creating the audiobook)</p></li>
+<li><p>Monitored the running pipeline (reading log files, reporting
+section counts and tab pass rates)</p></li>
+</ol>
+<p>In other words: <strong>the pipeline that produces the lecture video
+is itself orchestrated by an agentic system (Claude Code) that is also
+responsible for building and maintaining the pipeline</strong>. This
+recursive self-improvement loop — an agent that debugs and extends the
+tools it uses to accomplish its goals — is a defining characteristic of
+advanced agentic systems.</p>
+<figure data-latex-placement="h">
+
+<figcaption>Two-level orchestration: Claude Code (subscription, zero
+marginal cost) orchestrates pipeline.mjs which in turn orchestrates
+task-level agents (API calls).</figcaption>
+</figure>
+<p><strong>Key insight:</strong> The expensive API calls (QA inspection,
+TTS) happen inside <code>pipeline.mjs</code> using the OpenAI and
+Anthropic APIs. But the <em>meta-level</em> decisions — what to build,
+how to fix bugs, what to monitor — are made by Claude Code at zero
+additional cost. Restructuring the system to move more logic into Claude
+Code’s orchestration layer and fewer decisions into direct API calls
+would further reduce costs.</p>
+<h1 id="sec:impl">Pipeline Implementation in Detail</h1>
+<h2 id="code-architecture">Code Architecture</h2>
+<p>The pipeline is implemented as a set of ES module (<code>.mjs</code>)
+files orchestrated by <code>pipeline.mjs</code>. The directory structure
+is:</p>
+<pre data-language data-caption="Project structure"><code>Agentic_lecture_01/
+  pipeline.mjs              # Main orchestrator
+  sections.json             # 45-section configuration
+  Asymptotic_Notation_Explorer.html  # Interactive tool
+  agents/
+    tts-agent.mjs           # OpenAI TTS wrapper + quality checks
+    recorder.mjs            # Playwright screencast capture
+    quality-inspector.mjs   # Vision QA via Claude API
+    assembler.mjs           # FFmpeg video assembly
+    navigator.mjs           # Browser navigation + cursor overlay
+    section-planner.mjs     # LLM-based section script planning
+    tool-qa.mjs             # HTML tool quality validation
+    tool-evolver.mjs        # (disabled) LLM-driven HTML mutation
+    video-qa.mjs            # Post-assembly video quality checks
+    conversation-monitor.mjs # Human review integration
+  utils/
+    claude-agent.mjs        # Claude CLI subprocess wrapper
+  docs/
+    agentic_system_theory.tex   # This document
+    make_audiobook.mjs          # Audiobook generator
+  runs/
+    run_XXXXX/              # One directory per pipeline run
+      state.json            # Resumable state
+      frames/               # PNG screenshots per section
+      audio/                # MP3 files per section
+      segments/             # Per-section .mp4 files</code></pre>
+<h2 id="the-orchestrator-pipeline.mjs">The Orchestrator:
+<code>pipeline.mjs</code></h2>
+<p><code>pipeline.mjs</code> is a single-file Node.js ESM script ( 600
+lines) that drives the entire pipeline sequentially. Its key design
+characteristics are:</p>
+<ul>
+<li><p><strong>No framework dependency</strong> — pure Node.js with npm
+packages only for Playwright, OpenAI SDK, and ffmpeg bindings</p></li>
+<li><p><strong>Explicit state machine</strong> — a <code>RunState</code>
+object is loaded or created at startup and saved after every
+section</p></li>
+<li><p><strong>CLI flags</strong> for skipping stages:
+<code>--skip-planning</code>, <code>--skip-quality-loop</code>,
+<code>--skip-tool-qa</code>, <code>--no-human-review</code></p></li>
+<li><p><strong>Single browser instance</strong> shared across all
+sections, restarted on crash detection</p></li>
+</ul>
+<div class="sourceCode" id="cb6" data-language="JavaScript" data-caption="Core section loop in pipeline.mjs"><pre class="sourceCode JavaScript"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">const</span> section <span class="kw">of</span> sections) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (state<span class="op">.</span><span class="at">completedSections</span><span class="op">.</span><span class="fu">includes</span>(section<span class="op">.</span><span class="at">id</span>)) <span class="cf">continue</span><span class="op">;</span> <span class="co">// resume</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 1. Generate TTS</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> { audioPath<span class="op">,</span> duration } <span class="op">=</span> <span class="cf">await</span> <span class="fu">generateTTS</span>(section<span class="op">.</span><span class="at">narration</span><span class="op">,</span> <span class="op">...</span>)<span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 2. Switch tab + verify DOM</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> <span class="fu">switchTabVerified</span>(page<span class="op">,</span> section<span class="op">.</span><span class="at">targetTab</span>)<span class="op">;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 3. Pre-select algorithm if needed</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (section<span class="op">.</span><span class="at">algoSetup</span>) <span class="cf">await</span> page<span class="op">.</span><span class="fu">evaluate</span>(section<span class="op">.</span><span class="at">algoSetup</span>)<span class="op">;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 4. Record screencast synchronised to audio</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> frames <span class="op">=</span> <span class="cf">await</span> <span class="fu">recordSectionLive</span>(page<span class="op">,</span> audioPath<span class="op">,</span> duration)<span class="op">;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 5. QA: DOM check overrides LLM vision for tab correctness</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> qa <span class="op">=</span> <span class="cf">await</span> <span class="fu">inspectQuality</span>(frames[midFrame]<span class="op">,</span> section)<span class="op">;</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  qa<span class="op">.</span><span class="at">correct_tab</span> <span class="op">=</span> <span class="cf">await</span> <span class="fu">verifyTabDOM</span>(page<span class="op">,</span> section<span class="op">.</span><span class="at">targetTab</span>)<span class="op">;</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 6. Retry if tab wrong or content mismatch (NOT text_readable)</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>qa<span class="op">.</span><span class="at">correct_tab</span> <span class="op">||</span> <span class="op">!</span>qa<span class="op">.</span><span class="at">content_matches</span>) { retry<span class="op">;</span> <span class="cf">continue</span><span class="op">;</span> }</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  state<span class="op">.</span><span class="fu">complete</span>(section<span class="op">.</span><span class="at">id</span><span class="op">,</span> { frames<span class="op">,</span> audioPath<span class="op">,</span> qa })<span class="op">;</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> state<span class="op">.</span><span class="fu">save</span>()<span class="op">;</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="the-recorder-recorder.mjs">The Recorder:
+<code>recorder.mjs</code></h2>
+<p>The recorder uses Playwright’s <code>page.screencast()</code> API to
+capture frames at 5 fps during real-time audio playback. The key insight
+is that the recording is <em>wall-clock synchronised</em>: the
+screencast runs for exactly the audio duration, producing a frame
+sequence that, when encoded at the correct frame rate, has perfect
+lip-sync with the narration.</p>
+<div class="sourceCode" id="cb7" data-language="JavaScript" data-caption="Live recording synchronised to audio duration"><pre class="sourceCode JavaScript"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fu">recordSectionLive</span>(page<span class="op">,</span> audioPath<span class="op">,</span> duration) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> frames <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> interval <span class="op">=</span> <span class="dv">1000</span> <span class="op">/</span> FPS<span class="op">;</span>           <span class="co">// 200ms between frames</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> totalFrames <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">ceil</span>(duration <span class="op">*</span> FPS)<span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// GPU layout flush before starting</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> page<span class="op">.</span><span class="fu">evaluate</span>(() <span class="kw">=&gt;</span> <span class="bu">document</span><span class="op">.</span><span class="at">body</span><span class="op">.</span><span class="fu">getBoundingClientRect</span>())<span class="op">;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> page<span class="op">.</span><span class="fu">waitForTimeout</span>(<span class="dv">200</span>)<span class="op">;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> startTime <span class="op">=</span> <span class="bu">Date</span><span class="op">.</span><span class="fu">now</span>()<span class="op">;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (frames<span class="op">.</span><span class="at">length</span> <span class="op">&lt;</span> totalFrames) {</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> screenshot <span class="op">=</span> <span class="cf">await</span> page<span class="op">.</span><span class="fu">screenshot</span>({ <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;png&#39;</span> })<span class="op">;</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    frames<span class="op">.</span><span class="fu">push</span>(screenshot)<span class="op">;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> elapsed <span class="op">=</span> <span class="bu">Date</span><span class="op">.</span><span class="fu">now</span>() <span class="op">-</span> startTime<span class="op">;</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> nextCapture <span class="op">=</span> frames<span class="op">.</span><span class="at">length</span> <span class="op">*</span> interval<span class="op">;</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> wait <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="dv">0</span><span class="op">,</span> nextCapture <span class="op">-</span> elapsed)<span class="op">;</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (wait <span class="op">&gt;</span> <span class="dv">0</span>) <span class="cf">await</span> page<span class="op">.</span><span class="fu">waitForTimeout</span>(wait)<span class="op">;</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> frames<span class="op">;</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="the-qa-inspector-quality-inspector.mjs">The QA Inspector:
+<code>quality-inspector.mjs</code></h2>
+<p>The QA inspector is a structured LLM call with a vision payload. A
+sample frame (PNG) is base64-encoded and sent to
+<code>claude-sonnet-4-6</code> with a detailed rubric prompt. The
+response is a JSON object matching a fixed schema:</p>
+<div class="sourceCode" id="cb8" data-language="JavaScript" data-caption="QA inspector prompt structure"><pre class="sourceCode JavaScript"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> prompt <span class="op">=</span> <span class="vs">`</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="vs">You are a quality inspector for lecture video frames.</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="vs">Evaluate this screenshot against the following 6-point checklist:</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="vs">1. correct_tab: Is the &quot;</span><span class="sc">${</span>expectedTab<span class="sc">}</span><span class="vs">&quot; tab active?</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="vs">2. text_readable: Are chart axis labels and body text legible?</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="vs">3. pointer_visible: Is the red cursor dot visible?</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="vs">4. content_matches: Does the visual content match &quot;</span><span class="sc">${</span>sectionDescription<span class="sc">}</span><span class="vs">&quot;?</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="vs">5. right_panel_active: Does the right panel show a chart or visualisation?</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="vs">6. space_utilized: Does the content fill at least 60% of available space?</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="vs">SCORING: correct_tab=false =&gt; score=0. content_matches=false =&gt; score=0.</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="vs">Return JSON: { checklist: {...}, score: 0-100, issues: [...] }</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span><span class="op">;</span></span></code></pre></div>
+<h1 id="sec:http">Why Serving the HTML Over HTTP Solves the
+<code>file://</code> Problems</h1>
+<h2 id="the-root-problem-how-browsers-treat-file-urls">The Root Problem:
+How Browsers Treat <code>file://</code> URLs</h2>
+<p>When Playwright loads a page via a <code>file://</code> URL
+(e.g. <code>file:///Users/arash/.../Asymptotic_Notation_Explorer.html</code>),
+the browser applies a fundamentally different set of rules than it does
+for <code>http://</code> URLs. These differences caused three separate,
+compounding bugs in the pipeline before the HTTP server was
+introduced.</p>
+<h2 id="problem-1-waituntil-networkidle-resolves-instantly">Problem 1:
+<code>waitUntil: ’networkidle’</code> Resolves Instantly</h2>
+<p>Playwright’s <code>page.goto()</code> accepts a
+<code>waitUntil</code> option that controls when the navigation is
+considered complete. The <code>’networkidle’</code> value means:
+<em>wait until there have been no network requests for at least
+500 ms</em>.</p>
+<div class="sourceCode" id="cb9" data-language="JavaScript" data-caption="The deceptive networkidle with file://"><pre class="sourceCode JavaScript"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">// With file:// — resolves in &lt;10ms (no network = always idle)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> page<span class="op">.</span><span class="fu">goto</span>(<span class="st">&#39;file:///path/to/tool.html&#39;</span><span class="op">,</span> { <span class="dt">waitUntil</span><span class="op">:</span> <span class="st">&#39;networkidle&#39;</span> })<span class="op">;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">// ← code continues here immediately, before the page has rendered</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">// With http:// — resolves after real network activity settles</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> page<span class="op">.</span><span class="fu">goto</span>(<span class="st">&#39;http://127.0.0.1:PORT/tool.html&#39;</span><span class="op">,</span> { <span class="dt">waitUntil</span><span class="op">:</span> <span class="st">&#39;networkidle&#39;</span> })<span class="op">;</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">// ← code continues only after all JS/CSS/font requests complete</span></span></code></pre></div>
+<p><strong>Why this matters:</strong> The HTML tool loads Chart.js and
+executes initialisation JavaScript that sets up the tab panels, renders
+charts, and applies CSS classes. With <code>file://</code>, Playwright’s
+navigation promise resolves before any of this has happened, because
+there are no HTTP requests to wait for. The subsequent
+<code>page.screenshot()</code> captures a partially-rendered or blank
+page.</p>
+<p>With an HTTP server, the browser makes real HTTP requests for the
+HTML document, any referenced scripts or stylesheets, and fonts. The
+<code>networkidle</code> condition correctly fires only after all these
+resources have loaded and the JavaScript has had time to execute.</p>
+<figure data-latex-placement="h">
+
+<figcaption><code>file://</code> triggers <em>networkidle</em> before
+JavaScript initialisation completes. HTTP waits until all resource
+requests finish and the page is fully rendered.</figcaption>
+</figure>
+<h2 id="problem-2-page-reload-semantics-are-unreliable-for-file">Problem
+2: Page Reload Semantics Are Unreliable for <code>file://</code></h2>
+<p>Between recording sections, the pipeline reloads the page to reset
+interactive state (sliders, selected algorithms, chart state). For
+<code>file://</code> URLs, <code>page.reload()</code> behaves
+inconsistently across Chrome versions:</p>
+<ul>
+<li><p>Some Chrome versions serve the page from the <strong>disk
+cache</strong> rather than re-reading the file from disk, meaning HTML
+edits (such as the <code>display:none</code> fix applied mid-run) are
+not picked up</p></li>
+<li><p>The <code>Cache-Control</code> header cannot be set for
+<code>file://</code> responses — the browser decides caching behaviour
+unilaterally</p></li>
+<li><p><code>waitUntil: ’networkidle’</code> on reload has the same
+instant-resolve problem as on initial load (Problem 1 above)</p></li>
+</ul>
+<p>The HTTP server solves this by setting
+<code>Cache-Control: no-store</code> on every response, guaranteeing
+that every reload fetches a fresh copy of the HTML from disk:</p>
+<div class="sourceCode" id="cb10" data-language="JavaScript" data-caption="Cache-Control header in the embedded HTTP server"><pre class="sourceCode JavaScript"><code class="sourceCode javascript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> server <span class="op">=</span> <span class="fu">createServer</span>(<span class="kw">async</span> (req<span class="op">,</span> res) <span class="kw">=&gt;</span> {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> filePath <span class="op">=</span> <span class="fu">resolveFilePath</span>(req<span class="op">.</span><span class="at">url</span><span class="op">,</span> toolDir)<span class="op">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  res<span class="op">.</span><span class="fu">writeHead</span>(<span class="dv">200</span><span class="op">,</span> {</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;Content-Type&#39;</span><span class="op">:</span> mimeTypes[ext] <span class="op">||</span> <span class="st">&#39;text/plain&#39;</span><span class="op">,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;Cache-Control&#39;</span><span class="op">:</span> <span class="st">&#39;no-store&#39;</span>   <span class="co">// browser must re-fetch every time</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">createReadStream</span>(filePath)<span class="op">.</span><span class="fu">pipe</span>(res)<span class="op">;</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>This also means that if the HTML tool is edited mid-run (e.g. to fix
+a rendering bug), the very next section reload picks up the change with
+no special handling required.</p>
+<h2 id="problem-3-origin-restrictions-break-javascript-apis">Problem 3:
+Origin Restrictions Break JavaScript APIs</h2>
+<p>The <code>file://</code> origin is treated as a <em>null origin</em>
+by browsers. This causes several Web APIs to silently fail or behave
+differently:</p>
+<ul>
+<li><p><strong>Web Workers</strong> cannot be spawned from
+<code>file://</code> pages in Chrome (used by some Chart.js rendering
+paths)</p></li>
+<li><p><strong>ES module imports</strong> (<code>import</code>) are
+blocked on <code>file://</code> in Chrome without
+<code>--allow-file-access-from-files</code></p></li>
+<li><p><strong>localStorage</strong> and <strong>sessionStorage</strong>
+are inaccessible from <code>file://</code> null-origin contexts in
+strict mode</p></li>
+<li><p><strong>Fetch API</strong> calls to relative URLs resolve
+incorrectly, as there is no base URL to resolve against</p></li>
+<li><p><strong>CORS preflight</strong> checks always block cross-origin
+requests from a null origin, preventing the page from loading remote
+fonts or icons</p></li>
+</ul>
+<p>Serving over <code>http://127.0.0.1</code> gives the page a proper
+origin (<code>http://127.0.0.1:{port}</code>), resolving all of these
+restrictions.</p>
+<h2 id="problem-4-query-string-parameters-are-silently-ignored">Problem
+4: Query String Parameters Are Silently Ignored</h2>
+<p>The original pipeline appended a cache-busting query parameter to
+force reloads:</p>
+<div class="sourceCode" id="cb11" data-language="JavaScript" data-caption="Cache-busting hack (no longer needed)"><pre class="sourceCode JavaScript"><code class="sourceCode javascript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Old workaround: append ?cachebust=&lt;timestamp&gt; to force reload</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> page<span class="op">.</span><span class="fu">goto</span>(<span class="vs">`file:///path/tool.html?cachebust=</span><span class="sc">${</span><span class="bu">Date</span><span class="op">.</span><span class="fu">now</span>()<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Chrome ignores query strings entirely for file:// URLs</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">// This had zero effect — the cached version was served anyway</span></span></code></pre></div>
+<p>Chrome strips query parameters from <code>file://</code> URLs before
+cache lookup, so <code>?cachebust=1774291347</code> and
+<code>?cachebust=1774291999</code> resolve to the same cached file. The
+workaround <em>appeared</em> to work in some tests (coinciding with
+cache eviction) but was fundamentally inert.</p>
+<p>With an HTTP server, query parameters are transmitted to the server
+and can be acted upon (though with <code>Cache-Control: no-store</code>
+they are no longer necessary).</p>
+<h2 id="the-http-server-implementation">The HTTP Server
+Implementation</h2>
+<p>The server is embedded directly in <code>pipeline.mjs</code> using
+Node.js’s built-in <code>http</code> module — no external dependencies,
+no separate process:</p>
+<div class="sourceCode" id="cb12" data-language="JavaScript" data-caption="Full embedded HTTP server (pipeline.mjs)"><pre class="sourceCode JavaScript"><code class="sourceCode javascript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { createServer } <span class="im">from</span> <span class="st">&#39;http&#39;</span><span class="op">;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { createReadStream } <span class="im">from</span> <span class="st">&#39;fs&#39;</span><span class="op">;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { stat } <span class="im">from</span> <span class="st">&#39;fs/promises&#39;</span><span class="op">;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { join<span class="op">,</span> basename<span class="op">,</span> dirname } <span class="im">from</span> <span class="st">&#39;path&#39;</span><span class="op">;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">startToolServer</span>(toolPath) {</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> toolDir  <span class="op">=</span> <span class="fu">dirname</span>(toolPath)<span class="op">;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> toolFile <span class="op">=</span> <span class="fu">basename</span>(toolPath)<span class="op">;</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="kw">new</span> <span class="bu">Promise</span>((resolve<span class="op">,</span> reject) <span class="kw">=&gt;</span> {</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> server <span class="op">=</span> <span class="fu">createServer</span>(<span class="kw">async</span> (req<span class="op">,</span> res) <span class="kw">=&gt;</span> {</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>      <span class="co">// Strip query string and fragment from URL</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> urlPath  <span class="op">=</span> req<span class="op">.</span><span class="at">url</span><span class="op">.</span><span class="fu">split</span>(<span class="st">&#39;?&#39;</span>)[<span class="dv">0</span>]<span class="op">.</span><span class="fu">split</span>(<span class="st">&#39;#&#39;</span>)[<span class="dv">0</span>]<span class="op">;</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>      <span class="co">// Map / and /toolFile to the HTML file; everything else is a sibling file</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> filePath <span class="op">=</span> (urlPath <span class="op">===</span> <span class="st">&#39;/&#39;</span> <span class="op">||</span> urlPath <span class="op">===</span> <span class="vs">`/</span><span class="sc">${</span>toolFile<span class="sc">}</span><span class="vs">`</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">?</span> toolPath</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">:</span> <span class="fu">join</span>(toolDir<span class="op">,</span> urlPath<span class="op">.</span><span class="fu">replace</span>(<span class="ss">/</span><span class="sc">^\/</span><span class="ss">/</span><span class="op">,</span> <span class="st">&#39;&#39;</span>))<span class="op">;</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> ext <span class="op">=</span> filePath<span class="op">.</span><span class="fu">split</span>(<span class="st">&#39;.&#39;</span>)<span class="op">.</span><span class="fu">pop</span>()<span class="op">.</span><span class="fu">toLowerCase</span>()<span class="op">;</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> mimeTypes <span class="op">=</span> {</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        <span class="dt">html</span><span class="op">:</span> <span class="st">&#39;text/html&#39;</span><span class="op">,</span> <span class="dt">js</span><span class="op">:</span> <span class="st">&#39;application/javascript&#39;</span><span class="op">,</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>        <span class="dt">css</span><span class="op">:</span> <span class="st">&#39;text/css&#39;</span><span class="op">,</span>   <span class="dt">json</span><span class="op">:</span> <span class="st">&#39;application/json&#39;</span><span class="op">,</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>        <span class="dt">png</span><span class="op">:</span> <span class="st">&#39;image/png&#39;</span><span class="op">,</span>  <span class="dt">jpg</span><span class="op">:</span> <span class="st">&#39;image/jpeg&#39;</span><span class="op">,</span> <span class="dt">svg</span><span class="op">:</span> <span class="st">&#39;image/svg+xml&#39;</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>      <span class="cf">try</span> {</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">await</span> <span class="fu">stat</span>(filePath)<span class="op">;</span>            <span class="co">// throws if file doesn&#39;t exist</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>        res<span class="op">.</span><span class="fu">writeHead</span>(<span class="dv">200</span><span class="op">,</span> {</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>          <span class="st">&#39;Content-Type&#39;</span><span class="op">:</span>  mimeTypes[ext] <span class="op">||</span> <span class="st">&#39;text/plain&#39;</span><span class="op">,</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>          <span class="st">&#39;Cache-Control&#39;</span><span class="op">:</span> <span class="st">&#39;no-store&#39;</span>    <span class="co">// always fresh</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>        })<span class="op">;</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">createReadStream</span>(filePath)<span class="op">.</span><span class="fu">pipe</span>(res)<span class="op">;</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">catch</span> {</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>        res<span class="op">.</span><span class="fu">writeHead</span>(<span class="dv">404</span>)<span class="op">;</span> res<span class="op">.</span><span class="fu">end</span>(<span class="st">&#39;Not found&#39;</span>)<span class="op">;</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>    <span class="co">// port 0 = OS assigns a free port automatically</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>    server<span class="op">.</span><span class="fu">listen</span>(<span class="dv">0</span><span class="op">,</span> <span class="st">&#39;127.0.0.1&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> port <span class="op">=</span> server<span class="op">.</span><span class="fu">address</span>()<span class="op">.</span><span class="at">port</span><span class="op">;</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>      <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`  Tool server: http://127.0.0.1:</span><span class="sc">${</span>port<span class="sc">}</span><span class="vs">/</span><span class="sc">${</span>toolFile<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>      <span class="fu">resolve</span>({ server<span class="op">,</span> port<span class="op">,</span> <span class="dt">url</span><span class="op">:</span> <span class="vs">`http://127.0.0.1:</span><span class="sc">${</span>port<span class="sc">}</span><span class="vs">/</span><span class="sc">${</span>toolFile<span class="sc">}</span><span class="vs">`</span> })<span class="op">;</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>    server<span class="op">.</span><span class="fu">on</span>(<span class="st">&#39;error&#39;</span><span class="op">,</span> reject)<span class="op">;</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Key design decisions:</p>
+<ul>
+<li><p><strong>Port 0</strong>: the OS assigns a random available port,
+avoiding conflicts with other services running on the machine</p></li>
+<li><p><strong>127.0.0.1</strong>: binds to loopback only — not
+accessible from the network, so no security exposure</p></li>
+<li><p><strong>Streaming response</strong>:
+<code>createReadStream().pipe(res)</code> sends the file in chunks
+without loading it fully into memory — important for large HTML
+files</p></li>
+<li><p><strong>Single server for all sections</strong>: started once
+before Stage 3 and closed once after Stage 5, avoiding the overhead of
+creating a new server per section</p></li>
+</ul>
+<h2 id="summary-file-vs-http-for-playwright-automation">Summary:
+<code>file://</code> vs <code>http://</code> for Playwright
+Automation</h2>
+<table>
+<caption>Behavioural differences between <code>file://</code> and
+<code>http://</code> in Playwright / Chrome automation
+contexts.</caption>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Behaviour</strong></th>
+<th style="text-align: left;"><strong><code>file://</code></strong></th>
+<th style="text-align: left;"><strong><code>http://</code></strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>waitUntil: ’networkidle’</code></td>
+<td style="text-align: left;">Resolves instantly (no network)</td>
+<td style="text-align: left;">Resolves after real requests finish</td>
+</tr>
+<tr>
+<td style="text-align: left;">Reload semantics</td>
+<td style="text-align: left;">May serve from disk cache;
+<code>Cache-Control</code> header ignored</td>
+<td style="text-align: left;">Respects
+<code>Cache-Control: no-store</code>; always fetches fresh</td>
+</tr>
+<tr>
+<td style="text-align: left;">Query string cache-busting</td>
+<td style="text-align: left;">Silently ignored by Chrome</td>
+<td style="text-align: left;">Works as expected</td>
+</tr>
+<tr>
+<td style="text-align: left;">ES module imports</td>
+<td style="text-align: left;">Blocked (null origin)</td>
+<td style="text-align: left;">Allowed</td>
+</tr>
+<tr>
+<td style="text-align: left;">Web Workers</td>
+<td style="text-align: left;">Blocked in Chrome</td>
+<td style="text-align: left;">Allowed</td>
+</tr>
+<tr>
+<td style="text-align: left;">localStorage</td>
+<td style="text-align: left;">Restricted (null origin)</td>
+<td style="text-align: left;">Works normally</td>
+</tr>
+<tr>
+<td style="text-align: left;">Relative URL resolution</td>
+<td style="text-align: left;">Fragile / broken</td>
+<td style="text-align: left;">Correct base URL</td>
+</tr>
+<tr>
+<td style="text-align: left;">CORS / fetch to subresources</td>
+<td style="text-align: left;">Blocked (null origin)</td>
+<td style="text-align: left;">Works with proper headers</td>
+</tr>
+</tbody>
+</table>
+<h1 id="sec:comparison">Framework Comparison: Custom Pipeline
+vs. LangGraph vs. n8n</h1>
+<h2 id="overview">Overview</h2>
+<p>The same agentic lecture production pipeline could, in principle, be
+built with any of three approaches: (1) our custom Node.js
+implementation, (2) LangGraph (a Python graph-based agent framework), or
+(3) n8n (a visual no-code/low-code workflow automation platform). Each
+embodies a different philosophy about how agent logic should be
+expressed and executed.</p>
+<table>
+<caption>Comparison of implementation approaches for the lecture
+production pipeline.</caption>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"><strong>Custom (ours)</strong></th>
+<th style="text-align: left;"><strong>LangGraph</strong></th>
+<th style="text-align: left;"><strong>n8n</strong></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Language</td>
+<td style="text-align: left;">JavaScript/Node.js</td>
+<td style="text-align: left;">Python</td>
+<td style="text-align: left;">JSON / JS expressions</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Paradigm</td>
+<td style="text-align: left;">Imperative code</td>
+<td style="text-align: left;">Graph of nodes</td>
+<td style="text-align: left;">Visual workflow</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">State</td>
+<td style="text-align: left;"><code>state.json</code> file</td>
+<td style="text-align: left;">LangGraph State dict</td>
+<td style="text-align: left;">Workflow execution context</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">LLM access</td>
+<td style="text-align: left;">Direct API calls</td>
+<td style="text-align: left;">LangChain LLMs</td>
+<td style="text-align: left;">HTTP Request nodes</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Tool execution</td>
+<td style="text-align: left;">Native JS + npm</td>
+<td style="text-align: left;">LangChain tools</td>
+<td style="text-align: left;">Built-in nodes + HTTP</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Branching</td>
+<td style="text-align: left;"><code>if/else</code> code</td>
+<td style="text-align: left;">Conditional edges</td>
+<td style="text-align: left;">If/Switch nodes</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Retry logic</td>
+<td style="text-align: left;">Manual loop</td>
+<td style="text-align: left;">Retry nodes / edges</td>
+<td style="text-align: left;">Error branch + retry node</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Parallelism</td>
+<td style="text-align: left;"><code>Promise.all</code></td>
+<td style="text-align: left;">Parallel branches</td>
+<td style="text-align: left;">Split/merge nodes</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Observability</td>
+<td style="text-align: left;"><code>console.log</code></td>
+<td style="text-align: left;">LangSmith tracing</td>
+<td style="text-align: left;">n8n execution log</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Hosting</td>
+<td style="text-align: left;">Local / any server</td>
+<td style="text-align: left;">LangServe / cloud</td>
+<td style="text-align: left;">n8n cloud / self-hosted</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Learning curve</td>
+<td style="text-align: left;">High (code)</td>
+<td style="text-align: left;">Medium (Python + graph)</td>
+<td style="text-align: left;">Low (visual)</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<h2 id="langgraph">LangGraph</h2>
+<p>LangGraph models an agent workflow as a <em>directed graph</em> where
+nodes are Python functions (or LLM calls) and edges carry state between
+them. Conditional edges implement branching and retry loops.</p>
+<div class="sourceCode" id="cb13" data-language="Python" data-caption="LangGraph sketch of the section recording loop"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langgraph.graph <span class="im">import</span> StateGraph, END</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> TypedDict</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PipelineState(TypedDict):</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    section: <span class="bu">dict</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    audio_path: <span class="bu">str</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    frames: <span class="bu">list</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    qa_result: <span class="bu">dict</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    attempt: <span class="bu">int</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>graph <span class="op">=</span> StateGraph(PipelineState)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>graph.add_node(<span class="st">&quot;tts&quot;</span>,      generate_tts_node)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>graph.add_node(<span class="st">&quot;switch_tab&quot;</span>, switch_tab_node)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>graph.add_node(<span class="st">&quot;record&quot;</span>,   record_node)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>graph.add_node(<span class="st">&quot;qa&quot;</span>,       qa_inspect_node)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> should_retry(state):</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    qa <span class="op">=</span> state[<span class="st">&quot;qa_result&quot;</span>]</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> qa[<span class="st">&quot;correct_tab&quot;</span>] <span class="kw">or</span> <span class="kw">not</span> qa[<span class="st">&quot;content_matches&quot;</span>]:</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> state[<span class="st">&quot;attempt&quot;</span>] <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="st">&quot;record&quot;</span>   <span class="co"># retry edge</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> END</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>graph.add_edge(<span class="st">&quot;tts&quot;</span>, <span class="st">&quot;switch_tab&quot;</span>)</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>graph.add_edge(<span class="st">&quot;switch_tab&quot;</span>, <span class="st">&quot;record&quot;</span>)</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>graph.add_edge(<span class="st">&quot;record&quot;</span>, <span class="st">&quot;qa&quot;</span>)</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>graph.add_conditional_edges(<span class="st">&quot;qa&quot;</span>, should_retry)</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> graph.<span class="bu">compile</span>()</span></code></pre></div>
+<p><strong>What LangGraph adds</strong> over our custom
+implementation:</p>
+<ul>
+<li><p><strong>Built-in state checkpointing</strong> via LangGraph’s
+<code>MemorySaver</code> (our system replicates this manually with
+<code>state.json</code>)</p></li>
+<li><p><strong>Visual graph inspection</strong> — the compiled graph can
+be rendered as a diagram for debugging</p></li>
+<li><p><strong>LangSmith tracing</strong> — every node invocation is
+automatically traced, logged, and inspectable in the LangSmith
+UI</p></li>
+<li><p><strong>Human-in-the-loop</strong> via
+<code>interrupt_before</code> / <code>interrupt_after</code> node
+modifiers (we implement this manually with a CLI prompt)</p></li>
+<li><p><strong>Time travel</strong> — replay from any checkpoint for
+debugging</p></li>
+</ul>
+<p><strong>What our implementation does better</strong>:</p>
+<ul>
+<li><p><strong>Playwright integration</strong> is natural in Node.js
+(the Playwright library is JavaScript-native; the Python bindings are
+secondary)</p></li>
+<li><p><strong>FFmpeg integration</strong> is simpler via
+<code>child_process.execSync</code> than through Python subprocess
+wrappers</p></li>
+<li><p><strong>No framework overhead</strong> — no dependency on
+LangChain’s abstractions, which add latency and version-incompatibility
+risks</p></li>
+<li><p><strong>Transparent logic</strong> — every decision is explicit
+in the code, not hidden inside a framework node</p></li>
+</ul>
+<h2 id="n8n">n8n</h2>
+<p>n8n is a visual workflow automation tool. Workflows are built by
+connecting nodes in a canvas, with each node performing a specific
+action (HTTP request, code execution, file operation, LLM call via
+built-in AI nodes).</p>
+<p><strong>n8n equivalent of our pipeline</strong> would look like:</p>
+<ol>
+<li><p><strong>Loop Over Items</strong> node iterating over
+<code>sections.json</code></p></li>
+<li><p><strong>HTTP Request</strong> node calling OpenAI TTS
+API</p></li>
+<li><p><strong>Execute Command</strong> node running a Playwright script
+(as a shell command, since n8n cannot control a browser
+natively)</p></li>
+<li><p><strong>HTTP Request</strong> node calling Claude API with a
+base64 screenshot</p></li>
+<li><p><strong>IF</strong> node checking
+<code>qa.correct_tab &amp;&amp; qa.content_matches</code></p></li>
+<li><p><strong>Loop</strong> back to step 3 if check fails (up to 2
+retries)</p></li>
+<li><p><strong>Execute Command</strong> node running FFmpeg for
+assembly</p></li>
+</ol>
+<p><strong>n8n advantages</strong>:</p>
+<ul>
+<li><p><strong>Zero coding</strong> for the workflow structure —
+business logic is visual and immediately understandable by
+non-engineers</p></li>
+<li><p><strong>Built-in credentials management</strong> for API
+keys</p></li>
+<li><p><strong>Execution history</strong> — every workflow run is logged
+with input/output for every node</p></li>
+<li><p><strong>Scheduling, webhooks, triggers</strong> — easy to run on
+a cron, triggered by a file upload, or fired by a webhook</p></li>
+<li><p><strong>Self-hosted or cloud</strong> with a web UI accessible
+from any device (addressing the user’s remote monitoring need
+directly)</p></li>
+</ul>
+<p><strong>n8n limitations for this pipeline</strong>:</p>
+<ul>
+<li><p><strong>No native browser control</strong> — Playwright must
+still be invoked as a shell command, making the DOM verification and tab
+switching logic opaque to n8n</p></li>
+<li><p><strong>Limited custom code</strong> — complex logic (the GPU
+flush, the 5-attempt DOM retry loop) must live in <code>Code</code>
+nodes as JavaScript, essentially recreating our pipeline inside n8n
+boxes</p></li>
+<li><p><strong>File handling is awkward</strong> — passing large binary
+data (PNG frames, MP3 files) between nodes requires temporary files and
+path management</p></li>
+<li><p><strong>Stateful resumption</strong> requires external storage (a
+database node) — n8n’s built-in state does not persist partial workflow
+runs</p></li>
+</ul>
+<h2 id="what-is-common-to-all-three-approaches">What Is Common to All
+Three Approaches</h2>
+<p>Regardless of framework, every implementation of this pipeline must
+handle the same fundamental concerns:</p>
+<ol>
+<li><p><strong>External API calls</strong> (OpenAI TTS, Anthropic QA)
+with authentication and error handling</p></li>
+<li><p><strong>Browser automation</strong> for tab switching and screen
+capture (Playwright or Selenium in all cases)</p></li>
+<li><p><strong>State persistence</strong> to support crash recovery and
+idempotent re-runs (file, database, or LangGraph checkpoint)</p></li>
+<li><p><strong>Retry logic</strong> with a bounded maximum attempt
+count</p></li>
+<li><p><strong>Media processing</strong> via FFmpeg for video
+assembly</p></li>
+<li><p><strong>Quality verification</strong> using LLM vision after each
+recording</p></li>
+</ol>
+<p>The frameworks differ only in <em>how</em> these concerns are
+expressed and <em>what</em> infrastructure they provide for
+observability, scheduling, and human oversight.</p>
+<h1 id="sec:claude_services">Claude Services and Components in Agentic
+Systems</h1>
+<p>Anthropic offers several distinct products and APIs that serve
+different roles in an agentic architecture. Understanding which
+component to use for which purpose is essential for cost-effective,
+correct system design.</p>
+<table>
+<caption>Anthropic products and their roles in agentic
+systems.</caption>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Component</strong></th>
+<th style="text-align: left;"><strong>What it is</strong></th>
+<th style="text-align: left;"><strong>Billing</strong></th>
+<th style="text-align: left;"><strong>Best for</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Claude API</strong></td>
+<td style="text-align: left;">REST API for text/vision inference.
+Models: Haiku 4.5, Sonnet 4.6, Opus 4.6</td>
+<td style="text-align: left;">Per input+output token</td>
+<td style="text-align: left;">Automated pipelines, production
+systems</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Claude Code</strong></td>
+<td style="text-align: left;">CLI tool; agentic assistant with built-in
+tools (Bash, file I/O, web search)</td>
+<td style="text-align: left;">Flat subscription (Max plan)</td>
+<td style="text-align: left;">Development, debugging,
+meta-orchestration</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Claude.ai</strong></td>
+<td style="text-align: left;">Web/mobile chat interface</td>
+<td style="text-align: left;">Flat subscription</td>
+<td style="text-align: left;">Manual tasks, document review,
+ideation</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Workspaces /
+Projects</strong></td>
+<td style="text-align: left;">Persistent conversation context with file
+uploads</td>
+<td style="text-align: left;">Included in subscription</td>
+<td style="text-align: left;">Long-running collaborative tasks</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>MCP (Model Context
+Protocol)</strong></td>
+<td style="text-align: left;">Standard protocol for connecting
+tools/data sources to Claude</td>
+<td style="text-align: left;">N/A (infrastructure)</td>
+<td style="text-align: left;">Extending Claude Code with external
+tools</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Claude Agent SDK</strong></td>
+<td style="text-align: left;">Python/JS SDK for building multi-agent
+systems with Claude</td>
+<td style="text-align: left;">API tokens</td>
+<td style="text-align: left;">Programmatic agent orchestration</td>
+</tr>
+</tbody>
+</table>
+<h2 id="how-our-pipeline-uses-claude-services">How Our Pipeline Uses
+Claude Services</h2>
+<ul>
+<li><p><strong>Claude API (Sonnet 4.6)</strong> — used by
+<code>quality-inspector.mjs</code> for vision-based QA of recorded
+frames, and by <code>tool-qa.mjs</code> for validating the HTML tool.
+These are direct REST calls using the <code>@anthropic-ai/sdk</code> npm
+package.</p></li>
+<li><p><strong>Claude Code</strong> — the meta-orchestrator for the
+entire project. Every code change, bug fix, diagnosis, document
+creation, and pipeline restart in this project was performed by Claude
+Code running as an autonomous agent in the terminal.</p></li>
+<li><p><strong>Claude Code’s built-in Agent tool</strong> — used to
+spawn specialised subagents (e.g., the Explore agent for codebase
+analysis, the Plan agent for architectural decisions) without incurring
+additional API costs.</p></li>
+<li><p><strong>Claude Code’s Memory system</strong> — persistent
+Markdown files at <code>~/.claude/projects/.../memory/</code> store
+lessons learned (e.g., “never use tool-evolver”, “always
+skip-quality-loop”), ensuring that hard-won debugging insights persist
+across sessions.</p></li>
+</ul>
+<h2 id="the-mcp-ecosystem">The MCP Ecosystem</h2>
+<p>The <strong>Model Context Protocol</strong> (MCP) is an open standard
+that allows Claude Code (and the Claude API) to connect to external data
+sources and tools through a standardised interface. MCP servers expose
+<em>resources</em> (files, database records, API responses) and
+<em>tools</em> (callable functions) to the Claude model.</p>
+<p>For the lecture pipeline, MCP could be used to:</p>
+<ul>
+<li><p>Connect Claude Code to the Playwright browser via an MCP
+browser-control server (eliminating the need for
+<code>pipeline.mjs</code> entirely)</p></li>
+<li><p>Expose the <code>runs/</code> directory as an MCP resource,
+allowing Claude Code to query completed sections directly without
+reading <code>state.json</code></p></li>
+<li><p>Integrate with n8n via its MCP node, creating a hybrid
+visual+agentic workflow</p></li>
+</ul>
+<h1 id="sec:portability">LLM Portability: Replacing Claude with GPT-4o,
+Qwen, or Others</h1>
+<h2 id="which-parts-are-llm-dependent">Which Parts Are
+LLM-Dependent?</h2>
+<p>The pipeline has exactly two LLM-dependent components:</p>
+<ol>
+<li><p><strong>QA Inspector</strong>
+(<code>quality-inspector.mjs</code>) — requires a
+<em>vision-capable</em> LLM that can analyse a screenshot and return a
+structured JSON response</p></li>
+<li><p><strong>Section Planner / Tool QA / Tool Fixer</strong> —
+requires a <em>text</em> LLM with strong code-generation capability (for
+rewriting HTML or generating narration scripts)</p></li>
+</ol>
+<p>All other components (TTS, Playwright recording, FFmpeg assembly,
+HTTP server, DOM verification) are <strong>LLM-independent</strong> and
+would remain identical regardless of which language model is used.</p>
+<h2 id="replacing-claude-with-gpt-4o-openai">Replacing Claude with
+GPT-4o (OpenAI)</h2>
+<p>GPT-4o is the most direct drop-in replacement. It supports vision,
+function calling, and JSON-mode responses — the exact capabilities our
+QA inspector requires.</p>
+<div class="sourceCode" id="cb14" data-language="JavaScript" data-caption="QA inspector with GPT-4o"><pre class="sourceCode JavaScript"><code class="sourceCode javascript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Replace the Anthropic SDK call:</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> response <span class="op">=</span> <span class="cf">await</span> anthropic<span class="op">.</span><span class="at">messages</span><span class="op">.</span><span class="fu">create</span>({</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">model</span><span class="op">:</span> <span class="st">&#39;claude-sonnet-4-6&#39;</span><span class="op">,</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">messages</span><span class="op">:</span> [{ <span class="dt">role</span><span class="op">:</span> <span class="st">&#39;user&#39;</span><span class="op">,</span> <span class="dt">content</span><span class="op">:</span> [</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    { <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;image&#39;</span><span class="op">,</span> <span class="dt">source</span><span class="op">:</span> { <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;base64&#39;</span><span class="op">,</span> <span class="dt">data</span><span class="op">:</span> frameB64 }}<span class="op">,</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    { <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;text&#39;</span><span class="op">,</span> <span class="dt">text</span><span class="op">:</span> qaPrompt }</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  ]}]</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co">// With the OpenAI SDK call:</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> response <span class="op">=</span> <span class="cf">await</span> openai<span class="op">.</span><span class="at">chat</span><span class="op">.</span><span class="at">completions</span><span class="op">.</span><span class="fu">create</span>({</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">model</span><span class="op">:</span> <span class="st">&#39;gpt-4o&#39;</span><span class="op">,</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">messages</span><span class="op">:</span> [{ <span class="dt">role</span><span class="op">:</span> <span class="st">&#39;user&#39;</span><span class="op">,</span> <span class="dt">content</span><span class="op">:</span> [</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    { <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;image_url&#39;</span><span class="op">,</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>      <span class="dt">image_url</span><span class="op">:</span> { <span class="dt">url</span><span class="op">:</span> <span class="vs">`data:image/png;base64,</span><span class="sc">${</span>frameB64<span class="sc">}</span><span class="vs">`</span> }}<span class="op">,</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    { <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;text&#39;</span><span class="op">,</span> <span class="dt">text</span><span class="op">:</span> qaPrompt }</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  ]}]<span class="op">,</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="dt">response_format</span><span class="op">:</span> { <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;json_object&#39;</span> }</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>The prompt itself needs no modification; the JSON output schema is
+identical. The only change is the SDK call and the <code>Content</code>
+format.</p>
+<h2 id="replacing-claude-with-qwen-vl-alibaba">Replacing Claude with
+Qwen-VL (Alibaba)</h2>
+<p>Qwen-VL is a strong open-source vision-language model available via
+the DashScope API (Alibaba Cloud) or via Ollama for fully local
+inference. Using Qwen-VL would make the QA inspection <strong>completely
+free and private</strong>:</p>
+<div class="sourceCode" id="cb15" data-language="JavaScript" data-caption="QA inspector with Qwen-VL via Ollama"><pre class="sourceCode JavaScript"><code class="sourceCode javascript"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Run locally: ollama pull qwen2.5vl:7b</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> response <span class="op">=</span> <span class="cf">await</span> <span class="fu">fetch</span>(<span class="st">&#39;http://localhost:11434/api/generate&#39;</span><span class="op">,</span> {</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">method</span><span class="op">:</span> <span class="st">&#39;POST&#39;</span><span class="op">,</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">body</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>({</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">model</span><span class="op">:</span> <span class="st">&#39;qwen2.5vl:7b&#39;</span><span class="op">,</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">prompt</span><span class="op">:</span> qaPrompt<span class="op">,</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">images</span><span class="op">:</span> [frameB64]<span class="op">,</span>  <span class="co">// base64 PNG</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">stream</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">format</span><span class="op">:</span> <span class="st">&#39;json&#39;</span>       <span class="co">// Ollama structured output</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> { <span class="dt">response</span><span class="op">:</span> text } <span class="op">=</span> <span class="cf">await</span> response<span class="op">.</span><span class="fu">json</span>()<span class="op">;</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> qa <span class="op">=</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(text)<span class="op">;</span></span></code></pre></div>
+<p><strong>Trade-offs with local models</strong>:</p>
+<ul>
+<li><p><strong>Inference speed</strong>: a 7B model on an M5 Max GPU
+runs at <span class="math inline">∼</span>30–50 tokens/sec — a QA call
+takes <span class="math inline">∼</span>10–20s vs <span class="math inline">∼</span>2–4s with the Claude API</p></li>
+<li><p><strong>Quality</strong>: Qwen2.5-VL-7B is competitive on
+structured screenshot analysis but may be less consistent on ambiguous
+cases than Sonnet 4.6</p></li>
+<li><p><strong>Cost</strong>: zero per-token cost after the initial
+model download</p></li>
+<li><p><strong>Privacy</strong>: all inference stays on the local
+machine — no lecture content is sent to external servers</p></li>
+</ul>
+<h2 id="replacing-claude-with-gemini-google">Replacing Claude with
+Gemini (Google)</h2>
+<p>Gemini 2.0 Flash supports vision and structured JSON output via the
+Google AI Studio API or Vertex AI. It has a generous free tier (1 500
+requests/day) that could cover an entire pipeline run at no cost:</p>
+<div class="sourceCode" id="cb16" data-language="JavaScript" data-caption="QA inspector with Gemini Flash"><pre class="sourceCode JavaScript"><code class="sourceCode javascript"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { GoogleGenerativeAI } <span class="im">from</span> <span class="st">&#39;@google/generative-ai&#39;</span><span class="op">;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> genai <span class="op">=</span> <span class="kw">new</span> <span class="fu">GoogleGenerativeAI</span>(<span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">GEMINI_API_KEY</span>)<span class="op">;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> model <span class="op">=</span> genai<span class="op">.</span><span class="fu">getGenerativeModel</span>({</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">model</span><span class="op">:</span> <span class="st">&#39;gemini-2.0-flash&#39;</span><span class="op">,</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">generationConfig</span><span class="op">:</span> { <span class="dt">responseMimeType</span><span class="op">:</span> <span class="st">&#39;application/json&#39;</span> }</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> result <span class="op">=</span> <span class="cf">await</span> model<span class="op">.</span><span class="fu">generateContent</span>([</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">inlineData</span><span class="op">:</span> { <span class="dt">mimeType</span><span class="op">:</span> <span class="st">&#39;image/png&#39;</span><span class="op">,</span> <span class="dt">data</span><span class="op">:</span> frameB64 }}<span class="op">,</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  qaPrompt</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>])<span class="op">;</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> qa <span class="op">=</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(result<span class="op">.</span><span class="at">response</span><span class="op">.</span><span class="fu">text</span>())<span class="op">;</span></span></code></pre></div>
+<h2 id="what-cannot-be-replaced-claude-code-as-meta-orchestrator">What
+Cannot Be Replaced: Claude Code as Meta-Orchestrator</h2>
+<p>While the <em>task-level</em> LLM (QA inspector, planner) can be
+swapped freely, the <strong>meta-level orchestrator</strong> (Claude
+Code) is harder to replace. Claude Code provides:</p>
+<ul>
+<li><p>A persistent, tool-rich agentic environment with file I/O, Bash,
+and web access built in — no scaffolding required</p></li>
+<li><p>The ability to <em>read, understand, and modify its own pipeline
+code</em> — a form of self-referential capability that general-purpose
+LLM APIs do not provide out of the box</p></li>
+<li><p>A memory system that persists engineering lessons across
+sessions</p></li>
+<li><p>A subscription model that makes the meta-level reasoning
+free</p></li>
+</ul>
+<p>An equivalent could be built with OpenAI’s Assistants API (with Code
+Interpreter and file-search tools), Google’s Gemini with function
+calling, or a local <code>ollama</code> model paired with a custom agent
+loop. However, each would require building the scaffolding that Claude
+Code provides natively.</p>
+<figure data-latex-placement="h">
+
+<figcaption>The bottom layer (TTS, Playwright, FFmpeg) is identical
+across all LLM choices. Only the top two layers change.</figcaption>
+</figure>
+<div class="thebibliography">
+<p><span>9</span> S. Yao et al., <em>ReAct: Synergizing Reasoning and
+Acting in Language Models</em>, ICLR 2023.</p>
+<p>S. Russell and P. Norvig, <em>Artificial Intelligence: A Modern
+Approach</em>, Prentice Hall, 1995.</p>
+<p>N. Shinn et al., <em>Reflexion: Language Agents with Verbal
+Reinforcement Learning</em>, NeurIPS 2023.</p>
+<p>L. Wang et al., <em>Plan-and-Solve Prompting: Improving Zero-Shot
+Chain-of-Thought Reasoning</em>, ACL 2023.</p>
+<p>Anthropic, <em>Claude Technical Report</em>, 2024.</p>
+</div>
+</body>
+</html>

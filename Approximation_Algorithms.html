@@ -1,0 +1,1587 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Approximation Algorithms — Full Interactive Lecture — BSD 404</title>
+  <style>
+    :root{
+      --bg:#0b1020;--panel:rgba(255,255,255,0.05);--stroke:rgba(255,255,255,0.12);
+      --text:#e8ecff;--muted:#b7c0ff;
+      --normal:rgba(106,169,255,0.72);--compare:rgba(255,209,102,0.78);
+      --match:rgba(100,240,200,0.65);--mismatch:rgba(255,92,122,0.82);
+      --skip:rgba(199,125,255,0.80);--found:rgba(100,240,200,0.85);
+      --inactive:rgba(255,255,255,0.10);
+      --vc1:#6aa9ff;--vc2:#c77dff;--vc3:#ffd166;--vc4:#ff5c7a;--vc5:#64f0c8;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:radial-gradient(1200px 800px at 20% 0%,#14204a 0%,var(--bg) 45%,#070a14 100%);
+      color:var(--text);min-height:100vh;}
+    h1{text-align:center;font-size:22px;font-weight:700;margin:18px 0 4px;letter-spacing:-.3px}
+    .subtitle{text-align:center;font-size:12px;color:var(--muted);margin:0 0 14px}
+
+    .wrap{max-width:1320px;margin:0 auto;padding:0 14px 18px;display:grid;grid-template-columns:420px 1fr;gap:14px}
+    @media(max-width:980px){.wrap{grid-template-columns:1fr}}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03));
+      border:1px solid rgba(255,255,255,0.10);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,0.25);overflow:hidden}
+    .card h2{margin:0;padding:14px 14px 10px;font-size:16px;background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.08)}
+    .controls{padding:12px 14px 14px}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+    select,input[type="text"],input[type="number"],input[type="range"],button{
+      width:100%;border-radius:12px;border:1px solid rgba(255,255,255,0.12);
+      background:rgba(0,0,0,0.20);color:var(--text);padding:10px 12px;outline:none;font-size:13px}
+    input[type="range"]{padding:10px 0}
+    button{cursor:pointer;font-weight:650;background:rgba(106,169,255,0.14);transition:transform .08s,background .12s}
+    button:hover{background:rgba(106,169,255,0.22)}button:active{transform:scale(0.99)}
+    button.secondary{background:rgba(255,255,255,0.08)}button.secondary:hover{background:rgba(255,255,255,0.13)}
+    button.danger{background:rgba(255,92,122,0.18)}button.danger:hover{background:rgba(255,92,122,0.26)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+    .btnRow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px}
+    @media(max-width:980px){.btnRow{grid-template-columns:repeat(3,1fr)}}
+    .mb10{margin-bottom:10px}
+    .stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.10)}
+    .pill{border-radius:14px;border:1px solid rgba(255,255,255,0.10);background:rgba(0,0,0,0.18);
+      padding:10px 12px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:10px}
+    .pill b{color:var(--text);font-weight:750}
+    .pill.wide{grid-column:1/-1}
+    .hint{font-size:12px;color:var(--muted);padding:0 14px 14px;line-height:1.5}
+
+    .intro-section{max-width:1320px;margin:0 auto 14px;padding:0 14px}
+    .intro-card{background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03));
+      border:1px solid rgba(255,255,255,0.10);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,0.25);overflow:hidden}
+    .intro-header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
+      cursor:pointer;background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.08)}
+    .intro-header h2{margin:0;font-size:16px}
+    .intro-toggle{background:rgba(106,169,255,0.14);border:1px solid rgba(106,169,255,0.25);
+      color:#6aa9ff;border-radius:8px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;width:auto}
+    .intro-body{padding:18px 20px;line-height:1.7;font-size:13px;overflow:hidden;max-height:80000px;transition:max-height .4s,padding .4s}
+    .intro-body.collapsed{max-height:0!important;padding-top:0;padding-bottom:0}
+    .intro-body h3{font-size:15px;color:#6aa9ff;margin:18px 0 6px;font-weight:700}
+    .intro-body h3:first-child{margin-top:0}
+    .intro-body p{margin:0 0 12px;color:var(--text)}
+    .math-inline{display:inline-block;padding:1px 7px;background:rgba(106,169,255,0.08);border-radius:5px;
+      font-family:'Courier New',monospace;font-size:13px;color:#6aa9ff}
+    .key-concept{border-radius:14px;border:1px solid rgba(100,240,200,0.15);background:rgba(100,240,200,0.04);
+      padding:14px 16px;margin:12px 0;font-size:12.5px;line-height:1.65}
+    .key-concept .kc-title{font-weight:700;color:#64f0c8;margin-bottom:4px;font-size:13px}
+    .warning-box{border-radius:14px;border:1px solid rgba(255,92,122,0.15);background:rgba(255,92,122,0.04);
+      padding:14px 16px;margin:12px 0;font-size:12.5px;line-height:1.65}
+    .warning-box .wb-title{font-weight:700;color:#ff5c7a;margin-bottom:4px;font-size:13px}
+    .example-box{border-radius:14px;border:1px solid rgba(106,169,255,0.15);background:rgba(106,169,255,0.04);
+      padding:14px 16px;margin:12px 0;font-size:12.5px;line-height:1.65}
+    .example-box .eb-title{font-weight:700;color:#6aa9ff;margin-bottom:4px;font-size:13px}
+    .code-block{display:block;padding:10px 14px;background:rgba(0,0,0,0.25);border-radius:10px;
+      border:1px solid rgba(255,255,255,0.06);font-family:'Courier New',monospace;font-size:12.5px;color:#6aa9ff;margin:8px 0;line-height:1.7;white-space:pre-wrap}
+    .mini-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12px}
+    .mini-table th{text-align:center;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.12);color:var(--muted);font-weight:600;font-size:11px}
+    .mini-table td{text-align:center;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Courier New',monospace}
+
+    .viz{padding:14px;display:flex;flex-direction:column;gap:12px}
+    .legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted);align-items:center}
+    .dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;border:1px solid rgba(255,255,255,0.18)}
+
+    .phase-bar{border-radius:14px;border:1px solid rgba(255,255,255,0.10);background:rgba(0,0,0,0.22);
+      padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;transition:border-color .3s}
+    .phase-bar .phaseTitle{font-weight:800;font-size:13px;margin-bottom:2px}
+    .phase-bar.phase-vc{border-color:rgba(106,169,255,0.35)}.phase-bar.phase-vc .phaseTitle{color:#6aa9ff}
+    .phase-bar.phase-tsp{border-color:rgba(255,209,102,0.35)}.phase-bar.phase-tsp .phaseTitle{color:#ffd166}
+    .phase-bar.phase-sc{border-color:rgba(199,125,255,0.35)}.phase-bar.phase-sc .phaseTitle{color:#c77dff}
+    .phase-bar.phase-done{border-color:rgba(100,240,200,0.35)}.phase-bar.phase-done .phaseTitle{color:#64f0c8}
+
+    .graph-wrap{background:rgba(0,0,0,0.18);border:1px solid rgba(255,255,255,0.10);border-radius:16px;padding:10px;overflow:hidden}
+    .graph-wrap .strip-label{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;letter-spacing:.5px;text-transform:uppercase;padding:4px 4px 0}
+    svg{width:100%;display:block}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;
+      color:rgba(232,236,255,0.95);line-height:1.45;background:rgba(0,0,0,0.22);
+      border:1px solid rgba(255,255,255,0.10);border-radius:14px;padding:12px;overflow:auto;max-height:500px}
+    .codeLine{padding:2px 6px;border-radius:6px;white-space:pre;transition:background .15s,border-left .15s}
+    .codeLine.active{background:rgba(255,209,102,0.28);border-left:4px solid rgba(255,209,102,0.8)}
+    .codeHelp{border-radius:14px;border:1px solid rgba(255,255,255,0.10);background:rgba(0,0,0,0.18);
+      padding:10px 12px;font-size:12.5px;color:var(--muted);min-height:44px;line-height:1.55;transition:background 200ms}
+    .codeHelp b{color:var(--text)}
+    .codeHelp.highlight-explain{background:rgba(255,209,102,0.08);border-color:rgba(255,209,102,0.22)}
+
+    .result-bar{border-radius:14px;padding:12px 16px;font-size:13px;line-height:1.6;display:none}
+    .result-bar.show{display:block}
+    .result-bar.good{border:1px solid rgba(100,240,200,0.3);background:rgba(100,240,200,0.06)}
+    .result-bar.warn{border:1px solid rgba(255,209,102,0.3);background:rgba(255,209,102,0.06)}
+
+    .preset-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+    .preset-btn{padding:6px 8px;font-size:11px;font-weight:600;border-radius:10px;
+      border:1px solid rgba(255,255,255,0.10);background:rgba(0,0,0,0.15);color:var(--muted);cursor:pointer;width:auto;text-align:center}
+    .preset-btn:hover{background:rgba(106,169,255,0.12);color:var(--text);border-color:rgba(106,169,255,0.3)}
+    .algoOverview{border-radius:14px;border:1px solid rgba(255,255,255,0.10);background:rgba(0,0,0,0.14);
+      padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.6}
+    .algoOverview summary{cursor:pointer;font-weight:700;color:var(--text);font-size:13px;margin-bottom:6px}
+    .algoOverview .overview-section{margin-top:8px}
+    .algoOverview .overview-section strong{color:var(--text);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+    .algoOverview p{margin:4px 0}
+    .tut-footer{max-width:1320px;margin:14px auto 24px;padding:0 14px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.6}
+
+    /* Set cover specific */
+    .sc-sets{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .sc-set{border-radius:12px;border:1.5px solid rgba(255,255,255,0.12);padding:8px 12px;
+      font-size:12px;transition:all .2s;min-width:80px}
+    .sc-set.sc-available{background:rgba(255,255,255,0.04)}
+    .sc-set.sc-picked{background:rgba(100,240,200,0.12);border-color:rgba(100,240,200,0.4)}
+    .sc-set.sc-current{background:rgba(255,209,102,0.15);border-color:rgba(255,209,102,0.5)}
+    .sc-set-name{font-weight:700;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+    .sc-elements{display:flex;gap:3px;margin-top:4px;flex-wrap:wrap}
+    .sc-el{min-width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;
+      font-size:11px;font-weight:700;font-family:monospace;border:1px solid rgba(255,255,255,0.1)}
+    .sc-el.covered{background:rgba(100,240,200,0.20);border-color:rgba(100,240,200,0.4);color:#64f0c8}
+    .sc-el.uncovered{background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.4)}
+    .sc-el.newly{background:rgba(255,209,102,0.25);border-color:rgba(255,209,102,0.5);color:#ffd166}
+
+    .universe-bar{display:flex;gap:3px;flex-wrap:wrap;margin:8px 0}
+    .u-el{min-width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+      font-size:12px;font-weight:700;font-family:monospace;border:1.5px solid rgba(255,255,255,0.1);transition:all .2s}
+    .u-el.u-covered{background:rgba(100,240,200,0.20);border-color:rgba(100,240,200,0.4);color:#64f0c8}
+    .u-el.u-uncovered{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.3)}
+    .u-el.u-new{background:rgba(255,209,102,0.25);border-color:rgba(255,209,102,0.5);color:#ffd166}
+
+    /* ═══ PRESENTATION MODE: ?module=<id> ═══ */
+    body.pres-mode{overflow:hidden;margin:0;padding:0;background:var(--bg)}
+    body.pres-mode .pres-hidden{display:none!important}
+    body.pres-mode .pres-ancestor{display:block!important;border:none!important;box-shadow:none!important;
+      max-height:none!important;overflow:visible!important;padding:0!important;margin:0!important;
+      background:transparent!important;max-width:100vw!important}
+    body.pres-mode [data-module].active-mod{
+      display:flex!important;flex-direction:column;justify-content:center;align-items:center;
+      height:100vh;width:100vw;padding:60px 140px;box-sizing:border-box;
+      text-align:center;margin:0 auto;
+      overflow:hidden;  /* CRITICAL: prevent any content from bleeding into next module */
+    }
+    body.pres-mode [data-module].active-mod>*{text-align:left;max-width:1400px;width:100%;margin-left:auto;margin-right:auto}
+    body.pres-mode .wrap.active-mod{
+      display:grid!important;grid-template-columns:420px 1fr;gap:14px;
+      min-height:100vh;max-width:100vw;margin:0;padding:30px 40px;box-sizing:border-box;
+      align-content:center;
+    }
+    body.pres-mode #_lecture_cursor,
+    body.pres-mode #_lecture_subtitle{display:block!important}
+  </style>
+</head>
+<body>
+<div data-module="intro_title" style="text-align:center">
+  <h1>Approximation Algorithms</h1>
+  <p class="subtitle">BSD 404 — Algorithms II | Dr. Arash Kermani | Interactive Lecture Tool</p>
+</div>
+
+<!-- ===================== LECTURE NOTES ===================== -->
+<div class="intro-section">
+  <div class="intro-card">
+    <div class="intro-header" id="introToggleBtn">
+      <h2>Lecture Notes — Start Here</h2>
+      <button class="intro-toggle" id="introToggleText">Collapse</button>
+    </div>
+    <div class="intro-body" id="introBody">
+
+      <div style="background:linear-gradient(135deg,rgba(106,169,255,0.08),rgba(199,125,255,0.06));border:1px solid rgba(106,169,255,0.18);border-radius:14px;padding:16px 20px;margin-bottom:18px;">
+        <div style="font-weight:800;font-size:14px;color:#6aa9ff;margin-bottom:10px;">Learning Roadmap</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;font-size:12px;">
+          <a href="#sec1" style="text-decoration:none;color:var(--text);padding:8px 12px;background:rgba(0,0,0,0.15);border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+            <b style="color:#6aa9ff;">1.</b> Why Approximation?
+          </a>
+          <a href="#sec2" style="text-decoration:none;color:var(--text);padding:8px 12px;background:rgba(0,0,0,0.15);border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+            <b style="color:#ffd166;">2.</b> Approximation Ratio
+          </a>
+          <a href="#sec3" style="text-decoration:none;color:var(--text);padding:8px 12px;background:rgba(0,0,0,0.15);border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+            <b style="color:#64f0c8;">3.</b> Vertex Cover — 2-Approximation
+          </a>
+          <a href="#sec4" style="text-decoration:none;color:var(--text);padding:8px 12px;background:rgba(0,0,0,0.15);border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+            <b style="color:#c77dff;">4.</b> TSP — MST-Based 2-Approximation
+          </a>
+          <a href="#sec5" style="text-decoration:none;color:var(--text);padding:8px 12px;background:rgba(0,0,0,0.15);border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+            <b style="color:#ff5c7a;">5.</b> Set Cover — Greedy ln(n)
+          </a>
+          <a href="#sec6" style="text-decoration:none;color:var(--text);padding:8px 12px;background:rgba(0,0,0,0.15);border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+            <b style="color:#ffd166;">6.</b> Inapproximability
+          </a>
+          <a href="#sec7" style="text-decoration:none;color:var(--text);padding:8px 12px;background:rgba(0,0,0,0.15);border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+            <b style="color:#6aa9ff;">7.</b> Interactive Tool
+          </a>
+        </div>
+      </div>
+
+      <!-- SECTION 1 -->
+      <div data-module="intro_terminology">
+        <h3 id="sec1" style="display:flex;align-items:center;gap:8px;"><span style="background:#6aa9ff;color:#0b1020;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;">1</span> Why Approximation Algorithms?</h3>
+        <div class="key-concept">
+          <div class="kc-title">Key Terminology: Polynomial Time and NP-Hardness</div>
+          <b>Polynomial time:</b> An algorithm runs in <b>polynomial time</b> if its running time is bounded by a polynomial function of the input size n — such as O(n), O(n&sup2;), or O(n&sup3;). These algorithms are considered <b>efficient</b> and practical even for large inputs.<br><br>
+          <b>NP-hard:</b> A problem is <b>NP-hard</b> if it is at least as hard as the hardest problems in the class <b>NP</b> (Nondeterministic Polynomial time — problems whose solutions can be <i>verified</i> quickly, even if <i>finding</i> a solution is hard). No one has ever found a polynomial-time algorithm for any NP-hard problem, and most computer scientists believe none exists. If someone did find one, it would prove <b>P = NP</b> — one of the greatest unsolved problems in mathematics and computer science.
+        </div>
+      </div>
+
+      <div data-module="intro_np_hard_problems">
+        <p>
+          Many important optimization problems are <b>NP-hard</b> — no known polynomial-time algorithm can solve them exactly. Examples include:
+        </p>
+        <div class="example-box">
+          <div class="eb-title">Classic NP-Hard Problems at a Glance</div>
+          <b>Vertex Cover:</b> Find the smallest set of vertices that touches every edge in a graph.<br>
+          <b>Traveling Salesman Problem (TSP):</b> Find the shortest route visiting every city exactly once and returning to the start (defined in detail below).<br>
+          <b>Set Cover:</b> Cover all elements using the fewest sets from a given collection.<br>
+          <b>Graph Coloring:</b> Assign colors to vertices so that no two adjacent vertices share the same color, using the fewest colors possible.<br>
+          <b>Knapsack:</b> Given items with weights and values, pack the most valuable combination into a bag without exceeding its weight capacity.<br>
+          <b>Scheduling:</b> Assign jobs to machines to minimize the total completion time.
+        </div>
+      </div>
+
+      <div data-module="intro_what_is_tsp">
+        <div class="key-concept">
+          <div class="kc-title">What is the Traveling Salesman Problem (TSP)?</div>
+          Given a set of <b>n cities</b> and the <b>distances</b> between every pair of cities, the goal is to find the <b>shortest possible route</b> that visits each city <b>exactly once</b> and returns to the starting city. In other words, find the minimum-cost <b>Hamiltonian cycle</b> (a cycle that passes through every vertex exactly once) in a complete weighted graph. TSP is one of the most famous NP-hard problems — easy to state, but no known algorithm solves it efficiently for all inputs.
+        </div>
+      </div>
+
+      <div data-module="intro_three_strategies">
+      <p>
+        We have three options when facing an NP-hard problem:
+      </p>
+      <div class="example-box">
+        <div class="eb-title">Three Strategies for NP-Hard Problems</div>
+        <b>1. Exact algorithms</b> — solve it perfectly, but with exponential time. OK for small inputs only.<br>
+        <b>2. Heuristics</b> — fast, often work well in practice, but <b>no worst-case guarantee</b>.<br>
+        <b>3. Approximation algorithms</b> — polynomial time AND <b>provably close</b> to optimal. The best of both worlds!<br><br>
+        This lecture focuses on option 3: algorithms that are fast AND come with mathematical guarantees on solution quality.
+      </div>
+      </div>
+
+      <div data-module="intro_what_is_approx">
+      <div class="key-concept">
+        <div class="kc-title">Same Problem, Different Answer — Why "Approximation"?</div>
+        It is important to understand: the <b>problem does not change</b>. Vertex Cover still asks for the <i>smallest</i> cover. TSP still asks for the <i>shortest</i> tour. Set Cover still asks for the <i>fewest</i> sets. These are the original optimization problems.<br><br>
+        What changes is <b>what we are willing to accept as an answer</b>:<br><br>
+        <b>Exact algorithm (the "correct" solution):</b> Finds the absolute best answer — the true optimum. For example, the smallest possible vertex cover of size 5. But it may take exponential time (e.g., checking all 2&#8319; subsets), so for large inputs it is completely impractical.<br><br>
+        <b>Approximation algorithm:</b> Finds a <b>valid</b> answer that is <b>close to</b> the optimum, with a <b>mathematical guarantee</b> on how close. For example, a vertex cover of size 9 when the optimum is 5 — not perfect, but guaranteed to be at most 2&times; the optimum, and found in milliseconds instead of years.<br><br>
+        We call them "approximations" because the <b>solution is approximate, not the problem</b>. The cover returned is still a real, valid vertex cover — every edge is covered. The tour returned is still a real, valid tour — every city is visited. They are <b>correct solutions</b>, just <b>not the optimal ones</b>. The word "approximation" refers to the <i>quality</i> (how close to optimal), not the <i>validity</i> (the answer always works).
+      </div>
+      </div>
+
+      <div data-module="intro_misconception">
+      <div class="warning-box">
+        <div class="wb-title">A Common Misconception</div>
+        Approximation algorithms do <b>not</b> produce "wrong" or "broken" answers. A 2-approximation vertex cover is a <i>perfectly valid</i> cover — it just might use more vertices than strictly necessary. Think of it this way:<br><br>
+        &bull; <b>Exact solution:</b> "Here is the cheapest flight route: $500." (took 3 days to compute)<br>
+        &bull; <b>Approximation:</b> "Here is a flight route for $900. I guarantee it costs at most 2&times; the cheapest possible." (computed instantly)<br><br>
+        Both routes get you to your destination. The approximation just might cost more — but you <i>know</i> how much more, and you get the answer <i>now</i>.
+      </div>
+      </div>
+
+      <div data-module="intro_real_world">
+      <div class="example-box">
+        <div class="eb-title">Real-World Applications</div>
+        <b>Network design:</b> Finding minimum-cost networks that connect all nodes (related to TSP and the <b>Steiner tree</b> problem — finding the shortest tree that connects a given subset of vertices, possibly using additional intermediate vertices).<br>
+        <b>Resource allocation:</b> Covering all requirements with fewest resources (Set Cover).<br>
+        <b>Security:</b> Placing minimum sensors to monitor all connections (Vertex Cover).<br>
+        <b>Logistics:</b> Route planning for delivery trucks (TSP variants).<br>
+        <b>Cloud computing:</b> Scheduling jobs on machines to minimize <b>makespan</b> (the total time from when the first job starts until the last job finishes — i.e., the length of the overall schedule).
+      </div>
+      </div>
+
+      <!-- SECTION 2 -->
+      <div data-module="ratio_definition">
+      <h3 id="sec2" style="display:flex;align-items:center;gap:8px;"><span style="background:#ffd166;color:#0b1020;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;">2</span> Approximation Ratio</h3>
+      <p>
+        Before defining the approximation ratio, we need to understand the two types of optimization problems:
+      </p>
+
+      <div class="example-box">
+        <div class="eb-title">Minimization vs. Maximization Problems</div>
+        <b>Minimization problem:</b> The goal is to <b>make the cost as small as possible</b>. The optimal solution has the <i>lowest</i> cost. Examples: Vertex Cover (fewest vertices), TSP (shortest tour), Set Cover (fewest sets).<br>
+        In a minimization problem, our algorithm's solution <span class="math-inline">C</span> is always <b>&ge; C*</b> (we can never do better than optimal), so the ratio <span class="math-inline">C / C*</span> is always &ge; 1.<br><br>
+        <b>Maximization problem:</b> The goal is to <b>make the value as large as possible</b>. The optimal solution has the <i>highest</i> value. Examples: MAX-SAT (satisfy the most clauses), Maximum Independent Set (largest set of non-adjacent vertices), Maximum Cut (largest cut in a graph).<br>
+        In a maximization problem, our algorithm's solution <span class="math-inline">C</span> is always <b>&le; C*</b> (we can never exceed optimal), so the ratio <span class="math-inline">C* / C</span> is always &ge; 1.
+      </div>
+      </div>
+
+      <div data-module="ratio_formula">
+      <p>
+        An algorithm has <b>approximation ratio</b> <span class="math-inline">&rho;(n)</span> if for every input of size n:
+      </p>
+      <div class="code-block">For minimization: C / C* &le; &rho;(n)    (our solution is at most &rho; times the optimal cost)
+For maximization: C* / C &le; &rho;(n)    (optimal is at most &rho; times our solution's value)
+
+where C  = algorithm's solution cost/value
+      C* = optimal solution cost/value</div>
+      <p>
+        A <b>&rho;-approximation algorithm</b> always produces a solution within factor &rho; of the best possible. The closer &rho; is to 1, the better. Note that &rho;(n) &ge; 1 for both types — a ratio of 1 means the algorithm always finds the exact optimum.
+      </p>
+
+      <div class="example-box">
+        <div class="eb-title">Approximation Ratio Examples</div>
+        <b>Minimization example (Vertex Cover):</b> If the optimal cover has 5 vertices and our algorithm returns 9 vertices, the ratio is 9/5 = 1.8. A 2-approximation guarantees this ratio will never exceed 2.<br><br>
+        <b>Maximization example (MAX-SAT):</b> If the optimal assignment satisfies 100 clauses and our algorithm satisfies 75, the ratio is 100/75 &asymp; 1.33. A 4/3-approximation guarantees this ratio will never exceed 4/3.
+      </div>
+      </div>
+
+      <div data-module="ratio_2approx">
+      <div class="key-concept">
+        <div class="kc-title">What Does "2-Approximation" Mean?</div>
+        A <b>2-approximation algorithm</b> is an algorithm with approximation ratio <span class="math-inline">&rho; = 2</span>. Concretely:<br><br>
+        <b>For a minimization problem:</b> the algorithm's solution is guaranteed to cost <b>at most 2 times</b> the optimal cost. If the best possible answer is 10, our algorithm will return a solution costing at most 20 — never worse.<br><br>
+        <b>For a maximization problem:</b> the algorithm's solution is guaranteed to have value <b>at least half</b> of the optimal value. If the best possible value is 100, our algorithm will return at least 50 — never less.<br><br>
+        More generally, a <b>k-approximation</b> algorithm guarantees a ratio of at most k. The two algorithms we study in detail — Vertex Cover and metric TSP — are both 2-approximation algorithms for minimization problems, meaning their solutions are always <b>within a factor of 2</b> of optimal.
+      </div>
+      </div>
+
+      <div data-module="ratio_matching">
+      <div class="example-box">
+        <div class="eb-title">Prerequisite: What is a Matching?</div>
+        A <b>matching</b> in a graph is a set of edges that <b>do not share any endpoints</b> — no vertex appears in more than one edge of the set. A <b>maximal matching</b> is a matching where no more edges can be added without sharing an endpoint. (Note: "maximal" means you cannot add more; "maximum" means the largest possible — maximal is not necessarily maximum.)<br><br>
+        <b>Example:</b> In the path graph 1—2—3—4—5, the edges {(1,2), (3,4)} form a maximal matching — no remaining edge (like (2,3) or (4,5)) can be added without reusing vertex 2 or 4.
+      </div>
+      </div>
+
+      <div data-module="ratio_proof_pattern">
+      <div class="key-concept">
+        <div class="kc-title">The Proof Pattern (memorize this!)</div>
+        Every approximation proof follows the same template:<br><br>
+        <b>Step 1:</b> Find a <b>lower bound</b> on OPT (the optimal solution). We usually can't compute OPT, but we can bound it.<br>
+        <b>Step 2:</b> Show that the algorithm's solution is at most <b>&rho; &times; (lower bound)</b>.<br>
+        <b>Step 3:</b> Therefore, algorithm's solution &le; &rho; &times; OPT.<br><br>
+        The art is in finding the right lower bound. For Vertex Cover, it's the size of a maximal matching. For TSP, it's the MST cost.
+      </div>
+      </div>
+
+      <!-- SECTION 3 -->
+      <div data-module="vc_problem">
+      <h3 id="sec3" style="display:flex;align-items:center;gap:8px;"><span style="background:#64f0c8;color:#0b1020;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;">3</span> Vertex Cover — 2-Approximation</h3>
+      <p>
+        <b>Problem:</b> Given an undirected graph G = (V, E), find the <b>smallest</b> set of vertices C &sube; V such that every edge has at least one endpoint in C.
+      </p>
+
+      <div class="warning-box">
+        <div class="wb-title">Important: "Cover" Means Covering Edges, Not Vertices!</div>
+        The name "vertex cover" can be misleading. The goal is <b>not</b> to include all vertices — it is to select <b>enough</b> vertices so that every <b>edge</b> is "covered" (has at least one endpoint in the set). Vertices left out of the cover are perfectly fine, as long as no edge is left with <i>both</i> endpoints missing from the cover.<br><br>
+        <b>Example:</b> In the path 1—2—3—4—5, the set {2, 4} is a valid vertex cover with only 2 of the 5 vertices. Vertices 1, 3, and 5 are <i>not</i> in the cover, but every edge still has at least one endpoint covered:<br>
+        &bull; Edge (1,<b>2</b>)&ensp; &bull; Edge (<b>2</b>,3)&ensp; &bull; Edge (3,<b>4</b>)&ensp; &bull; Edge (<b>4</b>,5)<br><br>
+        Think of it as placing security cameras on some intersections (vertices) so that every road (edge) is watched by at least one camera. You don't need a camera on <i>every</i> intersection — just enough to see every road.
+      </div>
+      </div>
+
+      <div data-module="vc_algorithm">
+      <p>
+        Vertex Cover is NP-hard, but there's a beautifully simple 2-approximation:
+      </p>
+
+      <div class="code-block">ApproxVertexCover(G):
+  C = &empty;                          // our cover
+  E' = copy of E                  // uncovered edges
+  while E' is not empty:
+    pick any edge (u,v) from E'
+    C = C &cup; {u, v}                 // add BOTH endpoints
+    remove all edges incident to u or v from E'
+  return C</div>
+      </div>
+
+      <div data-module="vc_proof">
+      <div class="key-concept">
+        <div class="kc-title">Why This is a 2-Approximation</div>
+        Let A be the set of edges we picked. These edges form a <b>matching</b> — no two share an endpoint (because when we pick (u,v), we remove all edges touching u and v).<br><br>
+        <b>Lower bound on OPT:</b> Each edge in A must be covered, and no two edges in A share a vertex, so the optimal cover needs at least |A| vertices (one per edge in A).<br><br>
+        <b>Our algorithm:</b> We add 2 vertices per edge in A, so |C| = 2|A|.<br><br>
+        <b>Therefore:</b> |C| = 2|A| &le; 2 &times; OPT. Our cover is at most <b>twice</b> the optimal size!
+      </div>
+      </div>
+
+      <div data-module="vc_example">
+      <div class="example-box">
+        <div class="eb-title">Example</div>
+        Consider a path graph: 1—2—3—4—5.<br>
+        &bull; Algorithm picks edge (1,2): adds {1,2} to cover, removes edges (1,2) and (2,3).<br>
+        &bull; Picks edge (3,4): adds {3,4}, removes (3,4) and (4,5).<br>
+        &bull; No uncovered edges left. Cover = {1, 2, 3, 4}, size = 4.<br>
+        &bull; Optimal cover: {2, 4}, size = 2.<br>
+        &bull; Ratio: 4/2 = 2. Exactly at the worst-case guarantee!
+      </div>
+      </div>
+
+      <div style="background:rgba(100,240,200,0.06);border-radius:10px;padding:10px 14px;margin:12px 0;font-size:12px;color:var(--muted);border:1px dashed rgba(100,240,200,0.2);">
+        <b style="color:#64f0c8;">Try it yourself:</b> In the tool below, select <b>Vertex Cover</b> and load different graph presets. Step through and watch edges being picked and vertices being added to the cover. The optimal cover size is shown for comparison!
+      </div>
+
+      <!-- SECTION 4 -->
+      <div data-module="tsp_problem">
+      <h3 id="sec4" style="display:flex;align-items:center;gap:8px;"><span style="background:#c77dff;color:#0b1020;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;">4</span> Traveling Salesman — MST-Based 2-Approximation</h3>
+      <p>
+        <b>Problem:</b> Given n cities with pairwise distances, find the shortest tour visiting every city exactly once and returning to the start.
+      </p>
+      <p>
+        TSP is NP-hard. With the <b>triangle inequality</b> (direct path is never longer than any detour: <span class="math-inline">d(u,w) &le; d(u,v) + d(v,w)</span>), we get a 2-approximation:
+      </p>
+      <div class="code-block">ApproxTSP(G):
+  1. Compute a Minimum Spanning Tree (MST) of G
+  2. Do a DFS walk of the MST (visits each edge twice)
+  3. Shortcut: skip already-visited cities
+  return the resulting Hamiltonian cycle</div>
+      </div>
+
+      <div data-module="tsp_mst_prereq">
+      <div class="key-concept">
+        <div class="kc-title">What is a Minimum Spanning Tree (MST)?</div>
+        A <b>spanning tree</b> of a connected graph is a subgraph that connects <b>all vertices</b> using exactly <b>n &minus; 1 edges</b> and contains <b>no cycles</b>. A <b>Minimum Spanning Tree (MST)</b> is the spanning tree whose total edge weight is the smallest possible.<br><br>
+        <b>Example:</b> Given 4 cities A, B, C, D with weighted edges, the MST picks the cheapest set of 3 edges that still connects all 4 cities without forming a loop.<br><br>
+        <b>Key property:</b> The MST is the cheapest way to keep all vertices connected — any other spanning tree costs at least as much. This makes the MST cost a useful <b>lower bound</b> in approximation proofs.<br><br>
+        Well-known algorithms for computing MSTs include <b>Prim's algorithm</b> (grow the tree one vertex at a time, always picking the cheapest edge to an unvisited vertex) and <b>Kruskal's algorithm</b> (sort all edges by weight and add them one by one, skipping any edge that would create a cycle). Both run in polynomial time.
+      </div>
+      </div>
+
+      <div data-module="tsp_dfs_prereq">
+      <div class="example-box">
+        <div class="eb-title">Prerequisite: What is DFS (Depth-First Search)?</div>
+        <b>DFS</b> stands for <b>Depth-First Search</b> — a graph traversal algorithm that explores as <b>deep</b> as possible along each branch before backtracking. Starting from a root vertex, DFS visits a neighbor, then that neighbor's neighbor, and so on, going deeper until it reaches a dead end, then backs up and tries the next unvisited neighbor.<br><br>
+        <b>Example:</b> In a tree A—B, A—C, C—D, starting at A: DFS might visit A &rarr; B (dead end, backtrack to A) &rarr; C &rarr; D (dead end, backtrack to C, then A). Done.<br><br>
+        <b>Key property for TSP approximation:</b> When DFS walks through a tree, it traverses each edge <b>exactly twice</b> — once going down, once coming back up. This is why the DFS walk of an MST costs exactly 2 &times; cost(MST).
+      </div>
+      </div>
+
+      <div data-module="tsp_why_mst">
+      <div class="warning-box">
+        <div class="wb-title">Wait — The MST Is Not a Tour! Why Use It?</div>
+        This is a common and important question. The MST has <b>no cycle</b> and the salesman <b>cannot travel along it</b> as a tour — it is not a solution to TSP. So why do we use it?<br><br>
+        The MST is used as a <b>mathematical lower bound</b>, not as the answer itself. Here is the key reasoning:<br><br>
+        &bull; The optimal TSP tour is a <b>cycle</b> through all n cities.<br>
+        &bull; If you <b>remove any one edge</b> from that cycle, the cycle breaks open into a <b>path</b> — and a path through all n vertices is a spanning tree.<br>
+        &bull; Since the MST is the <b>cheapest possible</b> spanning tree, its cost must be <b>less than or equal to</b> the cost of that path, which is less than the cost of the full tour.<br>
+        &bull; Therefore: <span class="math-inline">cost(MST) &le; cost(OPT tour)</span>.<br><br>
+        We then use the MST as a <b>skeleton</b> to build an actual tour: walk around the MST (DFS), which costs 2 &times; MST, then shortcut to get a valid tour. The MST itself is never the answer — it is the <b>tool</b> that lets us both construct and analyze the approximation.
+      </div>
+      </div>
+
+      <div data-module="tsp_proof">
+      <div class="key-concept">
+        <div class="kc-title">Why This is a 2-Approximation</div>
+        <b>Lower bound:</b> <span class="math-inline">cost(MST) &le; cost(OPT)</span> (as explained above).<br>
+        <b>DFS walk:</b> Traverses each MST edge twice &rarr; cost = 2 &times; cost(MST).<br>
+        <b>Shortcutting:</b> Triangle inequality &rarr; skipping visited cities never increases distance &rarr; tour &le; 2 &times; cost(MST).<br>
+        <b>Therefore:</b> <span class="math-inline">cost(tour) &le; 2 &times; MST &le; 2 &times; OPT</span>.
+      </div>
+      </div>
+
+      <div data-module="tsp_example">
+      <div class="example-box">
+        <div class="eb-title">The Three Steps Visualized</div>
+        <b>Step 1 — MST:</b> Find minimum spanning tree (e.g., using Prim's algorithm).<br>
+        <b>Step 2 — Full walk:</b> DFS from root. The walk visits: A → B → A → C → D → C → A. Each MST edge traversed twice.<br>
+        <b>Step 3 — Shortcut:</b> Skip repeated visits: A → B → C → D → A. This is our tour!<br><br>
+        The shortcutting step is where the triangle inequality is essential — going directly from B to C is no worse than B → A → C.
+      </div>
+      </div>
+
+      <div data-module="tsp_warning">
+      <div class="warning-box">
+        <div class="wb-title">Without Triangle Inequality: No Approximation Possible!</div>
+        If distances don't satisfy the triangle inequality, <b>no polynomial-time algorithm</b> can achieve any constant approximation ratio for TSP (unless P = NP). This is because general TSP can encode the <b>Hamiltonian Cycle (HC) problem</b> — deciding whether a graph contains a cycle that visits every vertex exactly once — and approximating within any polynomial factor would solve HC exactly.
+      </div>
+      </div>
+
+      <div style="background:rgba(199,125,255,0.06);border-radius:10px;padding:10px 14px;margin:12px 0;font-size:12px;color:var(--muted);border:1px dashed rgba(199,125,255,0.2);">
+        <b style="color:#c77dff;">Try it yourself:</b> In the tool below, select <b>TSP (MST-Based)</b>. Watch the MST being built edge by edge, then the DFS walk, and finally the shortcut tour. Compare the tour cost with the MST cost!
+      </div>
+
+      <!-- SECTION 5 -->
+      <div data-module="sc_problem">
+      <h3 id="sec5" style="display:flex;align-items:center;gap:8px;"><span style="background:#ff5c7a;color:#0b1020;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;">5</span> Set Cover — Greedy ln(n) Approximation</h3>
+      <p>
+        <b>Problem:</b> Given a universe U = {1, 2, ..., n} and a collection of sets S&#8321;, S&#8322;, ..., S&#8342;, find the fewest sets whose union is U.
+      </p>
+
+      <div class="code-block">GreedySetCover(U, S):
+  covered = &empty;
+  chosen = []
+  while covered &ne; U:
+    pick Si that covers the most uncovered elements
+    chosen.append(Si)
+    covered = covered &cup; Si
+  return chosen</div>
+      </div>
+
+      <div data-module="sc_ratio">
+      <div class="key-concept">
+        <div class="kc-title">Approximation Ratio: O(ln n)</div>
+        The greedy algorithm uses at most <span class="math-inline">H(max|S_i|)</span> &times; OPT sets. Let's unpack this notation:<br><br>
+        &bull; <span class="math-inline">|S_i|</span> = the <b>number of elements</b> in set S_i (its size).<br>
+        &bull; <span class="math-inline">max|S_i|</span> = the size of the <b>largest set</b> in the collection. If the biggest set has 8 elements, then max|S_i| = 8.<br>
+        &bull; <span class="math-inline">H(k)</span> = the <b>k-th harmonic number</b>: H(k) = 1 + 1/2 + 1/3 + ... + 1/k &asymp; ln k (the natural logarithm of k).<br>
+        &bull; So <span class="math-inline">H(max|S_i|)</span> = the harmonic number evaluated at the size of the largest set. For example, if the largest set has 6 elements: H(6) = 1 + 1/2 + 1/3 + 1/4 + 1/5 + 1/6 &asymp; 2.45.<br><br>
+        Putting it together: the greedy algorithm uses at most <b>H(max|S_i|) &times; OPT</b> sets — roughly <b>ln(largest set size) times the optimal</b> number of sets.<br><br>
+        <b>This is essentially the best possible!</b> Unless P = NP, no polynomial algorithm can achieve a ratio better than (1 &minus; &epsilon;) ln n for any &epsilon; > 0.
+      </div>
+      </div>
+
+      <div data-module="sc_intuition">
+      <div class="key-concept">
+        <div class="kc-title">Why H(max|S_i|) &times; OPT? — The Intuition</div>
+        The key idea is a clever <b>cost accounting</b> trick. Instead of paying "1" for each set we pick, we <b>spread the cost</b> of each set evenly across the new elements it covers:<br><br>
+        When the greedy algorithm picks a set that covers <b>k new elements</b>, we charge each of those elements <span class="math-inline">1/k</span>. The total cost of all sets chosen equals the total charge across all elements.<br><br>
+        Now consider any single element e. What is the <b>most</b> e can be charged across the whole algorithm? Suppose e first appears in a set of size k (the largest set containing e). At that moment, e <i>might</i> not be picked — maybe a bigger set is chosen first. But each round, the number of uncovered elements in the set containing e can only <b>shrink</b>. So the charges e could receive over successive rounds are at most:
+        <div class="code-block">1/k,  1/(k-1),  1/(k-2),  ...,  1/2,  1/1</div>
+        This sums to <span class="math-inline">H(k) = 1 + 1/2 + ... + 1/k</span> — the k-th harmonic number, where k &le; max|S_i| (the size of the largest set).
+      </div>
+      </div>
+
+      <div data-module="sc_proof_steps">
+      <div class="example-box">
+        <div class="eb-title">The Proof in Three Steps</div>
+        <b>Step 1 — Charge distribution:</b> When greedy picks a set covering k new elements, charge each new element 1/k. Total charges = number of sets picked (each set costs 1, spread over its new elements).<br><br>
+        <b>Step 2 — Per-element bound:</b> Each element e is charged at most H(k) in total, where k is the size of the largest set containing e. In the worst case, k = max|S_i|, so each element is charged at most H(max|S_i|).<br><br>
+        <b>Step 3 — Relate to OPT:</b> The optimal solution also covers every element, using OPT sets. Each element in the universe belongs to at least one set in the optimal solution. We can "assign" each element's charge to the optimal set that contains it. Each optimal set receives at most H(max|S_i|) charge per element it contains. But we don't even need to count that precisely — the total charge across <b>all</b> n elements is at most n &times; H(max|S_i|), and since OPT covers all n elements using OPT sets, the greedy cost (= total charge) is at most:<br><br>
+        <span class="math-inline">Greedy sets &le; H(max|S_i|) &times; OPT</span><br><br>
+        Since H(k) &asymp; ln k and k &le; n, this gives an <span class="math-inline">O(ln n)</span> approximation ratio.
+      </div>
+      </div>
+
+      <div data-module="sc_example">
+      <div class="example-box">
+        <div class="eb-title">Worked Example — Charge Accounting</div>
+        U = {1,2,3,4,5,6}, S&#8321;={1,2,3}, S&#8322;={2,4,5}, S&#8323;={4,5,6}, S&#8324;={1,6}. Optimal = 2 sets (S&#8321; &cup; S&#8323; = U).<br><br>
+        <b>Round 1:</b> Greedy picks S&#8321; (covers 3 new elements: {1,2,3}). Charge each element 1/3.<br>
+        &emsp; Charges so far: 1&rarr;1/3, 2&rarr;1/3, 3&rarr;1/3<br><br>
+        <b>Round 2:</b> S&#8322; covers 2 new (4,5), S&#8323; covers 3 new (4,5,6), S&#8324; covers 1 new (6). Greedy picks S&#8323; (most new). Charge each 1/3.<br>
+        &emsp; Charges so far: 4&rarr;1/3, 5&rarr;1/3, 6&rarr;1/3<br><br>
+        <b>Total:</b> 2 sets picked = optimal! Maximum charge on any element = 1/3. Largest set has 3 elements, so H(3) = 1 + 1/2 + 1/3 &asymp; 1.83. The bound says greedy &le; 1.83 &times; 2 = 3.67 sets. We used 2, well within the bound.
+      </div>
+      </div>
+
+      <div data-module="sc_suboptimal_example">
+      <div class="example-box">
+        <div class="eb-title">Example — When Greedy Is Suboptimal</div>
+        See the <b>"Greedy suboptimal"</b> preset in the interactive tool below (10 elements, 5 sets).<br>
+        U = {1,...,10}, S&#8321;={1,2,3,4,5}, S&#8322;={6,7,8,9,10}, S&#8323;={1,2,6,7}, S&#8324;={3,4,8,9}, S&#8325;={5,10,1,6}.<br><br>
+        Optimal: S&#8321; &cup; S&#8322; = U (2 sets). But greedy picks S&#8321; (5 new), then S&#8323; or S&#8324; (each covers only 2 new from the other half), requiring <b>3 sets total</b>. Ratio = 3/2 = 1.5.
+      </div>
+      </div>
+
+      <!-- SECTION 5.5 — Common Thread -->
+      <div data-module="greedy_what">
+      <h3 style="display:flex;align-items:center;gap:8px;margin-top:28px;"><span style="background:#ffd166;color:#0b1020;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;">&star;</span> The Common Thread — Greedy Algorithms</h3>
+      <p>
+        All three approximation algorithms above share the same underlying strategy: they are all <b>greedy algorithms</b>.
+      </p>
+      <div class="key-concept">
+        <div class="kc-title">What is a Greedy Algorithm?</div>
+        A <b>greedy algorithm</b> builds a solution step by step, making the <b>locally optimal choice</b> at each step — the choice that looks best <i>right now</i> — without ever going back to reconsider previous decisions.<br><br>
+        Greedy algorithms are <b>fast</b> (typically polynomial time) and <b>simple</b> to implement. For some problems they find the exact optimum (e.g., Prim's algorithm for MST, <b>Dijkstra's algorithm</b> for shortest paths — which greedily visits the closest unvisited vertex to find the shortest path from a source to all other vertices). For NP-hard problems they cannot find the exact optimum in general, but they often achieve <b>provably good approximations</b>.
+      </div>
+      </div>
+
+      <div data-module="greedy_not_exact">
+      <div class="warning-box">
+        <div class="wb-title">Are the Exact (Original) Solutions Also Greedy? No!</div>
+        The exact algorithms that find the <i>perfect</i> optimal answer use fundamentally different strategies — and that is precisely why they are so slow:<br><br>
+        <b>Exact Vertex Cover — Brute-force enumeration:</b> Try <i>every</i> possible subset of vertices (2&#8319; of them) and check which is the smallest valid cover. This is exhaustive search, not greedy — it considers all possibilities before deciding.<br><br>
+        <b>Exact TSP — Permutation search / Dynamic programming:</b> The brute-force approach tries all n! orderings of cities. The Held-Karp algorithm uses <b>dynamic programming</b> (DP) — it stores solutions to subproblems in a table and builds up the optimal answer by combining them. DP is the <i>opposite</i> of greedy: it considers <i>all</i> choices at each step and picks the globally best combination, rather than committing to a local choice.<br><br>
+        <b>Exact Set Cover — Subset enumeration:</b> Try every possible combination of the m available sets (2&#7504; combinations) and return the smallest one that covers the universe. Again, exhaustive search — no local decisions, just try everything.<br><br>
+        The key insight: <b>greedy algorithms are fast because they commit to local choices and never look back</b>. Exact algorithms are slow because they <b>explore all possibilities</b> to guarantee the global optimum. Approximation algorithms accept a slightly worse answer in exchange for the speed of greedy decision-making.
+      </div>
+      </div>
+
+      <div data-module="greedy_strategy_each">
+      <div class="example-box">
+        <div class="eb-title">The Greedy Strategy in Each Approximation</div>
+        <b>Vertex Cover:</b> At each step, pick <i>any</i> uncovered edge and greedily add both endpoints. Never reconsider — once a vertex is in the cover, it stays. The greedy choice here is simple but effective: adding both endpoints guarantees maximum coverage per decision.<br><br>
+        <b>TSP (MST-Based):</b> The MST itself is built by a greedy algorithm (Prim's: always add the cheapest available edge). The tour is then derived by a greedy DFS traversal with shortcuts — always visit the next unvisited city.<br><br>
+        <b>Set Cover:</b> At each step, greedily pick the set that covers the <i>most</i> uncovered elements. This is the classic "greedy by largest marginal gain" strategy.
+      </div>
+      </div>
+
+      <div data-module="greedy_comparison">
+      <div class="example-box">
+        <div class="eb-title">Side-by-Side: Exact vs. Greedy Approximation</div>
+        <table class="mini-table">
+          <thead><tr><th></th><th>Exact (Original)</th><th>Greedy Approximation</th></tr></thead>
+          <tbody>
+            <tr><td style="text-align:left;padding-left:12px;color:var(--muted);font-weight:700">Strategy</td><td>Try all possibilities</td><td>Make one local choice, move on</td></tr>
+            <tr><td style="text-align:left;padding-left:12px;color:var(--muted);font-weight:700">Backtracking?</td><td>Yes — explores and compares</td><td>No — never reconsiders</td></tr>
+            <tr><td style="text-align:left;padding-left:12px;color:var(--muted);font-weight:700">Time</td><td style="color:#ff5c7a">Exponential (2&#8319;, n!)</td><td style="color:#64f0c8">Polynomial (n&sup2;, n log n)</td></tr>
+            <tr><td style="text-align:left;padding-left:12px;color:var(--muted);font-weight:700">Answer quality</td><td style="color:#64f0c8">Perfect (global optimum)</td><td style="color:#ffd166">Good (within factor &rho; of optimum)</td></tr>
+            <tr><td style="text-align:left;padding-left:12px;color:var(--muted);font-weight:700">Practical for large n?</td><td style="color:#ff5c7a">No</td><td style="color:#64f0c8">Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      </div>
+
+      <div data-module="greedy_why_good">
+      <div class="key-concept">
+        <div class="kc-title">Why Do Greedy Algorithms Give Good Approximations?</div>
+        Because each greedy step makes a "reasonable" local choice, the total cost never drifts too far from optimal. This <b>bounded greediness</b> can always be related back to a lower bound on OPT (matching for Vertex Cover, MST for TSP, harmonic analysis for Set Cover) — the same <b>proof pattern</b> introduced in Section 2. This technique is central to <b>combinatorial optimization</b> — the branch of mathematics and computer science concerned with finding the best solution from a finite (but typically enormous) set of possibilities.
+      </div>
+      </div>
+
+      <!-- SECTION 6 -->
+      <div data-module="inap_overview">
+      <h3 id="sec6" style="display:flex;align-items:center;gap:8px;"><span style="background:#ffd166;color:#0b1020;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;">6</span> Inapproximability — Limits of Approximation</h3>
+      <p>
+        Not all NP-hard problems can be approximated equally well. Before reading the table below, here are some terms you'll encounter:
+      </p>
+
+      <div class="example-box">
+        <div class="eb-title">Terminology for This Section</div>
+        <b>Metric TSP</b> vs. <b>General TSP:</b> <b>Metric TSP</b> is the version of TSP where distances satisfy the triangle inequality (the direct route is never longer than a detour). <b>General TSP</b> has no such restriction — distances can be arbitrary. Metric TSP can be approximated; general TSP cannot.<br><br>
+        <b>Christofides' algorithm (1976):</b> An improved approximation algorithm for metric TSP that achieves a <b>3/2-approximation</b> (better than the 2-approximation we studied). It builds an MST, then adds a <b>minimum-weight perfect matching</b> on the odd-degree vertices to create an Eulerian graph, and finally shortcuts the Eulerian circuit into a Hamiltonian cycle. For decades it was the best known result for metric TSP.<br><br>
+        <b>UGC (Unique Games Conjecture):</b> A widely believed (but unproven) conjecture in computational complexity theory, proposed by Subhash Khot in 2002. If true, it implies that many approximation ratios we currently achieve are the <b>best possible</b> — for example, it would prove that no polynomial-time algorithm can beat the 2-approximation for Vertex Cover.<br><br>
+        <b>MAX-3SAT:</b> Given a Boolean formula in 3-CNF form (a conjunction of clauses, each with exactly 3 literals), find an assignment of variables that <b>satisfies the maximum number of clauses</b>. A simple random assignment satisfies 7/8 of clauses on average, and remarkably, no polynomial-time algorithm can do better (unless P = NP).
+      </div>
+
+      <table class="mini-table">
+        <thead><tr><th>Problem</th><th>Best Known Ratio</th><th>Can We Do Better?</th></tr></thead>
+        <tbody>
+          <tr><td style="text-align:left;padding-left:12px">Vertex Cover</td><td style="color:#64f0c8">2</td><td>Likely not below 1.36 (UGC: not below 2)</td></tr>
+          <tr><td style="text-align:left;padding-left:12px">Metric TSP</td><td style="color:#64f0c8">3/2 (Christofides)</td><td>Breakthrough in 2020: 3/2 &minus; &epsilon;</td></tr>
+          <tr><td style="text-align:left;padding-left:12px">Set Cover</td><td style="color:#ffd166">ln n</td><td>No! Cannot beat (1&minus;&epsilon;)ln n</td></tr>
+          <tr><td style="text-align:left;padding-left:12px">General TSP</td><td style="color:#ff5c7a">None!</td><td>No constant ratio possible</td></tr>
+          <tr><td style="text-align:left;padding-left:12px">MAX-3SAT</td><td style="color:#64f0c8">7/8</td><td>No (optimal under UGC)</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div data-module="inap_pcp">
+      <div class="warning-box">
+        <div class="wb-title">The PCP Theorem (1992) — A Landmark Result</div>
+        <b>PCP</b> stands for <b>Probabilistically Checkable Proofs</b>. The PCP Theorem shows that for many problems, even <i>approximating</i> the optimal solution is NP-hard. This means there are fundamental barriers to approximation — not just a lack of clever algorithms, but actual impossibility results. For example, it is NP-hard to approximate Max-3SAT within a ratio better than 7/8 (matching the random algorithm!).
+      </div>
+      </div>
+
+      <!-- SECTION 7 -->
+      <h3 id="sec7" style="display:flex;align-items:center;gap:8px;"><span style="background:#6aa9ff;color:#0b1020;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;">7</span> Interactive Tool</h3>
+      <p>
+        1. Select an algorithm from the dropdown.<br>
+        2. Click a <b>Quick Example</b> or the inputs will use the default graph.<br>
+        3. Click <b>Build Steps</b>, then <b>Step</b> or <b>Play</b>.<br>
+        4. Watch the graph/set visualization update step by step with color-coded vertices and edges.
+      </p>
+      <div class="key-concept">
+        <div class="kc-title">Teaching Tip</div>
+        Start with <b>Vertex Cover</b> on the "Path graph" preset — it's the simplest and shows the 2x worst case clearly. Then move to <b>TSP</b> to show MST → tour conversion. Finish with <b>Set Cover</b> to show the greedy strategy.
+      </div>
+
+      <div style="background:linear-gradient(135deg,rgba(100,240,200,0.08),rgba(106,169,255,0.06));border:1px solid rgba(100,240,200,0.18);border-radius:14px;padding:16px 20px;margin:16px 0 0;">
+        <div style="font-weight:800;font-size:14px;color:#64f0c8;margin-bottom:8px;">You've completed the lecture notes!</div>
+        <p style="margin:0;font-size:12.5px;">You now understand: why approximation is needed, approximation ratios, Vertex Cover 2-approximation, MST-based TSP 2-approximation, Greedy Set Cover, and inapproximability. Scroll down to experiment!</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MAIN TOOL ===================== -->
+<div class="wrap">
+  <div class="card">
+    <h2>Controls</h2>
+    <div class="controls">
+      <div class="mb10">
+        <label for="algo">Algorithm</label>
+        <select id="algo">
+          <option value="vc" selected>Vertex Cover — 2-Approximation</option>
+          <option value="tsp">TSP — MST-Based 2-Approximation</option>
+          <option value="sc">Set Cover — Greedy</option>
+        </select>
+      </div>
+      <div class="row">
+        <div><label for="speed">Speed: <span id="speedLabel">1.00x</span></label>
+          <input id="speed" type="range" min="0.25" max="3" step="0.05" value="1"/></div>
+        <div></div>
+      </div>
+      <label>Quick Examples</label>
+      <div class="preset-row" id="presetRow"></div>
+      <div class="btnRow">
+        <button id="build">Build Steps</button>
+        <button id="step">Step</button>
+        <button id="play">Play</button>
+        <button class="secondary" id="pause">Pause</button>
+        <button class="danger" id="reset">Reset</button>
+      </div>
+      <div class="stat">
+        <div class="pill"><span>Step</span><b id="stepCount">0 / 0</b></div>
+        <div class="pill"><span>Status</span><b id="status">Idle</b></div>
+      </div>
+    </div>
+    <div class="hint">Tip: Click <b>Build Steps</b> after changing algo or preset. Use <b>Step</b> for line-by-line teaching.</div>
+    <div style="padding:0 14px 14px;"><div class="algoOverview" id="algoOverview"></div></div>
+  </div>
+
+  <div class="card">
+    <h2>Approximation Algorithms — BSD 404</h2>
+    <div class="viz">
+      <div class="legend" id="legendArea"></div>
+      <div class="phase-bar" id="phaseBar">
+        <div class="phaseTitle" id="phaseTitle">Approximation Algorithms</div>
+        <div id="phaseNote">Click Build Steps, then Step or Play.</div>
+      </div>
+      <div id="vizArea"></div>
+      <div class="result-bar" id="resultBar"></div>
+      <div class="mono" id="pseudocode"></div>
+      <div class="codeHelp" id="codeHelp"><b>Step Explanation:</b> Click <b>Build Steps</b>, then <b>Step</b> or <b>Play</b>.</div>
+    </div>
+  </div>
+</div>
+<!-- ===================== APPENDIX ===================== -->
+<div class="intro-section">
+  <div class="intro-card">
+    <div class="intro-header" id="appendixToggleBtn">
+      <h2>Appendix — Background Algorithms &amp; Exact (Exponential) Solutions</h2>
+      <button class="intro-toggle" id="appendixToggleText">Collapse</button>
+    </div>
+    <div class="intro-body" id="appendixBody">
+
+      <h3 style="display:flex;align-items:center;gap:8px;"><span style="background:#c77dff;color:#0b1020;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;">A</span> Prim's Algorithm for MST</h3>
+      <p>
+        <b>Prim's algorithm</b> builds a Minimum Spanning Tree by growing a single tree one vertex at a time. It starts from an arbitrary vertex and repeatedly adds the <b>cheapest edge</b> that connects a vertex already in the tree to a vertex not yet in the tree.
+      </p>
+
+      <div class="code-block">Prim(G, w):
+  Pick any starting vertex s
+  T = {s}                          // vertices in the tree so far
+  MST_edges = []                   // edges chosen for the MST
+  while T does not contain all vertices:
+    find the minimum-weight edge (u, v)
+      such that u &isin; T and v &notin; T
+    MST_edges.append((u, v))
+    T = T &cup; {v}
+  return MST_edges</div>
+
+      <div class="key-concept">
+        <div class="kc-title">Prim's Algorithm — Key Facts</div>
+        <b>Time complexity:</b> <span class="math-inline">O(E log V)</span> with a binary heap, or <span class="math-inline">O(E + V log V)</span> with a Fibonacci heap.<br><br>
+        <b>Correctness:</b> At each step, the cheapest crossing edge (between T and V&minus;T) is always safe to add — this is the <b>Cut Property</b> of MSTs. Any edge that is the unique lightest edge crossing some cut of the graph must belong to every MST.<br><br>
+        <b>Greedy strategy:</b> Prim's is a greedy algorithm — it makes the locally optimal choice (cheapest edge) at each step, and this leads to the globally optimal MST.
+      </div>
+
+      <div class="example-box">
+        <div class="eb-title">Prim's — Worked Example</div>
+        Graph with 4 vertices and weighted edges: A&mdash;B (1), A&mdash;C (4), A&mdash;D (3), B&mdash;C (2), B&mdash;D (5), C&mdash;D (6).<br><br>
+        <b>Step 1:</b> Start at A. Tree = {A}. Cheapest edge out: A&mdash;B (weight 1). Add it.<br>
+        <b>Step 2:</b> Tree = {A, B}. Edges out: A&mdash;C (4), A&mdash;D (3), B&mdash;C (2), B&mdash;D (5). Cheapest: B&mdash;C (2). Add it.<br>
+        <b>Step 3:</b> Tree = {A, B, C}. Edges out: A&mdash;D (3), B&mdash;D (5), C&mdash;D (6). Cheapest: A&mdash;D (3). Add it.<br>
+        <b>Done!</b> MST edges: {A&mdash;B, B&mdash;C, A&mdash;D}. Total cost: 1 + 2 + 3 = 6.
+      </div>
+
+      <h3 style="display:flex;align-items:center;gap:8px;margin-top:28px;"><span style="background:#ff5c7a;color:#0b1020;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;">B</span> Exact (Exponential) Solutions — Why We Need Approximation</h3>
+      <p>
+        Each of the three problems in this lecture <i>can</i> be solved exactly — but the exact algorithms have <b>exponential</b> running times, making them impractical for large inputs. These are the "bad solutions" that motivate approximation algorithms.
+      </p>
+
+      <!-- Vertex Cover Exact -->
+      <div class="warning-box">
+        <div class="wb-title">Exact Vertex Cover — O(2&#8319; &middot; n)</div>
+        <b>Strategy: brute-force enumeration.</b> Try every possible subset of vertices and check whether it forms a valid cover (every edge has at least one endpoint in the set). Return the smallest valid subset.<br><br>
+        <div class="code-block">ExactVertexCover(G):
+  best = V                          // worst case: all vertices
+  for each subset S &sube; V:           // 2&#8319; subsets!
+    if every edge (u,v) has u &isin; S or v &isin; S:
+      if |S| < |best|:
+        best = S
+  return best</div>
+        <b>Why it's slow:</b> A graph with n vertices has <span class="math-inline">2&#8319;</span> possible subsets. For n = 30, that's over 1 billion subsets to check. For n = 50, it's over 10&#185;&#8309; — more than the number of atoms on Earth.<br><br>
+        <b>Slightly better:</b> Backtracking with pruning can reduce the constant factor, and algorithms based on bounded search trees can solve it in <span class="math-inline">O(1.2738&#8319;)</span>, but it remains exponential.
+      </div>
+
+      <!-- TSP Exact -->
+      <div class="warning-box">
+        <div class="wb-title">Exact TSP — O(n! ) or O(n&sup2; &middot; 2&#8319;)</div>
+        <b>Strategy 1: brute-force permutations.</b> Try every possible ordering of the n cities, compute the tour cost for each, and return the cheapest.<br><br>
+        <div class="code-block">ExactTSP_BruteForce(cities):
+  best_cost = &infin;
+  for each permutation P of cities:   // n! permutations!
+    cost = sum of distances along P, returning to start
+    if cost < best_cost:
+      best_cost = cost
+      best_tour = P
+  return best_tour</div>
+        <b>Why it's slow:</b> For n cities there are <span class="math-inline">n!</span> (n factorial) possible tours. For just 20 cities: 20! &asymp; 2.4 &times; 10&#185;&#8312; permutations.<br><br>
+        <b>Strategy 2: dynamic programming (Held-Karp).</b> Use bitmask DP to track which cities have been visited. This reduces the time from O(n!) to <span class="math-inline">O(n&sup2; &middot; 2&#8319;)</span> — still exponential, but far faster in practice.<br><br>
+        <div class="code-block">HeldKarp(cities, dist):
+  // dp[S][i] = min cost to visit all cities in set S,
+  //            ending at city i
+  for each subset S of cities:        // 2&#8319; subsets
+    for each city i in S:             // n cities
+      dp[S][i] = min over j &isin; S\{i} of:
+                   dp[S\{i}][j] + dist(j, i)
+  return min over i of dp[all cities][i] + dist(i, start)</div>
+        <b>Improvement:</b> Held-Karp is <span class="math-inline">O(n&sup2; &middot; 2&#8319;)</span> time and <span class="math-inline">O(n &middot; 2&#8319;)</span> space. For n = 25, that's about 800 million states — feasible on a modern machine. For n = 40, it's over 40 trillion — not feasible.
+      </div>
+
+      <!-- Set Cover Exact -->
+      <div class="warning-box">
+        <div class="wb-title">Exact Set Cover — O(2&#7504; &middot; n) where m = number of sets</div>
+        <b>Strategy: brute-force over subsets of sets.</b> Try every possible combination of the m available sets and check which combinations cover the entire universe. Return the smallest one.<br><br>
+        <div class="code-block">ExactSetCover(U, S1, S2, ..., Sm):
+  best = {S1, S2, ..., Sm}          // worst case: use all sets
+  for each subset C &sube; {S1,...,Sm}:  // 2&#7504; subsets of sets!
+    if union of sets in C = U:
+      if |C| < |best|:
+        best = C
+  return best</div>
+        <b>Why it's slow:</b> With m sets, there are <span class="math-inline">2&#7504;</span> possible combinations. Even for modest m = 30, that's over 1 billion combinations.<br><br>
+        <b>Slightly better:</b> Integer Linear Programming (ILP) formulations can solve moderate instances exactly, but the worst case remains exponential.
+      </div>
+
+      <div class="key-concept" style="margin-top:18px;">
+        <div class="kc-title">The Big Picture</div>
+        <table class="mini-table">
+          <thead><tr><th>Problem</th><th>Exact (Exponential) Time</th><th>Approximation (Polynomial) Time</th><th>Approximation Ratio</th></tr></thead>
+          <tbody>
+            <tr><td style="text-align:left;padding-left:12px">Vertex Cover</td><td style="color:#ff5c7a">O(2&#8319; &middot; n)</td><td style="color:#64f0c8">O(V + E)</td><td>2</td></tr>
+            <tr><td style="text-align:left;padding-left:12px">TSP (metric)</td><td style="color:#ff5c7a">O(n&sup2; &middot; 2&#8319;)</td><td style="color:#64f0c8">O(n&sup2;) or O(E log V)</td><td>2</td></tr>
+            <tr><td style="text-align:left;padding-left:12px">Set Cover</td><td style="color:#ff5c7a">O(2&#7504; &middot; n)</td><td style="color:#64f0c8">O(m &middot; n)</td><td>ln n</td></tr>
+          </tbody>
+        </table>
+        The trade-off is clear: we give up a <b>small, bounded amount of optimality</b> in exchange for a <b>massive speedup</b> from exponential to polynomial time. For real-world inputs (hundreds or thousands of elements), the exact algorithms are completely infeasible while the approximation algorithms finish in milliseconds.
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="tut-footer">Part of <b>BSD 404 — Algorithms II</b> | Canadian University Dubai</div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let steps=[],stepIdx=-1,playing=false,speedVal=1,currentPreset=null;
+
+// ========================================================================
+// GRAPH DATA (preset graphs for Vertex Cover)
+// ========================================================================
+const VC_PRESETS={
+  path:{
+    label:"Path 1-2-3-4-5",
+    nodes:[{id:0,x:80,y:150,l:"1"},{id:1,x:200,y:150,l:"2"},{id:2,x:320,y:150,l:"3"},{id:3,x:440,y:150,l:"4"},{id:4,x:560,y:150,l:"5"}],
+    edges:[[0,1],[1,2],[2,3],[3,4]],
+    optimal:[1,3],optLabel:"{2,4}"
+  },
+  star:{
+    label:"Star (center = A)",
+    nodes:[{id:0,x:320,y:140,l:"A"},{id:1,x:160,y:60,l:"B"},{id:2,x:480,y:60,l:"C"},{id:3,x:160,y:220,l:"D"},{id:4,x:480,y:220,l:"E"},{id:5,x:320,y:260,l:"F"}],
+    edges:[[0,1],[0,2],[0,3],[0,4],[0,5]],
+    optimal:[0],optLabel:"{A}"
+  },
+  triangle_sq:{
+    label:"House graph",
+    nodes:[{id:0,x:220,y:40,l:"A"},{id:1,x:420,y:40,l:"B"},{id:2,x:420,y:180,l:"C"},{id:3,x:220,y:180,l:"D"},{id:4,x:320,y:260,l:"E"}],
+    edges:[[0,1],[1,2],[2,3],[3,0],[2,4],[3,4]],
+    optimal:[1,2,3],optLabel:"{B,C,D}"
+  },
+  petersen:{
+    label:"Complete graph K\u2084 (all 4 vertices connected)",
+    nodes:[{id:0,x:200,y:60,l:"A"},{id:1,x:440,y:60,l:"B"},{id:2,x:440,y:230,l:"C"},{id:3,x:200,y:230,l:"D"}],
+    edges:[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]],
+    optimal:[0,1,2],optLabel:"{A,B,C} (any 3)"
+  }
+};
+
+// TSP presets (Euclidean points)
+const TSP_PRESETS={
+  square:{
+    label:"4 cities (square)",
+    nodes:[{id:0,x:150,y:80,l:"A"},{id:1,x:490,y:80,l:"B"},{id:2,x:490,y:230,l:"C"},{id:3,x:150,y:230,l:"D"}]
+  },
+  five:{
+    label:"5 cities (pentagon)",
+    nodes:[{id:0,x:320,y:40,l:"A"},{id:1,x:520,y:140,l:"B"},{id:2,x:450,y:270,l:"C"},{id:3,x:190,y:270,l:"D"},{id:4,x:120,y:140,l:"E"}]
+  },
+  six:{
+    label:"6 cities",
+    nodes:[{id:0,x:100,y:80,l:"A"},{id:1,x:320,y:40,l:"B"},{id:2,x:540,y:80,l:"C"},{id:3,x:540,y:230,l:"D"},{id:4,x:320,y:270,l:"E"},{id:5,x:100,y:230,l:"F"}]
+  },
+  cluster:{
+    label:"7 cities (clustered)",
+    nodes:[{id:0,x:120,y:100,l:"A"},{id:1,x:200,y:60,l:"B"},{id:2,x:180,y:180,l:"C"},{id:3,x:450,y:80,l:"D"},{id:4,x:530,y:130,l:"E"},{id:5,x:480,y:220,l:"F"},{id:6,x:320,y:260,l:"G"}]
+  }
+};
+
+// Set Cover presets
+const SC_PRESETS={
+  basic:{
+    label:"6 elements, 4 sets",
+    universe:[1,2,3,4,5,6],
+    sets:[{name:"S1",elems:[1,2,3]},{name:"S2",elems:[2,4,5]},{name:"S3",elems:[4,5,6]},{name:"S4",elems:[1,6]}],
+    optimal:2,optSets:"S1,S3"
+  },
+  medium:{
+    label:"8 elements, 5 sets",
+    universe:[1,2,3,4,5,6,7,8],
+    sets:[{name:"S1",elems:[1,2,3,8]},{name:"S2",elems:[1,4,5]},{name:"S3",elems:[4,5,7]},{name:"S4",elems:[2,6]},{name:"S5",elems:[3,6,7,8]}],
+    optimal:3,optSets:"S1,S3,S4"
+  },
+  greedy_wins:{
+    label:"Greedy = Optimal",
+    universe:[1,2,3,4,5,6],
+    sets:[{name:"S1",elems:[1,2,3,4,5,6]},{name:"S2",elems:[1,2]},{name:"S3",elems:[3,4]},{name:"S4",elems:[5,6]}],
+    optimal:1,optSets:"S1"
+  },
+  worst:{
+    label:"Greedy suboptimal",
+    universe:[1,2,3,4,5,6,7,8,9,10],
+    sets:[{name:"S1",elems:[1,2,3,4,5]},{name:"S2",elems:[6,7,8,9,10]},{name:"S3",elems:[1,2,6,7]},{name:"S4",elems:[3,4,8,9]},{name:"S5",elems:[5,10,1,6]}],
+    optimal:2,optSets:"S1,S2"
+  }
+};
+
+// ========================================================================
+// HELPERS
+// ========================================================================
+function dist(a,b){return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2);}
+
+function primMST(nodes){
+  let n=nodes.length;
+  let inMST=new Array(n).fill(false);
+  let key=new Array(n).fill(Infinity);
+  let parent=new Array(n).fill(-1);
+  key[0]=0;
+  let edges=[];
+  for(let iter=0;iter<n;iter++){
+    let u=-1;
+    for(let v=0;v<n;v++) if(!inMST[v]&&(u===-1||key[v]<key[u])) u=v;
+    inMST[u]=true;
+    if(parent[u]!==-1) edges.push([parent[u],u]);
+    for(let v=0;v<n;v++){
+      if(!inMST[v]){
+        let d=dist(nodes[u],nodes[v]);
+        if(d<key[v]){key[v]=d;parent[v]=u;}
+      }
+    }
+  }
+  return edges;
+}
+
+function dfsOrder(adj,start,n){
+  let visited=new Array(n).fill(false);
+  let order=[];
+  function dfs(u){
+    visited[u]=true;order.push(u);
+    for(let v of adj[u]) if(!visited[v]) dfs(v);
+  }
+  dfs(start);
+  return order;
+}
+
+// ========================================================================
+// BUILD STEPS
+// ========================================================================
+function buildVC(){
+  let preset=currentPreset;
+  let nodes=preset.nodes.map(n=>({...n}));
+  let edges=preset.edges.map(e=>[...e]);
+  let uncovered=new Set(edges.map((_,i)=>i));
+  let cover=new Set();
+  let pickedEdges=[];
+  let allSteps=[];
+
+  let edgeStr=i=>`(${nodes[edges[i][0]].l},${nodes[edges[i][1]].l})`;
+  let coverStr=()=>[...cover].map(i=>nodes[i].l).join(', ')||'∅';
+  let uncovStr=()=>[...uncovered].map(i=>edgeStr(i)).join(', ')||'∅';
+
+  allSteps.push({type:'vc',phase:'init',nodes,edges,cover:new Set(),uncovered:new Set(uncovered),pickedEdges:[],
+    codeLine:0,explain:`Start: graph has ${nodes.length} vertices and ${edges.length} edges.\n→ C = {∅}\n→ E' = {${uncovStr()}}`});
+
+  while(uncovered.size>0){
+    let eIdx=[...uncovered][0];
+    let [u,v]=edges[eIdx];
+
+    allSteps.push({type:'vc',phase:'pick_edge',nodes,edges,cover:new Set(cover),uncovered:new Set(uncovered),
+      pickedEdges:[...pickedEdges],pickingEdge:eIdx,
+      codeLine:3,explain:`Pick uncovered edge (${nodes[u].l},${nodes[v].l}). We will add BOTH endpoints to the cover.\n→ C = {${coverStr()}}\n→ E' = {${uncovStr()}}`});
+
+    cover.add(u);cover.add(v);
+    pickedEdges.push(eIdx);
+
+    let removed=[];
+    for(let i of uncovered){
+      let [a,b]=edges[i];
+      if(a===u||a===v||b===u||b===v) removed.push(i);
+    }
+    for(let i of removed) uncovered.delete(i);
+
+    allSteps.push({type:'vc',phase:'add_vertices',nodes,edges,cover:new Set(cover),uncovered:new Set(uncovered),
+      pickedEdges:[...pickedEdges],addedU:u,addedV:v,removedEdges:removed,
+      codeLine:4,explain:`Add {${nodes[u].l},${nodes[v].l}} to cover. Removed ${removed.length} edge(s): ${removed.map(i=>edgeStr(i)).join(', ')}.\n→ C = {${coverStr()}}\n→ E' = {${uncovStr()}}\n→ |E'| = ${uncovered.size} uncovered edge(s) remain`});
+  }
+
+  allSteps.push({type:'vc',phase:'done',nodes,edges,cover:new Set(cover),uncovered:new Set(),pickedEdges:[...pickedEdges],
+    codeLine:6,explain:`Done!\n→ C = {${coverStr()}} (size ${cover.size})\n→ E' = {∅} — all edges covered\n→ Optimal: ${preset.optLabel} (size ${preset.optimal.length})\n→ Ratio = ${cover.size}/${preset.optimal.length} = ${(cover.size/preset.optimal.length).toFixed(2)}`});
+  return allSteps;
+}
+
+function buildTSP(){
+  let preset=currentPreset;
+  let nodes=preset.nodes.map(n=>({...n}));
+  let n=nodes.length;
+  let allSteps=[];
+
+  let cityNames=nodes.map(nd=>nd.l);
+  let mstEdgeStr=(edges)=>edges.map(([a,b])=>`(${nodes[a].l},${nodes[b].l})`).join(', ')||'∅';
+  let notInMST=()=>{let r=[];for(let v=0;v<n;v++) if(!inMST[v]) r.push(nodes[v].l);return r.join(', ')||'∅';};
+
+  allSteps.push({type:'tsp',phase:'init',nodes,mstEdges:[],tourOrder:[],finalTour:[],currentEdge:null,
+    codeLine:0,explain:`Start: ${n} cities: {${cityNames.join(', ')}}. Step 1: Build the Minimum Spanning Tree (MST).\n→ MST edges = {∅}\n→ Vertices not in MST = {${cityNames.join(', ')}}`});
+
+  // Build MST step by step
+  let inMST=new Array(n).fill(false);
+  let key=new Array(n).fill(Infinity);
+  let parent=new Array(n).fill(-1);
+  key[0]=0;
+  let mstEdges=[];
+
+  for(let iter=0;iter<n;iter++){
+    let u=-1;
+    for(let v=0;v<n;v++) if(!inMST[v]&&(u===-1||key[v]<key[u])) u=v;
+    inMST[u]=true;
+    if(parent[u]!==-1){
+      mstEdges.push([parent[u],u]);
+      let d=dist(nodes[parent[u]],nodes[u]).toFixed(1);
+      let runCost=mstEdges.reduce((s,e)=>s+dist(nodes[e[0]],nodes[e[1]]),0);
+      allSteps.push({type:'tsp',phase:'mst_add',nodes,mstEdges:[...mstEdges],tourOrder:[],finalTour:[],
+        currentEdge:[parent[u],u],
+        codeLine:0,explain:`MST: Add edge (${nodes[parent[u]].l},${nodes[u].l}), weight ${d}.\n→ MST edges = {${mstEdgeStr(mstEdges)}} (${mstEdges.length}/${n-1})\n→ Running MST cost = ${runCost.toFixed(1)}\n→ Vertices not in MST = {${notInMST()}}`});
+    }
+    for(let v=0;v<n;v++){
+      if(!inMST[v]){let d=dist(nodes[u],nodes[v]);if(d<key[v]){key[v]=d;parent[v]=u;}}
+    }
+  }
+
+  let mstCost=mstEdges.reduce((s,e)=>s+dist(nodes[e[0]],nodes[e[1]]),0);
+  allSteps.push({type:'tsp',phase:'mst_done',nodes,mstEdges:[...mstEdges],tourOrder:[],finalTour:[],
+    codeLine:0,explain:`MST complete!\n→ MST edges = {${mstEdgeStr(mstEdges)}}\n→ Total MST cost = ${mstCost.toFixed(1)}\n→ 2 × MST = ${(2*mstCost).toFixed(1)} (upper bound on tour)\nStep 2: DFS walk around the MST.`});
+
+  // DFS order
+  let adj=Array.from({length:n},()=>[]);
+  for(let [a,b] of mstEdges){adj[a].push(b);adj[b].push(a);}
+  let order=dfsOrder(adj,0,n);
+
+  allSteps.push({type:'tsp',phase:'dfs',nodes,mstEdges:[...mstEdges],tourOrder:[...order],finalTour:[],
+    codeLine:1,explain:`DFS walk from ${nodes[0].l}:\n→ Visit order = ${order.map(i=>nodes[i].l).join(' → ')}\n→ Full DFS walk (with backtracking) traverses each MST edge twice = cost 2 × ${mstCost.toFixed(1)} = ${(2*mstCost).toFixed(1)}\nStep 3: Shortcut repeated visits to form Hamiltonian cycle.`});
+
+  // Final tour
+  let tour=[...order,order[0]];
+  let tourCost=0;
+  for(let i=0;i<tour.length-1;i++) tourCost+=dist(nodes[tour[i]],nodes[tour[i+1]]);
+
+  for(let i=0;i<tour.length-1;i++){
+    let partial=tour.slice(0,i+2);
+    let partialCost=0;
+    for(let j=0;j<partial.length-1;j++) partialCost+=dist(nodes[partial[j]],nodes[partial[j+1]]);
+    let visited=partial.slice(0,-1).map(j=>nodes[j].l);
+    let remaining=cityNames.filter(c=>!visited.includes(c));
+    allSteps.push({type:'tsp',phase:'tour_build',nodes,mstEdges:[...mstEdges],tourOrder:[...order],
+      finalTour:partial,currentEdge:[tour[i],tour[i+1]],
+      codeLine:2,explain:`Add edge (${nodes[tour[i]].l},${nodes[tour[i+1]].l}), distance = ${dist(nodes[tour[i]],nodes[tour[i+1]]).toFixed(1)}.\n→ Tour so far = ${partial.map(j=>nodes[j].l).join(' → ')}\n→ Running tour cost = ${partialCost.toFixed(1)}\n→ Cities not yet visited = {${remaining.join(', ')||'all visited — returning to start'}}`});
+  }
+
+  let ratio=(tourCost/mstCost).toFixed(2);
+  allSteps.push({type:'tsp',phase:'done',nodes,mstEdges:[...mstEdges],tourOrder:[...order],finalTour:tour,
+    codeLine:2,explain:`Done!\n→ Tour = ${tour.map(i=>nodes[i].l).join(' → ')}\n→ Tour cost = ${tourCost.toFixed(1)}\n→ MST cost = ${mstCost.toFixed(1)}\n→ Ratio (tour / MST) = ${ratio} ≤ 2.0 ✓\n→ 2 × MST = ${(2*mstCost).toFixed(1)}, tour is ${((1-tourCost/(2*mstCost))*100).toFixed(0)}% cheaper than worst case`});
+  return allSteps;
+}
+
+function buildSC(){
+  let preset=currentPreset;
+  let universe=new Set(preset.universe);
+  let sets=preset.sets.map(s=>({name:s.name,elems:new Set(s.elems)}));
+  let covered=new Set();
+  let chosen=[];
+  let allSteps=[];
+
+  let covStr=()=>[...covered].join(', ')||'∅';
+  let uncovSC=()=>[...universe].filter(e=>!covered.has(e)).join(', ')||'∅';
+  let chosenStr=()=>chosen.map(i=>sets[i].name).join(', ')||'∅';
+
+  allSteps.push({type:'sc',phase:'init',universe,sets,covered:new Set(),chosen:[],currentSet:null,newlyCovered:new Set(),
+    codeLine:0,explain:`Start: Universe U = {${[...universe].join(', ')}}. ${sets.length} sets available.\n→ covered = {∅}\n→ uncovered = {${[...universe].join(', ')}}\n→ chosen = []`});
+
+  while(covered.size<universe.size){
+    // Find best set
+    let bestIdx=-1,bestCount=0;
+    for(let i=0;i<sets.length;i++){
+      if(chosen.includes(i))continue;
+      let cnt=0;
+      for(let e of sets[i].elems) if(!covered.has(e)) cnt++;
+      if(cnt>bestCount){bestCount=cnt;bestIdx=i;}
+    }
+    if(bestIdx===-1)break;
+
+    // Show evaluation
+    let evals=[];
+    for(let i=0;i<sets.length;i++){
+      if(chosen.includes(i))continue;
+      let cnt=0;let newE=[];for(let e of sets[i].elems) if(!covered.has(e)){cnt++;newE.push(e);}
+      evals.push(`${sets[i].name}: ${cnt} new {${newE.join(',')}}`);
+    }
+    allSteps.push({type:'sc',phase:'evaluate',universe,sets,covered:new Set(covered),chosen:[...chosen],
+      currentSet:bestIdx,newlyCovered:new Set(),
+      codeLine:2,explain:`Evaluate remaining sets:\n${evals.map(e=>'→ '+e).join('\n')}\n→ Best: ${sets[bestIdx].name} (${bestCount} new elements)\n→ covered = {${covStr()}}\n→ uncovered = {${uncovSC()}}`});
+
+    let newCov=new Set();
+    for(let e of sets[bestIdx].elems) if(!covered.has(e)){covered.add(e);newCov.add(e);}
+    chosen.push(bestIdx);
+
+    allSteps.push({type:'sc',phase:'pick',universe,sets,covered:new Set(covered),chosen:[...chosen],
+      currentSet:bestIdx,newlyCovered:newCov,
+      codeLine:3,explain:`Pick ${sets[bestIdx].name}! Newly covered: {${[...newCov].join(', ')}}.\n→ covered = {${covStr()}} (${covered.size}/${universe.size})\n→ uncovered = {${uncovSC()}}\n→ chosen = [${chosenStr()}]`});
+  }
+
+  allSteps.push({type:'sc',phase:'done',universe,sets,covered:new Set(covered),chosen:[...chosen],currentSet:null,newlyCovered:new Set(),
+    codeLine:5,explain:`Done!\n→ chosen = [${chosenStr()}] (${chosen.length} sets)\n→ covered = {${covStr()}} — all elements covered\n→ Optimal: ${preset.optimal} set(s) (${preset.optSets})\n→ Ratio = ${chosen.length}/${preset.optimal} = ${(chosen.length/preset.optimal).toFixed(2)}`});
+  return allSteps;
+}
+
+// ========================================================================
+// PSEUDOCODE
+// ========================================================================
+const CODE={
+  vc:{lines:[
+    "ApproxVertexCover(G):",
+    "  C = {}",
+    "  E' = E",
+    "  while E' is not empty:",
+    "    pick any edge (u,v) from E'",
+    "    C = C + {u, v}",
+    "    remove edges incident to u or v",
+    "  return C"
+  ]},
+  tsp:{lines:[
+    "ApproxTSP(G):",
+    "  T = MinimumSpanningTree(G)",
+    "  order = DFS(T, root)",
+    "  return order as Hamiltonian cycle"
+  ]},
+  sc:{lines:[
+    "GreedySetCover(U, S):",
+    "  covered = {}, chosen = []",
+    "  while covered != U:",
+    "    pick Si covering most uncovered",
+    "    chosen.add(Si)",
+    "    covered = covered + Si",
+    "  return chosen"
+  ]}
+};
+
+const OVERVIEWS={
+  vc:`<details open><summary>Vertex Cover — Quick Reference</summary>
+    <div class="overview-section"><strong>Idea</strong><p>Pick any uncovered edge, add both endpoints. Repeat.</p></div>
+    <div class="overview-section"><strong>Guarantee</strong><p>2-approximation. Always ≤ 2× optimal.</p></div>
+    <div class="overview-section"><strong>Proof key</strong><p>Picked edges form a matching → lower bound on OPT.</p></div></details>`,
+  tsp:`<details open><summary>TSP (MST-Based) — Quick Reference</summary>
+    <div class="overview-section"><strong>Idea</strong><p>Build MST → DFS walk → shortcut to Hamiltonian cycle.</p></div>
+    <div class="overview-section"><strong>Guarantee</strong><p>2-approximation (requires triangle inequality).</p></div>
+    <div class="overview-section"><strong>Proof key</strong><p>MST ≤ OPT. Walk = 2×MST. Shortcut ≤ walk.</p></div></details>`,
+  sc:`<details open><summary>Greedy Set Cover — Quick Reference</summary>
+    <div class="overview-section"><strong>Idea</strong><p>Always pick the set covering the most uncovered elements.</p></div>
+    <div class="overview-section"><strong>Guarantee</strong><p>O(ln n)-approximation. Essentially optimal.</p></div>
+    <div class="overview-section"><strong>Proof key</strong><p>Harmonic number analysis of cost amortization.</p></div></details>`
+};
+
+const LEGENDS={
+  vc:`<span><span class="dot" style="background:rgba(255,255,255,0.15)"></span>Uncovered Edge</span>
+      <span><span class="dot" style="background:rgba(255,209,102,0.8)"></span>Picking Edge</span>
+      <span><span class="dot" style="background:rgba(100,240,200,0.7)"></span>In Cover</span>
+      <span><span class="dot" style="background:rgba(100,240,200,0.18)"></span>Covered by Neighbor</span>`,
+  tsp:`<span><span class="dot" style="background:rgba(199,125,255,0.7)"></span>MST Edge</span>
+       <span><span class="dot" style="background:rgba(100,240,200,0.7)"></span>Tour Edge</span>
+       <span><span class="dot" style="background:rgba(255,209,102,0.8)"></span>Current</span>`,
+  sc:`<span><span class="dot" style="background:rgba(255,255,255,0.15)"></span>Uncovered</span>
+      <span><span class="dot" style="background:rgba(255,209,102,0.8)"></span>Evaluating</span>
+      <span><span class="dot" style="background:rgba(100,240,200,0.7)"></span>Covered</span>`
+};
+
+// ========================================================================
+// RENDER SVG
+// ========================================================================
+function svgGraph(nodes,edges,opts={}){
+  let W=640,H=300;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" style="height:${H}px;">`;
+
+  // Edges
+  for(let i=0;i<edges.length;i++){
+    let [a,b]=edges[i];
+    let col='rgba(255,255,255,0.15)';let sw=1.5;
+    if(opts.coveredEdges&&opts.coveredEdges.has(i)) {col='rgba(100,240,200,0.18)';sw=1.5;}
+    if(opts.pickedEdges&&opts.pickedEdges.has(i)) {col='rgba(100,240,200,0.5)';sw=2.5;}
+    if(opts.pickingEdge===i) {col='rgba(255,209,102,0.9)';sw=3;}
+    if(opts.mstEdges&&opts.mstEdges.has(i)) {col='rgba(199,125,255,0.6)';sw=2.5;}
+    svg+=`<line x1="${nodes[a].x}" y1="${nodes[a].y}" x2="${nodes[b].x}" y2="${nodes[b].y}" stroke="${col}" stroke-width="${sw}"/>`;
+  }
+
+  // Tour edges (TSP)
+  if(opts.tourEdges){
+    for(let [a,b,isCurrent] of opts.tourEdges){
+      let col=isCurrent?'rgba(255,209,102,0.9)':'rgba(100,240,200,0.6)';
+      let sw=isCurrent?3:2;
+      svg+=`<line x1="${nodes[a].x}" y1="${nodes[a].y}" x2="${nodes[b].x}" y2="${nodes[b].y}" stroke="${col}" stroke-width="${sw}" stroke-dasharray="${isCurrent?'':''}"/>`;
+    }
+  }
+
+  // Nodes
+  for(let nd of nodes){
+    let fill='rgba(106,169,255,0.20)';let stroke='rgba(106,169,255,0.4)';let textCol='#6aa9ff';
+    if(opts.coverSet&&opts.coverSet.has(nd.id)){fill='rgba(100,240,200,0.30)';stroke='rgba(100,240,200,0.7)';textCol='#64f0c8';}
+    if(opts.highlightNodes&&opts.highlightNodes.has(nd.id)){fill='rgba(255,209,102,0.35)';stroke='rgba(255,209,102,0.8)';textCol='#ffd166';}
+    svg+=`<circle cx="${nd.x}" cy="${nd.y}" r="20" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+    svg+=`<text x="${nd.x}" y="${nd.y+5}" text-anchor="middle" fill="${textCol}" font-size="14" font-weight="700" font-family="ui-monospace,monospace">${nd.l}</text>`;
+  }
+
+  svg+=`</svg>`;
+  return svg;
+}
+
+// ========================================================================
+// RENDER STEPS
+// ========================================================================
+function renderPseudocode(algo,line){
+  $('pseudocode').innerHTML=CODE[algo].lines.map((l,i)=>
+    `<div class="codeLine${i===line?' active':''}">${l||' '}</div>`
+  ).join('');
+}
+
+function renderVC(step){
+  let s=step;
+  let coveredEdges=new Set();
+  // edges incident to cover vertices
+  for(let i=0;i<s.edges.length;i++){
+    let [a,b]=s.edges[i];
+    if(s.cover.has(a)||s.cover.has(b)) coveredEdges.add(i);
+  }
+  let pickedSet=new Set(s.pickedEdges||[]);
+  let highlightNodes=new Set();
+  if(s.addedU!==undefined){highlightNodes.add(s.addedU);highlightNodes.add(s.addedV);}
+
+  let html=`<div class="graph-wrap"><div class="strip-label">Graph — Cover size: ${s.cover.size} | Uncovered edges: ${s.uncovered.size}</div>`;
+  html+=svgGraph(s.nodes,s.edges,{
+    coverSet:s.cover,
+    coveredEdges,
+    pickedEdges:pickedSet,
+    pickingEdge:s.pickingEdge,
+    highlightNodes
+  });
+  html+=`</div>`;
+  $('vizArea').innerHTML=html;
+
+  // Result bar
+  if(s.phase==='done'){
+    let p=currentPreset;
+    $('resultBar').className='result-bar show good';
+    $('resultBar').innerHTML=`<b style="color:#64f0c8;">Result:</b> Cover = {${[...s.cover].map(i=>s.nodes[i].l).join(', ')}} (size ${s.cover.size}). Optimal: ${p.optLabel} (size ${p.optimal.length}). <b>Ratio = ${(s.cover.size/p.optimal.length).toFixed(2)} ≤ 2</b>. Edges picked (matching): ${s.pickedEdges.length}. Note: |matching| ≤ OPT ≤ 2|matching| = |our cover|.`;
+  } else {
+    $('resultBar').className='result-bar';
+  }
+}
+
+function renderTSP(step){
+  let s=step;
+  let n=s.nodes.length;
+  // Build full edge list for MST display
+  let allEdges=[];
+  let edgeMap=new Map();
+  for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){
+    edgeMap.set(`${i}-${j}`,allEdges.length);
+    allEdges.push([i,j]);
+  }
+  let mstSet=new Set();
+  for(let [a,b] of s.mstEdges){
+    let key=a<b?`${a}-${b}`:`${b}-${a}`;
+    if(edgeMap.has(key)) mstSet.add(edgeMap.get(key));
+  }
+
+  let tourEdges=[];
+  if(s.finalTour&&s.finalTour.length>1){
+    for(let i=0;i<s.finalTour.length-1;i++){
+      let isCurrent=s.currentEdge&&s.currentEdge[0]===s.finalTour[i]&&s.currentEdge[1]===s.finalTour[i+1];
+      tourEdges.push([s.finalTour[i],s.finalTour[i+1],isCurrent]);
+    }
+  }
+
+  // For MST building phase, show light background edges
+  let showBgEdges=s.phase==='init'||s.phase==='mst_add'||s.phase==='mst_done';
+
+  let html=`<div class="graph-wrap"><div class="strip-label">${s.phase.startsWith('mst')||s.phase==='init'?'Building MST':s.phase==='dfs'?'DFS Order':'Tour Construction'} — ${s.mstEdges.length} MST edges — Distances are Euclidean (straight-line) between cities</div>`;
+
+  let W=640,H=300;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" style="height:${H}px;">`;
+
+  // Background edges (light)
+  if(showBgEdges){
+    for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){
+      svg+=`<line x1="${s.nodes[i].x}" y1="${s.nodes[i].y}" x2="${s.nodes[j].x}" y2="${s.nodes[j].y}" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>`;
+    }
+  }
+
+  // MST edges + weight labels
+  for(let [a,b] of s.mstEdges){
+    let isCurrent=s.currentEdge&&s.currentEdge[0]===a&&s.currentEdge[1]===b&&s.phase==='mst_add';
+    let col=isCurrent?'rgba(255,209,102,0.9)':'rgba(199,125,255,0.5)';
+    let sw=isCurrent?3:2;
+    svg+=`<line x1="${s.nodes[a].x}" y1="${s.nodes[a].y}" x2="${s.nodes[b].x}" y2="${s.nodes[b].y}" stroke="${col}" stroke-width="${sw}"/>`;
+    let mx=(s.nodes[a].x+s.nodes[b].x)/2, my=(s.nodes[a].y+s.nodes[b].y)/2;
+    let d=dist(s.nodes[a],s.nodes[b]).toFixed(0);
+    let dx=s.nodes[b].y-s.nodes[a].y, dy=s.nodes[a].x-s.nodes[b].x;
+    let len=Math.sqrt(dx*dx+dy*dy)||1;
+    let off=12;
+    svg+=`<text x="${mx+dx/len*off}" y="${my+dy/len*off}" text-anchor="middle" dominant-baseline="central" fill="${isCurrent?'#ffd166':'#c77dff'}" font-size="10" font-weight="700" font-family="ui-monospace,monospace">${d}</text>`;
+  }
+
+  // Tour edges + weight labels
+  for(let [a,b,cur] of tourEdges){
+    let col=cur?'rgba(255,209,102,0.9)':'rgba(100,240,200,0.55)';
+    svg+=`<line x1="${s.nodes[a].x}" y1="${s.nodes[a].y}" x2="${s.nodes[b].x}" y2="${s.nodes[b].y}" stroke="${col}" stroke-width="${cur?3:2.5}" stroke-dasharray="${s.phase==='done'?'':'6 3'}"/>`;
+    let mx=(s.nodes[a].x+s.nodes[b].x)/2, my=(s.nodes[a].y+s.nodes[b].y)/2;
+    let d=dist(s.nodes[a],s.nodes[b]).toFixed(0);
+    let dx=s.nodes[b].y-s.nodes[a].y, dy=s.nodes[a].x-s.nodes[b].x;
+    let len=Math.sqrt(dx*dx+dy*dy)||1;
+    let off=-12;
+    svg+=`<text x="${mx+dx/len*off}" y="${my+dy/len*off}" text-anchor="middle" dominant-baseline="central" fill="${cur?'#ffd166':'rgba(100,240,200,0.8)'}" font-size="10" font-weight="700" font-family="ui-monospace,monospace">${d}</text>`;
+  }
+
+  // Nodes
+  for(let nd of s.nodes){
+    let fill='rgba(106,169,255,0.20)';let stroke='rgba(106,169,255,0.4)';let tc='#6aa9ff';
+    if(s.tourOrder&&s.tourOrder.includes(nd.id)){fill='rgba(100,240,200,0.20)';stroke='rgba(100,240,200,0.5)';tc='#64f0c8';}
+    svg+=`<circle cx="${nd.x}" cy="${nd.y}" r="20" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+    svg+=`<text x="${nd.x}" y="${nd.y+5}" text-anchor="middle" fill="${tc}" font-size="14" font-weight="700" font-family="ui-monospace,monospace">${nd.l}</text>`;
+    // DFS order number
+    if(s.tourOrder&&s.tourOrder.length>0){
+      let idx=s.tourOrder.indexOf(nd.id);
+      if(idx>=0) svg+=`<text x="${nd.x+18}" y="${nd.y-14}" text-anchor="middle" fill="#ffd166" font-size="10" font-weight="700">${idx+1}</text>`;
+    }
+  }
+
+  svg+=`</svg>`;
+  html+=svg+`</div>`;
+  $('vizArea').innerHTML=html;
+
+  if(s.phase==='done'){
+    let mstCost=s.mstEdges.reduce((sum,e)=>sum+dist(s.nodes[e[0]],s.nodes[e[1]]),0);
+    let tourCost=0;
+    for(let i=0;i<s.finalTour.length-1;i++) tourCost+=dist(s.nodes[s.finalTour[i]],s.nodes[s.finalTour[i+1]]);
+    $('resultBar').className='result-bar show good';
+    $('resultBar').innerHTML=`<b style="color:#64f0c8;">Result:</b> Tour cost = ${tourCost.toFixed(1)}. MST cost = ${mstCost.toFixed(1)}. <b>Ratio = ${(tourCost/mstCost).toFixed(2)} ≤ 2.0</b>. Tour: ${s.finalTour.map(i=>s.nodes[i].l).join(' → ')}.`;
+  } else {
+    $('resultBar').className='result-bar';
+  }
+}
+
+function renderSC(step){
+  let s=step;
+  let html=`<div class="graph-wrap"><div class="strip-label">Universe — ${s.covered.size}/${s.universe.size} covered</div>`;
+  html+=`<div class="universe-bar">`;
+  for(let e of s.universe){
+    let cls='u-uncovered';
+    if(s.newlyCovered&&s.newlyCovered.has(e)) cls='u-new';
+    else if(s.covered.has(e)) cls='u-covered';
+    html+=`<div class="u-el ${cls}">${e}</div>`;
+  }
+  html+=`</div>`;
+
+  html+=`<div style="margin-top:10px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">Sets</div>`;
+  html+=`<div class="sc-sets">`;
+  for(let i=0;i<s.sets.length;i++){
+    let cls='sc-available';
+    if(s.chosen.includes(i)) cls='sc-picked';
+    else if(s.currentSet===i) cls='sc-current';
+    html+=`<div class="sc-set ${cls}"><div class="sc-set-name">${s.sets[i].name}${s.chosen.includes(i)?' ✓':''}</div><div class="sc-elements">`;
+    for(let e of s.sets[i].elems){
+      let ecls='uncovered';
+      if(s.newlyCovered&&s.newlyCovered.has(e)&&s.currentSet===i) ecls='newly';
+      else if(s.covered.has(e)) ecls='covered';
+      html+=`<div class="sc-el ${ecls}">${e}</div>`;
+    }
+    html+=`</div></div>`;
+  }
+  html+=`</div></div>`;
+  $('vizArea').innerHTML=html;
+
+  if(s.phase==='done'){
+    let p=currentPreset;
+    $('resultBar').className='result-bar show good';
+    $('resultBar').innerHTML=`<b style="color:#64f0c8;">Result:</b> Greedy used ${s.chosen.length} set(s): ${s.chosen.map(i=>s.sets[i].name).join(', ')}. Optimal: ${p.optimal} set(s) (${p.optSets}). <b>Ratio = ${(s.chosen.length/p.optimal).toFixed(2)}</b>. Guaranteed ≤ H(${Math.max(...s.sets.map(s=>s.elems.size))}) ≈ ${(1+Math.log(Math.max(...s.sets.map(s=>s.elems.size)))).toFixed(2)}.`;
+  } else {
+    $('resultBar').className='result-bar';
+  }
+}
+
+function renderStep(idx){
+  if(idx<0||idx>=steps.length)return;
+  let step=steps[idx];
+  let algo=$('algo').value;
+
+  let pb=$('phaseBar');pb.className='phase-bar';
+  if(step.phase==='done'){pb.classList.add('phase-done');$('phaseTitle').textContent='Complete';}
+  else if(algo==='vc'){pb.classList.add('phase-vc');$('phaseTitle').textContent=step.phase==='pick_edge'?'Picking Edge':step.phase==='add_vertices'?'Adding to Cover':'Vertex Cover';}
+  else if(algo==='tsp'){pb.classList.add('phase-tsp');$('phaseTitle').textContent=step.phase.startsWith('mst')?'Building MST':step.phase==='dfs'?'DFS Walk':'Building Tour';}
+  else if(algo==='sc'){pb.classList.add('phase-sc');$('phaseTitle').textContent=step.phase==='evaluate'?'Evaluating Sets':step.phase==='pick'?'Picking Best Set':'Set Cover';}
+  let explainHtml=(step.explain||'').replace(/\n/g,'<br>');
+  $('phaseNote').innerHTML=explainHtml;
+
+  renderPseudocode(algo,step.codeLine);
+  if(algo==='vc') renderVC(step);
+  else if(algo==='tsp') renderTSP(step);
+  else if(algo==='sc') renderSC(step);
+
+  $('codeHelp').innerHTML=`<b>Step ${idx+1}/${steps.length}:</b><br>${explainHtml}`;
+  $('codeHelp').classList.add('highlight-explain');
+  setTimeout(()=>$('codeHelp').classList.remove('highlight-explain'),400);
+  $('stepCount').textContent=`${idx+1} / ${steps.length}`;
+  $('status').textContent=step.phase==='done'?'Done':'Running';
+}
+
+// ========================================================================
+// CONTROLS
+// ========================================================================
+function doBuild(){
+  playing=false;stepIdx=-1;
+  let algo=$('algo').value;
+  if(!currentPreset){
+    if(algo==='vc') currentPreset=VC_PRESETS.path;
+    else if(algo==='tsp') currentPreset=TSP_PRESETS.square;
+    else currentPreset=SC_PRESETS.basic;
+  }
+  try{
+    if(algo==='vc') steps=buildVC();
+    else if(algo==='tsp') steps=buildTSP();
+    else if(algo==='sc') steps=buildSC();
+  }catch(e){$('codeHelp').innerHTML=`<b style="color:#ff5c7a;">Error:</b> ${e.message}`;steps=[];return;}
+  $('stepCount').textContent=`0 / ${steps.length}`;
+  $('status').textContent='Ready';
+  $('vizArea').innerHTML='';
+  $('resultBar').className='result-bar';
+  renderPseudocode(algo,-1);
+  $('phaseTitle').textContent='Ready';
+  $('phaseNote').textContent=`${steps.length} steps built. Click Step or Play.`;
+  $('phaseBar').className='phase-bar';
+}
+
+function doStep(){
+  if(!steps.length){doBuild();if(!steps.length)return;}
+  if(stepIdx<steps.length-1){stepIdx++;renderStep(stepIdx);}
+}
+
+async function doPlay(){
+  if(!steps.length)doBuild();if(!steps.length)return;
+  playing=true;
+  while(playing&&stepIdx<steps.length-1){stepIdx++;renderStep(stepIdx);await sleep(700/speedVal);}
+  playing=false;
+}
+
+function doPause(){playing=false;}
+function doReset(){
+  playing=false;stepIdx=-1;steps=[];
+  $('stepCount').textContent='0 / 0';$('status').textContent='Idle';
+  $('vizArea').innerHTML='';$('resultBar').className='result-bar';
+  let algo=$('algo').value;renderPseudocode(algo,-1);
+  $('phaseTitle').textContent='Approximation Algorithms';
+  $('phaseNote').textContent='Click Build Steps, then Step or Play.';
+  $('phaseBar').className='phase-bar';
+  $('codeHelp').innerHTML='<b>Step Explanation:</b> Click <b>Build Steps</b>, then <b>Step</b> or <b>Play</b>.';
+}
+
+function setupAlgo(){
+  let algo=$('algo').value;
+  let presets=algo==='vc'?VC_PRESETS:algo==='tsp'?TSP_PRESETS:SC_PRESETS;
+  let keys=Object.keys(presets);
+  currentPreset=presets[keys[0]];
+  let phtml='';
+  for(let k of keys){
+    phtml+=`<button class="preset-btn" data-key="${k}">${presets[k].label}</button>`;
+  }
+  $('presetRow').innerHTML=phtml;
+  $('algoOverview').innerHTML=OVERVIEWS[algo];
+  $('legendArea').innerHTML=LEGENDS[algo];
+  renderPseudocode(algo,-1);
+  doReset();
+
+  $('presetRow').querySelectorAll('.preset-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      currentPreset=presets[btn.dataset.key];
+      doReset();
+    });
+  });
+}
+
+$('algo').addEventListener('change',setupAlgo);
+$('build').addEventListener('click',doBuild);
+$('step').addEventListener('click',doStep);
+$('play').addEventListener('click',doPlay);
+$('pause').addEventListener('click',doPause);
+$('reset').addEventListener('click',doReset);
+$('speed').addEventListener('input',()=>{speedVal=parseFloat($('speed').value);$('speedLabel').textContent=speedVal.toFixed(2)+'x';});
+
+$('introToggleBtn').addEventListener('click',()=>{
+  let b=$('introBody'),t=$('introToggleText');
+  if(b.classList.contains('collapsed')){b.classList.remove('collapsed');t.textContent='Collapse';}
+  else{b.classList.add('collapsed');t.textContent='Expand';}
+});
+
+$('appendixToggleBtn').addEventListener('click',()=>{
+  let b=$('appendixBody'),t=$('appendixToggleText');
+  if(b.classList.contains('collapsed')){b.classList.remove('collapsed');t.textContent='Collapse';}
+  else{b.classList.add('collapsed');t.textContent='Expand';}
+});
+
+setupAlgo();
+
+// ════════════════════════════════════════════════════════════════
+// PRESENTATION MODE — ?module=<id> isolates + zooms one concept
+// ════════════════════════════════════════════════════════════════
+(function initPresMode(){
+  const moduleId = new URLSearchParams(window.location.search).get('module');
+  if (!moduleId) return;
+  document.body.classList.add('pres-mode');
+
+  const DEMOS = {
+    demo_vc_path:{algo:'vc',preset:'path'},demo_vc_star:{algo:'vc',preset:'star'},
+    demo_vc_house:{algo:'vc',preset:'triangle_sq'},demo_vc_dense:{algo:'vc',preset:'petersen'},
+    demo_tsp_square:{algo:'tsp',preset:'square'},demo_tsp_pentagon:{algo:'tsp',preset:'five'},
+    demo_tsp_six:{algo:'tsp',preset:'six'},demo_tsp_cluster:{algo:'tsp',preset:'cluster'},
+    demo_sc_basic:{algo:'sc',preset:'basic'},demo_sc_medium:{algo:'sc',preset:'medium'},
+    demo_sc_greedy_wins:{algo:'sc',preset:'greedy_wins'},demo_sc_suboptimal:{algo:'sc',preset:'worst'},
+  };
+  const demo = DEMOS[moduleId];
+  if (demo) {
+    const wrap = document.querySelector('.wrap');
+    if (wrap) wrap.classList.add('active-mod');
+    for (const child of document.body.children)
+      if (child !== wrap && !child.id?.startsWith('_lecture')) child.classList.add('pres-hidden');
+    const sel = $('algo');
+    if (sel) { sel.value = demo.algo; sel.dispatchEvent(new Event('change',{bubbles:true})); }
+    setTimeout(() => { const btn = document.querySelector(`.preset-btn[data-key="${demo.preset}"]`); if (btn) btn.click(); }, 150);
+    return;
+  }
+
+  const target = document.querySelector(`[data-module="${moduleId}"]`);
+  if (!target) return;
+  target.classList.add('active-mod');
+  let el = target.parentElement;
+  while (el && el !== document.body) {
+    el.classList.add('pres-ancestor');
+    for (const sib of el.parentElement.children)
+      if (sib !== el && !sib.id?.startsWith('_lecture')) sib.classList.add('pres-hidden');
+    el = el.parentElement;
+  }
+  for (const child of document.body.children)
+    if (!child.classList.contains('pres-ancestor') && !child.classList.contains('active-mod') && !child.id?.startsWith('_lecture'))
+      child.classList.add('pres-hidden');
+  for (const sib of target.parentElement.children)
+    if (sib !== target && !sib.id?.startsWith('_lecture')) sib.classList.add('pres-hidden');
+
+  target.style.fontSize='24px'; target.style.lineHeight='1.75';
+  target.style.maxWidth='1600px'; target.style.padding='40px 100px';
+  target.querySelectorAll('h3').forEach(h=>{h.style.fontSize='32px';h.style.marginBottom='16px';});
+  target.querySelectorAll('p').forEach(p=>{p.style.fontSize='24px';p.style.marginBottom='14px';});
+  target.querySelectorAll('.code-block').forEach(cb=>{cb.style.fontSize='21px';cb.style.padding='20px 24px';cb.style.lineHeight='1.8';});
+  target.querySelectorAll('.key-concept,.example-box,.warning-box').forEach(box=>{box.style.fontSize='24px';box.style.padding='28px 34px';box.style.lineHeight='1.75';box.style.borderRadius='20px';});
+  target.querySelectorAll('.kc-title,.eb-title,.wb-title').forEach(t=>{t.style.fontSize='26px';t.style.marginBottom='12px';});
+  target.querySelectorAll('.math-inline').forEach(m=>{m.style.fontSize='26px';m.style.padding='3px 10px';});
+  target.querySelectorAll('.mini-table').forEach(t=>{t.style.fontSize='20px';});
+  target.querySelectorAll('.mini-table th').forEach(th=>{th.style.fontSize='18px';th.style.padding='12px 16px';});
+  target.querySelectorAll('.mini-table td').forEach(td=>{td.style.padding='12px 16px';td.style.fontSize='20px';});
+  target.querySelectorAll('h3 span').forEach(s=>{s.style.width='36px';s.style.height='36px';s.style.fontSize='18px';});
+})();
+})();
+</script>
+</body>
+</html>

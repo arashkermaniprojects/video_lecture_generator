@@ -1,0 +1,98 @@
+================================================================================
+  ACT 4: KL DIVERGENCE TAB (15 minutes)
+  Tab: KL Divergence (fourth tab)
+================================================================================
+
+
+COMPONENTS — LEFT PANEL
+-----------------------
+  1. Reference distribution display (pi_ref)
+     Bar chart: 10 blue bars, one per token ("the", "a", "is", "of", "in",
+     "to", "and", "it", "for", "on"). Heights are fixed — the frozen SFT
+     model's next-token probability distribution.
+
+  2. Policy distribution (pi) — DRAGGABLE BARS
+     Same 10 tokens, purple bars. Drag up/down to change heights. Auto-
+     normalises after each drag (probabilities always sum to 1).
+     THIS IS THE CORE INTERACTION — physically reshaping the distribution
+     builds visceral intuition for what KL measures.
+
+  3. Stat pills (KL value, beta*KL penalty, beta)
+     Updated in real time as bars are dragged.
+
+  4. Beta slider for KL penalty
+     Range: 0.00 to 1.00. Default: 0.20.
+     Shows how the same KL divergence translates to different penalties.
+
+  5. "Reset to Reference" button — sets policy = reference, KL = 0.
+
+
+COMPONENTS — RIGHT PANEL
+-------------------------
+  6. Colour legend — pi_ref reference (blue), pi policy (purple), KL
+     contribution per token (yellow).
+
+  7. "Overlay: Reference vs Policy Distributions" grouped bar chart (SVG)
+     For each token: blue bar (reference) next to purple bar (policy), with
+     numeric values above each. Side-by-side visual comparison.
+
+  8. "Per-Token KL Contribution" bar chart (SVG)
+     Shows pi(x) * log(pi(x)/pi_ref(x)) for each token as a yellow bar.
+     Values labelled above. Decomposes total KL into per-token contributions.
+
+  9. "How KL Divergence Works" phase bar (purple border)
+     Static explanation: KL >= 0, equals 0 only when distributions identical,
+     measures asymmetric distance.
+
+
+TEACHING STEPS
+--------------
+1. Point to the reference distribution (component 1): "These blue bars
+   represent the SFT model's probability distribution over the next token.
+   This is the 'safe' starting point."
+
+2. Point to the policy distribution (component 2): "These purple bars are the
+   current policy. Right now they match the reference exactly, so KL = 0."
+   Point to stat pills showing KL = 0.000.
+
+3. Point to the overlay chart (component 7): "Blue and purple bars are
+   identical right now."
+
+4. DEMONSTRATION 1 — Mild shift:
+   Drag the "the" bar up slightly (from ~0.18 to ~0.25).
+   - "I just increased the probability of 'the'. Watch:"
+   - Point to KL value: "KL went from 0 to about [value]."
+   - Point to overlay chart: "Purple bar for 'the' is now taller."
+   - Point to contribution chart (component 8): "'the' has the largest
+   KL contribution because it changed the most."
+
+5. DEMONSTRATION 2 — Extreme shift:
+   Drag "the" bar way up (~0.45), making it dominate.
+   - "The policy is almost deterministic — 'the' nearly half the time."
+   - "KL has jumped to [value]. This would be a huge penalty."
+   - "Nearly all the KL comes from 'the'."
+
+6. Click "Reset to Reference". KL returns to 0.
+
+7. DEMONSTRATION 3 — Uniform shift:
+   Drag all bars to roughly equal heights (~0.10 each).
+   - "Every token is equally likely now."
+   - "KL = [value]. Even though no single token dominates, the overall
+   distribution is very different from the reference."
+   - This shows KL captures distributional difference, not just individual
+   token changes.
+
+8. Click "Reset to Reference".
+
+9. DEMONSTRATION 4 — Beta scaling:
+   Drag one bar slightly (small KL ~0.02). Then adjust beta slider:
+   - beta=0.05: "Low beta, penalty is just [value]. Barely noticeable."
+   - beta=0.50: "Same KL, but now costs [value]. Significant."
+   - beta=1.00: "Extreme beta, this tiny shift costs [value] in penalty."
+   "This is why beta matters — it amplifies or dampens the same divergence."
+
+10. Read the phase bar (component 9) to formally define KL properties.
+
+>> Transition: Click the "DPO vs RLHF" tab. Load 06_module_dpo_vs_rlhf.txt.
+
+================================================================================

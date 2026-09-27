@@ -1,0 +1,94 @@
+================================================================================
+  ACT 2: REWARD MODEL TAB (15 minutes)
+  Tab: Reward Model (second tab)
+================================================================================
+
+
+COMPONENTS — LEFT PANEL
+-----------------------
+  1. Prompt dropdown selector
+     Options: "Explain quantum computing simply", "Write a poem about the
+     ocean", "How do I make pasta?", "What is machine learning?"
+     Selecting a prompt loads a new response pair.
+     Use: Switch prompts mid-demo to show the reward model must generalise.
+
+  2. Response cards (A and B)
+     Two clickable text blocks showing different model responses.
+     Clicking one: marks it as winner (green border), marks the other as loser
+     (red, faded), updates all stats and charts, advances to next pair.
+     THIS IS THE CORE INTERACTION — students experience human annotation.
+
+  3. Stat pills (appear after first comparison)
+     - Comparisons made: running count
+     - R(chosen): reward score for chosen response
+     - R(rejected): reward score for rejected response
+     - P(chosen wins): sigmoid(R_w - R_l)
+     - Loss: -log(probability)
+
+  4. "Reset Reward Model" button — clears history and charts.
+
+  5. "New Pair" button — loads next pair without resetting history.
+
+
+COMPONENTS — RIGHT PANEL
+-------------------------
+  6. Colour legend — Chosen reward (green), Rejected reward (red), Reward gap
+     (yellow).
+
+  7. "Reward Scores Over Comparisons" line chart (SVG)
+     X-axis: comparison number. Y-axis: reward score. Two lines (green =
+     chosen, red = rejected) with yellow-shaded gap between them.
+     Shows reward model learning to differentiate quality over time.
+
+  8. "Bradley-Terry Probability" bar
+     Horizontal split bar: green = P(chosen wins), red = P(rejected wins).
+     Percentages shown inside. Makes sigmoid probability tangible.
+
+  9. Phase bar — updates after each comparison with reward gap, probability,
+     and loss values.
+
+
+TEACHING STEPS
+--------------
+1. Briefly expand the theory section and point to the Bradley-Terry formulas.
+   Then collapse it again.
+
+2. Frame the activity: "You are now human annotators. I'll show you two
+   responses to a prompt, and you tell me which is better."
+
+3. Default prompt is "Explain quantum computing simply". Read both response
+   cards aloud. Ask the class: "Which is better, A or B? Raise hands."
+
+4. Click the winning response. Point out:
+   - Card colours change (green winner, red/faded loser).
+   - Stat pills appear. Read each value aloud:
+     "R(chosen) = [value], R(rejected) = [value]. Gap = [value]."
+     "P(chosen wins) = sigmoid(gap) = [value]%."
+     "Loss = -log(probability) = [value]."
+   - Line chart now has one data point per line.
+   - BT probability bar shows the split.
+
+5. Click "New Pair" to load the next pair. Read both, vote, click. Now the
+   chart has two points — note the growing gap.
+
+6. Switch prompt to "Write a poem about the ocean" using the dropdown. Repeat
+   the comparison exercise with 1-2 pairs. This shows cross-task generalisation.
+
+7. Switch to "How do I make pasta?" for one more pair. By now the chart should
+   show 4-5 data points with clear divergence.
+
+8. Point to the yellow shaded gap on the chart: "This growing gap IS the reward
+   model learning. As it sees more human preferences, it gets better at telling
+   good responses from bad ones."
+
+9. Point to the BT bar: "After just a few comparisons, it's already at [X]%
+   confidence."
+
+10. Read the phase bar aloud for the latest comparison.
+
+11. Click "Reset Reward Model". Say: "In practice, reward models are trained on
+    tens of thousands of comparisons, not just 5. But the principle is identical."
+
+>> Transition: Click the "PPO" tab. Load 04_module_ppo.txt.
+
+================================================================================

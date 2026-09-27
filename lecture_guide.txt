@@ -1,0 +1,845 @@
+================================================================================
+  RLHF INTERACTIVE LECTURE — TEACHING SCENARIO & AI AGENT PROMPT
+  Tool file: rlhf_interactive.html
+================================================================================
+
+
+================================================================================
+SECTION A — PROMPT FOR THE AI LECTURE AGENT
+================================================================================
+
+You are an AI teaching assistant delivering a 75-minute interactive lecture on
+Reinforcement Learning from Human Feedback (RLHF) for a graduate-level NLP
+course. You have access to a single-page interactive HTML tool
+(rlhf_interactive.html) that contains a collapsible theory section and five
+tabbed interactive modules.
+
+Your job is to guide students through every part of this tool in a structured,
+progressive way. Follow the teaching scenario below exactly. For each section,
+the scenario tells you:
+  - WHAT to show on screen (which tab, which element to click, which slider
+    to adjust)
+  - WHAT to say (the pedagogical point to make)
+  - WHEN to pause for student interaction or questions
+  - WHAT to demonstrate live (specific slider values, button clicks, sequences)
+
+Assume students have basic knowledge of neural networks and language models but
+have never encountered RLHF, reward models, PPO, KL divergence in the context
+of LLM alignment, or DPO.
+
+The lecture follows five acts that mirror the five tabs of the tool, preceded by
+a theory introduction. Every interactive element in the tool must be used at
+least once. The scenario specifies exact demonstrations with concrete parameter
+values so the lecture is reproducible.
+
+
+================================================================================
+SECTION B — COMPLETE TOOL COMPONENT REFERENCE
+================================================================================
+
+Before following the scenario, understand every component available to you.
+
+--- B.1  COLLAPSIBLE THEORY SECTION -------------------------------------------
+
+Location: Top of the page, above the main interactive area.
+Trigger:  Click the "Theory & Background" header or the "Collapse/Expand" button.
+
+Static sub-components inside the theory section:
+
+  B.1.1  "What is RLHF?" paragraph
+         Content: Defines RLHF as a technique for aligning LLM outputs with
+         human preferences by maximising a learned reward signal instead of
+         raw likelihood.
+         Purpose: Frame the entire lecture. Read or paraphrase this first.
+
+  B.1.2  "Core Idea" key-concept box (green border)
+         Content: Shows two objective functions side by side:
+           - Traditional:  max log P(token | context)
+           - RLHF:         max E[R(response)] - beta * KL(pi || pi_ref)
+         Purpose: Give students the single most important equation of the
+         lecture upfront. Return to this box multiple times as you explain
+         each term (R, beta, KL, pi, pi_ref) through the interactive modules.
+
+  B.1.3  "The Three Stages of RLHF" paragraphs
+         Content: Three numbered descriptions — SFT, Reward Model, PPO.
+         Purpose: Establish the three-stage mental model before the Pipeline
+         tab provides the visual. Students should hear the stages described
+         textually first, then see them drawn.
+
+  B.1.4  "Why Not Just Use More Supervised Data?" example box (blue border)
+         Content: Explains that comparisons are easier for humans than writing
+         perfect outputs.
+         Purpose: Motivate why RLHF exists. This is the key "aha" moment for
+         students who wonder why we don't just collect more labelled data.
+
+  B.1.5  "The Reward Model (Bradley-Terry)" subsection
+         Content: The Bradley-Terry probability formula and the training loss.
+           P(y1 > y2) = sigmoid(R(x,y1) - R(x,y2))
+           L = -E[ log sigmoid(R(x, y_w) - R(x, y_l)) ]
+         Purpose: Mathematical foundation for Module 1 (Reward Model tab).
+         Show these formulas before switching to the interactive demo.
+
+  B.1.6  "KL Divergence & Reward Hacking" subsection
+         Content: Explains why unconstrained optimisation fails and how KL
+         penalty prevents reward hacking.
+         Purpose: Sets up Modules 2 (PPO) and 3 (KL Divergence).
+
+  B.1.7  "Reward Hacking" warning box (red border)
+         Content: Warns that beta too small leads to hacking, beta too large
+         leads to no improvement.
+         Purpose: Creates the tension that the PPO module will let students
+         explore hands-on. Emphasise this — it will be the central experiment
+         in the PPO tab.
+
+  B.1.8  "DPO: A Simpler Alternative" subsection
+         Content: The DPO loss formula and a brief comparison.
+         Purpose: Preview for Module 4 (DPO vs RLHF). Don't dwell here —
+         the tab will make it concrete.
+
+  B.1.9  "RLHF vs DPO at a Glance" key-concept box (green border)
+         Content: One-line summaries of both pipelines.
+         Purpose: Quick reference. Return to this after the DPO tab demo.
+
+
+--- B.2  TAB BAR --------------------------------------------------------------
+
+Location: Top of the left control panel.
+Tabs:     Pipeline | Reward Model | PPO | KL Divergence | DPO vs RLHF
+Behaviour: Clicking a tab switches both the left control panel and the right
+           visualisation panel simultaneously. The tab bar is always visible.
+
+
+--- B.3  MODULE 0 — PIPELINE TAB ----------------------------------------------
+
+Left panel components:
+
+  B.3.1  Phase bar (labelled "RLHF Pipeline Overview")
+         A status/description box that updates when a pipeline stage is
+         clicked. Shows stage name and a paragraph-length explanation.
+         Purpose: Provides textual context for whichever stage the instructor
+         has selected. Use this as your speaking notes — read or paraphrase
+         the text that appears here for each stage.
+
+  B.3.2  Stat pills (Stage, Input, Output, Data Needed, Method)
+         Five pill-shaped readouts. Update dynamically when a stage is clicked.
+         Purpose: Quick-reference summary. Point these out as a structured
+         recap after explaining each stage's diagram.
+
+Right panel components:
+
+  B.3.3  Colour legend
+         Three coloured dots: SFT (blue), Reward Model (yellow), PPO (green).
+         Purpose: Orients students to the colour-coding used in all diagrams.
+
+  B.3.4  Pipeline grid — three clickable stage nodes
+         Three cards arranged horizontally with arrow separators:
+           - Stage 1: SFT (blue border, tag "Pre-trained LLM -> SFT Model")
+           - Stage 2: Reward Model (yellow, tag "Preferences -> R(x,y)")
+           - Stage 3: PPO (green, tag "SFT + R -> Aligned Model")
+         Clicking a node: updates the phase bar (B.3.1), stat pills (B.3.2),
+         highlights the clicked node (thicker border, slight scale), and
+         replaces the SVG diagram below.
+         Purpose: Primary navigation for this module. Click each one in order
+         during the lecture.
+
+  B.3.5  SVG pipeline overview diagram
+         Default state: Shows all five boxes (Pre-trained LLM -> SFT Model ->
+         Reward Model -> PPO Optimisation -> Aligned Model) connected by
+         dashed arrows, with data annotations above ("Demo data", "Human prefs",
+         "Prompts + R(x,y)") and loss formulas below each stage.
+         Purpose: The "big picture" diagram. Show this first, then drill into
+         each stage.
+
+  B.3.6  SVG stage detail diagrams (three variants)
+         Triggered by clicking a pipeline node. Each replaces the overview SVG.
+
+         Stage 1 (SFT) diagram:
+           Shows: Prompt x -> LLM -> Predicted y-hat, compared against Ground
+           Truth y via Cross-Entropy loss, with a backpropagation gradient arrow.
+           Purpose: Illustrate standard supervised fine-tuning visually.
+
+         Stage 2 (Reward Model) diagram:
+           Shows: Response A (winner, green) and Response B (loser, red) both
+           fed into Reward Model, producing scalar scores (R=2.3, R=0.8),
+           combined in the Bradley-Terry loss.
+           Purpose: Make the pairwise comparison pipeline concrete. Point out
+           that the model outputs a single number per response.
+
+         Stage 3 (PPO) diagram:
+           Shows: Prompt x -> Policy pi -> Reward R, with a separate pi_ref
+           (frozen) feeding into a KL Penalty box, both feeding into the
+           Objective (R - beta*KL), with a gradient update loop arrow back to
+           the policy.
+           Purpose: Show the full PPO loop including the frozen reference model.
+           Emphasise the feedback loop (arrow from Objective back to Policy).
+
+
+--- B.4  MODULE 1 — REWARD MODEL TAB ------------------------------------------
+
+Left panel components:
+
+  B.4.1  Prompt dropdown selector
+         Options: "Explain quantum computing simply", "Write a poem about the
+         ocean", "How do I make pasta?", "What is machine learning?"
+         Behaviour: Selecting a prompt loads a new pair of responses and resets
+         the current pair index.
+         Purpose: Show that the reward model must work across diverse prompts.
+         Switch prompts mid-demo to show generality.
+
+  B.4.2  Response cards (A and B)
+         Two clickable text blocks showing different model responses to the
+         selected prompt. Labelled "Response A" and "Response B".
+         Clicking one: marks it as the winner (green border, "selected-win"),
+         marks the other as loser (red border, faded, "selected-lose"),
+         updates all stats, updates the chart, and advances to the next pair.
+         Purpose: THIS IS THE CORE INTERACTION. Students experience what a
+         human annotator does. Let individual students or the whole class vote
+         on which response is better. This directly builds intuition for how
+         preference data is collected.
+
+  B.4.3  Stat pills (shown after first comparison)
+         - Comparisons made: running count
+         - R(chosen): reward score assigned to the chosen response
+         - R(rejected): reward score assigned to the rejected response
+         - P(chosen wins): Bradley-Terry probability = sigmoid(R_w - R_l)
+         - Loss: negative log of the BT probability
+         Purpose: After each click, walk through these numbers. Point out
+         how the reward gap maps to a probability via sigmoid, and how the
+         loss decreases as the gap widens.
+
+  B.4.4  "Reset Reward Model" button
+         Clears all comparison history, resets charts.
+         Purpose: Use before switching demo scenarios or starting fresh.
+
+  B.4.5  "New Pair" button
+         Loads the next pair of responses for the current prompt without
+         resetting history.
+         Purpose: Continue collecting preferences across multiple pairs.
+
+Right panel components:
+
+  B.4.6  Colour legend
+         Three dots: Chosen reward (green), Rejected reward (red),
+         Reward gap (yellow).
+
+  B.4.7  "Reward Scores Over Comparisons" line chart (SVG)
+         X-axis: comparison number. Y-axis: reward score.
+         Two lines: green (chosen) and red (rejected), with yellow-shaded
+         area between them showing the gap.
+         Dots mark each data point.
+         Purpose: Visualise how the reward model's scores evolve as more
+         preferences are provided. The gap should widen over time, showing
+         the model learning to differentiate quality.
+
+  B.4.8  "Bradley-Terry Probability" bar
+         A horizontal split bar: green portion = P(chosen wins), red portion
+         = P(rejected wins). Percentages shown inside.
+         Purpose: Makes the sigmoid probability tangible. After a few
+         comparisons, students see the green bar dominate, showing increasing
+         confidence.
+
+  B.4.9  Phase bar (bottom of right panel)
+         Updates after each comparison with a contextual message including
+         the reward gap, probability, and loss values.
+         Purpose: Provides a running narration. Read this aloud to summarise
+         each comparison result.
+
+
+--- B.5  MODULE 2 — PPO TAB ---------------------------------------------------
+
+Left panel components:
+
+  B.5.1  Beta slider (KL Penalty Coefficient)
+         Range: 0.00 to 1.00. Default: 0.20.
+         Live readout shown next to the label.
+         Purpose: THE most important parameter. This is what students will
+         experiment with to understand the reward-vs-KL trade-off.
+
+  B.5.2  Learning Rate slider
+         Range: 0.001 to 0.050. Default: 0.010.
+         Purpose: Controls how fast the policy updates. Higher values lead
+         to faster reward increase but also faster KL growth.
+
+  B.5.3  Training Steps slider
+         Range: 10 to 200. Default: 50.
+         Purpose: Controls how long the PPO training runs.
+
+  B.5.4  "Run PPO" button
+         Starts an animated simulation that runs from step 0 to the selected
+         number of steps, updating charts and stats at ~60ms intervals.
+         Purpose: The primary demo action. Click this and watch the training
+         unfold in real time.
+
+  B.5.5  "Step" button
+         Advances the simulation by exactly one step.
+         Purpose: Use for slow, deliberate walk-throughs. Click Step
+         repeatedly while explaining what happens at each iteration.
+
+  B.5.6  "Reset" button (red)
+         Clears all training history and charts.
+         Purpose: Reset between experiments with different parameters.
+
+  B.5.7  Stat pills (Step, Reward, KL Penalty, Net Objective)
+         Updated live during training.
+         Purpose: Track the numerical values. Point out how Net Objective =
+         Reward - beta * KL.
+
+  B.5.8  Phase bar
+         Changes colour and message based on training state:
+           - Blue "Waiting": before training starts
+           - Yellow "Optimising...": during normal training
+           - Red "High KL Penalty": when KL penalty exceeds 50% of reward
+           - Green "Good Progress": when net objective is high
+           - Green "Training Complete": when all steps finish
+         Purpose: Gives qualitative feedback. Use the colour changes as
+         teaching moments — "Look, the bar just turned red, what happened?"
+
+Right panel components:
+
+  B.5.9  "Training Dynamics" line chart (SVG)
+         Three lines plotted over training steps:
+           - Blue: Reward (increasing, with diminishing returns)
+           - Red: Negative KL penalty (decreasing, growing magnitude)
+           - Green: Net Objective = Reward - beta*KL
+         Each line ends with a dot and numeric label showing current value.
+         Zero line shown as dashed horizontal.
+         Purpose: THE central visualisation. Shows how reward and KL evolve
+         over training, and how the net objective balances them.
+
+  B.5.10 "Reward vs KL Trade-off Frontier" scatter plot (SVG)
+         X-axis: KL Divergence. Y-axis: Reward.
+         Each training step plotted as a purple dot (opacity increases with
+         step). Connected by a faint line. Current position highlighted with
+         a larger white-bordered dot.
+         "Ideal: High reward, low KL" label in top-left corner.
+         Purpose: Shows the Pareto-like frontier. Students see that as
+         training progresses, the policy moves right (higher KL) and up
+         (higher reward). Ideal point is top-left. Different beta values
+         trace different curves.
+
+
+--- B.6  MODULE 3 — KL DIVERGENCE TAB -----------------------------------------
+
+Left panel components:
+
+  B.6.1  Reference distribution display (pi_ref)
+         A bar chart showing 10 bars (one per token: "the", "a", "is", "of",
+         "in", "to", "and", "it", "for", "on"). Heights are fixed and
+         represent the SFT model's token probabilities.
+         Purpose: The fixed baseline. Explain that this is the frozen SFT
+         model's output distribution over the next token.
+
+  B.6.2  Policy distribution (pi) — DRAGGABLE BARS
+         Same 10 tokens as above, but the purple bars can be dragged up/down
+         to change their height. The distribution auto-normalises after each
+         drag so probabilities always sum to 1.
+         Purpose: THIS IS THE CORE INTERACTION. Students (or the instructor)
+         physically reshape the policy distribution and instantly see the
+         effect on KL divergence. This builds visceral intuition for what KL
+         measures.
+
+  B.6.3  Stat pills (KL value, beta*KL penalty, beta)
+         Updated in real time as bars are dragged.
+         Purpose: Show exact numeric impact of distribution changes.
+
+  B.6.4  Beta slider for KL penalty
+         Range: 0.00 to 1.00. Default: 0.20.
+         Purpose: Show how the same KL divergence translates to different
+         penalty magnitudes under different beta values.
+
+  B.6.5  "Reset to Reference" button
+         Resets the policy distribution to match the reference exactly.
+         Purpose: Return to KL=0 baseline. Use this between demonstrations.
+
+Right panel components:
+
+  B.6.6  "Overlay: Reference vs Policy Distributions" grouped bar chart (SVG)
+         For each of the 10 tokens, shows a blue bar (reference) next to a
+         purple bar (policy), with numeric values above each.
+         Purpose: Side-by-side visual comparison. Students see exactly where
+         the distributions differ.
+
+  B.6.7  "Per-Token KL Contribution" bar chart (SVG)
+         Shows p(x)*log(p(x)/q(x)) for each token as a yellow bar (positive)
+         or green bar (negative, though KL contributions are always >= 0).
+         Values labelled above each bar.
+         Purpose: Decomposes KL divergence into per-token contributions.
+         Shows that tokens where the policy differs most from the reference
+         contribute most to the total KL.
+
+  B.6.8  "How KL Divergence Works" phase bar (purple border)
+         Static explanation: KL >= 0, equals 0 only when identical, measures
+         asymmetric distance.
+         Purpose: Quick reference text. Point to this when defining KL.
+
+
+--- B.7  MODULE 4 — DPO vs RLHF TAB ------------------------------------------
+
+Left panel components:
+
+  B.7.1  RLHF summary phase bar (blue border)
+         Static text: "Three separate stages: SFT -> train reward model ->
+         PPO optimisation."
+         Purpose: Quick recap of what students already learned.
+
+  B.7.2  DPO summary phase bar (green border)
+         Static text: "Two stages: SFT -> direct preference optimisation."
+         Purpose: Introduce the simpler pipeline.
+
+  B.7.3  "Implicit reward gap" slider
+         Range: 0.00 to 5.00. Default: 1.50.
+         This represents: log(pi(y_w|x)/pi_ref(y_w|x)) - log(pi(y_l|x)/pi_ref(y_l|x))
+         Purpose: Simulate the log-ratio difference between winning and
+         losing responses. Higher values = the policy strongly prefers the
+         winner over the loser relative to the reference.
+
+  B.7.4  Beta slider for DPO
+         Range: 0.01 to 0.50. Default: 0.10.
+         Purpose: Controls the temperature of the DPO loss. Higher beta
+         makes the loss more sensitive to the reward gap.
+
+  B.7.5  Stat pills (DPO Loss, P(preferred), Implicit R(y_w), Implicit R(y_l))
+         Updated live as sliders change.
+         Purpose: Show the DPO reparameterisation: R(x,y) = beta * log(pi/pi_ref).
+
+Right panel components:
+
+  B.7.6  "DPO Loss Landscape" chart (SVG)
+         Plots DPO loss as a function of the log-ratio gap for four different
+         beta values (0.05, 0.10, 0.20, 0.50) as coloured curves.
+         The curve matching the current beta is drawn thicker.
+         A purple dot with crosshair marks the current operating point.
+         A vertical dashed line marks the current gap value.
+         Purpose: Visualise how beta controls the shape of the loss function.
+         Students see that higher beta = steeper loss curve = stronger
+         gradient signal.
+
+  B.7.7  Comparison table (static)
+         Six rows comparing RLHF vs DPO across: Reward Model, RL Loop,
+         Training Stability, Flexibility, Compute Cost, Online Exploration.
+         Colour-coded tags (green = advantage, yellow = moderate, red = concern).
+         Purpose: Structured summary for exam/review. Walk through each row.
+
+  B.7.8  "Key Insight" phase bar (green border)
+         Explains that DPO's insight is the closed-form solution for the
+         optimal policy under the RLHF objective.
+         Purpose: The theoretical punchline. Connect this back to the Core
+         Idea box from the theory section.
+
+
+================================================================================
+SECTION C — TEACHING SCENARIO (75 MINUTES)
+================================================================================
+
+The lecture is structured into five acts, preceded by a prologue. Each act uses
+one tab of the tool. Transition between acts by clicking the appropriate tab.
+
+
+--- PROLOGUE: MOTIVATION (5 minutes) ------------------------------------------
+
+Slide state: Theory section EXPANDED. No tab visible yet (students see only
+the top of the page).
+
+1. Open the tool in a browser. The theory section is expanded by default.
+
+2. Read/paraphrase B.1.1 ("What is RLHF?"). Frame the problem:
+   "We trained a language model on internet text. It can predict the next token
+   well, but can it follow instructions helpfully? Can it refuse harmful
+   requests? Next-token prediction doesn't optimise for these things."
+
+3. Show B.1.2 (Core Idea box). Read both equations aloud. Say:
+   "Today we'll unpack every symbol in this equation. By the end of the
+   lecture, you'll understand what R, beta, KL, pi, and pi_ref are, and why
+   each one matters."
+
+4. Briefly mention B.1.4 ("Why Not Just Use More Supervised Data?"). Ask the
+   class: "Why is it hard to write the 'perfect' response to an open-ended
+   question?" Take 1-2 answers. Then read the example box.
+
+5. Tell students: "We'll now walk through the three-stage pipeline. I'll show
+   you each stage first as a diagram, then let you interact with it."
+
+6. Click the "Collapse" button to hide the theory section. This reveals the
+   main interactive area cleanly.
+
+
+--- ACT 1: THE PIPELINE (10 minutes) ------------------------------------------
+Tab: Pipeline
+
+1. Click the "Pipeline" tab (it should already be active by default).
+
+2. Point to the colour legend (B.3.3). Explain: "We use blue for SFT, yellow
+   for the reward model, and green for PPO. These colours are consistent
+   throughout the entire tool."
+
+3. Look at the pipeline overview SVG (B.3.5). Walk through the five boxes
+   left to right: Pre-trained LLM -> SFT Model -> Reward Model -> PPO ->
+   Aligned Model. Point out the data annotations above and the loss formulas
+   below.
+
+4. Click Stage 1 (SFT) node (B.3.4). The SVG updates to show the SFT detail
+   diagram (B.3.6). Walk through the diagram:
+   - "We have a prompt x on the left..."
+   - "It goes into the LLM which predicts token probabilities..."
+   - "The output is compared to a ground-truth expert response..."
+   - "Cross-entropy loss is computed, and gradients flow back."
+   Read the stat pills (B.3.2) aloud: Input = Pre-trained LLM, Output = SFT
+   Model, Data = Demonstration pairs, Method = Cross-entropy loss.
+
+5. Click Stage 2 (Reward Model) node. Walk through the diagram:
+   - "Two responses are generated for the same prompt..."
+   - "Both go into the reward model, which outputs scalar scores..."
+   - "The scores go into the Bradley-Terry loss..."
+   - "Notice R=2.3 for the winner and R=0.8 for the loser. The loss function
+   pushes these apart."
+   Read the updated stat pills.
+
+6. Click Stage 3 (PPO) node. Walk through the diagram:
+   - "A prompt is sampled. The policy generates a response..."
+   - "The reward model scores it..."
+   - "Meanwhile, a frozen copy of the SFT model (pi_ref) computes the KL
+   divergence..."
+   - "The objective combines reward minus beta*KL..."
+   - "The gradient loops back to update the policy. Notice pi_ref stays frozen."
+   Read the updated stat pills.
+
+7. Pause. Ask: "What would happen if we removed the KL penalty entirely?"
+   Let students speculate. Then say: "We'll answer this experimentally in a
+   few minutes."
+
+
+--- ACT 2: REWARD MODEL TRAINING (15 minutes) ---------------------------------
+Tab: Reward Model
+
+1. Click the "Reward Model" tab.
+
+2. Expand the theory section briefly and point to B.1.5 (Bradley-Terry
+   formulas). Then collapse it again.
+
+3. Explain: "You are now going to be human annotators. I'll show you two
+   responses to a prompt, and you tell me which is better."
+
+4. The default prompt is "Explain quantum computing simply" (B.4.1). Read the
+   two response cards (B.4.2) aloud. Ask the class: "Which response is better,
+   A or B? Raise hands." Count votes.
+
+5. Click the winning response. Point out:
+   - The card turns green (winner) and the other turns red/faded (loser).
+   - The stat pills (B.4.3) now appear. Read each value:
+     "R(chosen) = [value], R(rejected) = [value]. The gap is [value]."
+     "P(chosen wins) = sigmoid(gap) = [value]%."
+     "Loss = -log(probability) = [value]."
+   - The line chart (B.4.7) now has one data point for each line.
+   - The BT probability bar (B.4.8) shows the split.
+
+6. Click "New Pair" (B.4.5) to load the next response pair. Again, read both
+   responses, ask the class to vote, click their choice. Now the chart has
+   two data points — note how the gap is growing.
+
+7. Change the prompt to "Write a poem about the ocean" using the dropdown
+   (B.4.1). This shows the reward model must generalise across tasks. Repeat
+   the comparison exercise with 1-2 pairs.
+
+8. Change to "How do I make pasta?" for one more pair. By now the chart should
+   show 4-5 data points with a clear divergence between the green (chosen)
+   and red (rejected) lines.
+
+9. Point to the yellow shaded gap region on the chart (B.4.7). Say: "This
+   growing gap IS the reward model learning. As it sees more human preferences,
+   it gets better at telling good responses from bad ones."
+
+10. Point to the BT bar (B.4.8). "This bar shows how confident the model is
+    that your chosen response is better. After just a few comparisons, it's
+    already at [X]% confidence."
+
+11. Read the phase bar (B.4.9) aloud for the latest comparison.
+
+12. Click "Reset Reward Model" (B.4.4). The chart clears. Say: "In practice,
+    reward models are trained on tens of thousands of comparisons, not just 5.
+    But the principle is identical."
+
+
+--- ACT 3: PPO OPTIMISATION (20 minutes) --------------------------------------
+Tab: PPO
+
+This is the most interactive act. You will run multiple experiments.
+
+1. Click the "PPO" tab.
+
+2. Explain the controls:
+   - "Beta controls how much we penalise the policy for drifting from the SFT
+   baseline. Default is 0.20."
+   - "Learning rate controls step size. Default is 0.010."
+   - "Training steps controls how long we train. Default is 50."
+   - "We have three buttons: Run (animates the full training), Step (one step
+   at a time), and Reset (start over)."
+
+3. EXPERIMENT 1 — Baseline (beta=0.20, lr=0.010, steps=50):
+   Keep defaults. Click "Run PPO" (B.5.4). Narrate as the animation runs:
+   - "Watch the blue reward line climbing... it increases quickly at first
+   then levels off."
+   - "The red KL penalty line is dropping below zero — the penalty is growing."
+   - "The green net objective line shows the actual value being maximised.
+   It peaks and then starts to plateau."
+   Point to the frontier plot (B.5.10): "Each dot is a training step. We
+   started at the origin and moved right (more KL) and up (more reward).
+   The ideal spot is top-left — high reward, low KL."
+   Read final stats (B.5.7). Note the phase bar colour (B.5.8).
+
+4. Click "Reset" (B.5.6).
+
+5. EXPERIMENT 2 — No KL penalty (beta=0.00):
+   Set beta to 0.00 (B.5.1). Keep lr=0.010, steps=100.
+   Click "Run PPO". Narrate:
+   - "With no KL penalty, reward climbs unchecked..."
+   - "But look at the KL divergence on the frontier plot — it's exploding!
+   The policy is drifting wildly from the SFT model."
+   - "In practice, this is reward hacking. The model finds degenerate outputs
+   that score high on the reward model but are actually nonsensical."
+   This directly answers the question from Act 1.
+
+6. Click "Reset".
+
+7. EXPERIMENT 3 — Very high KL penalty (beta=0.80):
+   Set beta to 0.80 (B.5.1). Keep lr=0.010, steps=100.
+   Click "Run PPO". Narrate:
+   - "Now the KL penalty dominates. The red line drops steeply."
+   - "The net objective might even go negative — the penalty outweighs the
+   reward."
+   - "The frontier plot shows the policy barely moves from the origin.
+   It's too scared to deviate from the SFT baseline."
+   - "This is over-regularisation. The model barely improves."
+
+8. Click "Reset".
+
+9. EXPERIMENT 4 — Finding the sweet spot (beta=0.15, lr=0.020, steps=80):
+   Set these values. Click "Run PPO". Narrate:
+   - "With a moderate beta and slightly higher learning rate..."
+   - "The reward increases more aggressively early on..."
+   - "The net objective curve shows a clear peak before declining — that peak
+   is roughly where we'd want to stop training in practice."
+   Point to the frontier: "The trajectory curves — fast vertical movement
+   (reward gains) at first, then mostly horizontal (KL growth, diminishing
+   reward returns)."
+
+10. Use the "Step" button (B.5.5) for 3-4 manual steps. For each step, read
+    the stat pills aloud and point to the new dot on the frontier. This
+    slow-motion version helps students internalise the per-step dynamics.
+
+11. Summary: "The beta parameter is the single most important hyperparameter
+    in RLHF. Too low: reward hacking. Too high: no learning. The training
+    dynamics chart and the frontier plot are the tools practitioners use to
+    monitor real RLHF training runs."
+
+
+--- ACT 4: KL DIVERGENCE DEEP DIVE (15 minutes) -------------------------------
+Tab: KL Divergence
+
+1. Click the "KL Divergence" tab.
+
+2. Point to the reference distribution (B.6.1): "These blue bars represent
+   the SFT model's probability distribution over the next token. Think of this
+   as the 'safe' starting point."
+
+3. Point to the policy distribution (B.6.2): "These purple bars are the current
+   policy. Right now they match the reference exactly, so KL = 0."
+   Point to the stat pills (B.6.3) showing KL = 0.000.
+
+4. Point to the right-panel overlay chart (B.6.6): "Blue and purple bars are
+   identical right now."
+
+5. DEMONSTRATION 1 — Mild shift:
+   Drag the "the" bar up slightly (from ~0.18 to ~0.25). The distribution
+   auto-normalises.
+   - "I just increased the probability of 'the'. Watch what happened:"
+   - Point to the KL value: "KL went from 0 to about [value]."
+   - Point to the overlay chart: "See how the purple bar for 'the' is now
+   taller than the blue one."
+   - Point to the per-token contribution chart (B.6.7): "'the' now has the
+   largest positive KL contribution because it changed the most."
+
+6. DEMONSTRATION 2 — Extreme shift:
+   Drag "the" bar way up to dominate the distribution (~0.45).
+   - "Now I've made the policy almost deterministic — it wants to say 'the'
+   almost half the time."
+   - "KL has jumped to [value]. This would be a huge penalty."
+   - Point to the contribution chart: "Nearly all the KL comes from 'the'.
+   The other tokens have small negative-ish contributions because their mass
+   shrank."
+
+7. Click "Reset to Reference" (B.6.5). KL returns to 0.
+
+8. DEMONSTRATION 3 — Uniform shift:
+   Drag all bars to roughly equal heights (each ~0.10).
+   - "Now the policy is nearly uniform — every token is equally likely."
+   - "KL = [value]. Even though no single token dominates, the overall
+   distribution is very different from the reference."
+   - This shows KL captures distributional difference, not just individual
+   token changes.
+
+9. Click "Reset to Reference".
+
+10. DEMONSTRATION 4 — Beta scaling:
+    Drag one bar slightly (small KL, maybe ~0.02). Then adjust the beta slider
+    (B.6.4):
+    - beta=0.05: "At low beta, the penalty is just [value]. Barely noticeable."
+    - beta=0.50: "At high beta, the same KL divergence costs [value]. That's
+    a significant chunk of reward eaten up."
+    - beta=1.00: "At extreme beta, this tiny distribution shift costs [value]
+    in penalty."
+    "This is why beta matters so much — it amplifies or dampens the same
+    underlying divergence."
+
+11. Read the phase bar (B.6.8) to formally define KL divergence properties.
+
+
+--- ACT 5: DPO VS RLHF (10 minutes) ------------------------------------------
+Tab: DPO vs RLHF
+
+1. Click the "DPO vs RLHF" tab.
+
+2. Read the two summary phase bars (B.7.1, B.7.2) aloud. Contrast:
+   "RLHF: three stages, needs a reward model, needs PPO."
+   "DPO: two stages, no reward model, no RL."
+
+3. Explain the insight: "DPO's key insight is that you don't need to learn
+   the reward model separately. The reward is implicitly defined by the policy
+   itself: R(x,y) = beta * log(pi(y|x) / pi_ref(y|x))."
+
+4. Walk through the comparison table (B.7.7) row by row:
+   - Reward Model: RLHF needs one (yellow), DPO doesn't (green).
+   - RL Loop: RLHF uses PPO (yellow), DPO uses classification loss (green).
+   - Training Stability: RLHF can be unstable (red), DPO is more stable (green).
+   - Flexibility: RLHF is more flexible (green), DPO is moderate (yellow).
+   - Compute Cost: RLHF needs 4 models in memory (red), DPO needs 2 (green).
+   - Online Exploration: RLHF generates new responses (green), DPO uses
+   offline data only (yellow).
+
+5. DEMONSTRATION 1 — Default values (gap=1.50, beta=0.10):
+   Point to the DPO loss chart (B.7.6). "Four curves show the DPO loss for
+   different beta values. The thicker curve is our current beta=0.10."
+   Point to the purple dot: "We're here — at gap=1.50, our loss is [value]."
+   Read the stat pills (B.7.5).
+
+6. DEMONSTRATION 2 — Slide the gap from 0 to 5:
+   Slowly drag the gap slider (B.7.3) from 0 to 5.
+   "As the policy learns to separate the winner from the loser (gap increases),
+   the loss drops toward zero. The purple dot slides down the curve."
+   "At gap=0, the loss is maximised — the model can't distinguish winner from
+   loser at all."
+   "At gap=5, the loss is near zero — the model is very confident."
+
+7. DEMONSTRATION 3 — Compare beta values:
+   Set gap=2.00. Then toggle beta (B.7.4) through 0.05, 0.10, 0.20, 0.50.
+   "Lower beta = flatter loss curve = weaker gradient signal. The model learns
+   more slowly but is less aggressive."
+   "Higher beta = steeper curve = stronger signal. The model learns faster but
+   may over-correct."
+   Point to which curve becomes thick as beta changes.
+
+8. Read the "Key Insight" phase bar (B.7.8). Connect it back to the theory
+   section's Core Idea box (B.1.2): "DPO's equation is mathematically
+   equivalent to the RLHF objective, just solved in closed form."
+
+
+--- EPILOGUE: WRAP-UP (5 minutes) ---------------------------------------------
+
+1. Expand the theory section again. Scroll to the "RLHF vs DPO at a Glance"
+   box (B.1.9). Read it as a final summary.
+
+2. Scroll back to the Core Idea box (B.1.2). "You now understand every symbol:
+   - R is the reward we learned in the Reward Model tab.
+   - beta is the coefficient we tuned in the PPO tab.
+   - KL is the divergence we explored in the KL Divergence tab.
+   - pi is the policy, pi_ref is the frozen SFT model.
+   - The whole expression says: maximise reward while staying close to the
+   safe baseline."
+
+3. Collapse the theory section. Switch to the PPO tab and leave the final
+   experiment (beta=0.15) visible on screen as a visual summary.
+
+4. Invite questions. If time permits, let a student come up and run their own
+   PPO experiment with a beta value of their choosing.
+
+
+================================================================================
+SECTION D — QUICK REFERENCE: ALL INTERACTIVE ELEMENTS
+================================================================================
+
+This is a checklist. Every item below MUST be used at least once during the
+lecture. Check off as you go.
+
+[ ] Theory section Expand/Collapse button
+[ ] Core Idea key-concept box (referenced in Prologue and Epilogue)
+[ ] "Why Not Just Use More Supervised Data?" example box
+[ ] Reward Hacking warning box
+[ ] RLHF vs DPO at a Glance key-concept box
+
+[ ] Pipeline tab — click Stage 1 (SFT) node
+[ ] Pipeline tab — click Stage 2 (Reward Model) node
+[ ] Pipeline tab — click Stage 3 (PPO) node
+[ ] Pipeline tab — observe overview SVG diagram
+[ ] Pipeline tab — observe SFT detail diagram
+[ ] Pipeline tab — observe Reward Model detail diagram
+[ ] Pipeline tab — observe PPO detail diagram
+[ ] Pipeline tab — read stat pills for each stage
+[ ] Pipeline tab — read phase bar description for each stage
+
+[ ] Reward Model tab — use prompt dropdown (at least 3 different prompts)
+[ ] Reward Model tab — click Response A or B (at least 4 times total)
+[ ] Reward Model tab — observe response card colour change (win/lose)
+[ ] Reward Model tab — read stat pills after each comparison
+[ ] Reward Model tab — observe reward scores line chart growing
+[ ] Reward Model tab — observe Bradley-Terry probability bar shifting
+[ ] Reward Model tab — read phase bar after a comparison
+[ ] Reward Model tab — click "New Pair" button
+[ ] Reward Model tab — click "Reset Reward Model" button
+
+[ ] PPO tab — adjust beta slider (at least 3 different values: 0.00, 0.20, 0.80)
+[ ] PPO tab — adjust learning rate slider
+[ ] PPO tab — adjust training steps slider
+[ ] PPO tab — click "Run PPO" (at least 3 full runs)
+[ ] PPO tab — click "Step" button (at least 3 manual steps)
+[ ] PPO tab — click "Reset" button
+[ ] PPO tab — observe training dynamics chart (all three lines)
+[ ] PPO tab — observe reward-KL frontier scatter plot
+[ ] PPO tab — read stat pills during training
+[ ] PPO tab — observe phase bar colour changes
+
+[ ] KL Divergence tab — observe reference distribution (static blue bars)
+[ ] KL Divergence tab — drag policy bars (at least 3 different configurations)
+[ ] KL Divergence tab — observe auto-normalisation of policy distribution
+[ ] KL Divergence tab — read KL value stat pill after dragging
+[ ] KL Divergence tab — observe overlay chart (blue vs purple bars)
+[ ] KL Divergence tab — observe per-token KL contribution chart
+[ ] KL Divergence tab — adjust beta slider (at least 2 different values)
+[ ] KL Divergence tab — click "Reset to Reference" button
+[ ] KL Divergence tab — read "How KL Divergence Works" phase bar
+
+[ ] DPO vs RLHF tab — read RLHF summary phase bar
+[ ] DPO vs RLHF tab — read DPO summary phase bar
+[ ] DPO vs RLHF tab — adjust implicit reward gap slider (sweep 0 to 5)
+[ ] DPO vs RLHF tab — adjust beta slider (at least 3 values)
+[ ] DPO vs RLHF tab — observe DPO loss landscape chart (curves + purple dot)
+[ ] DPO vs RLHF tab — read comparison table (all 6 rows)
+[ ] DPO vs RLHF tab — read "Key Insight" phase bar
+
+
+================================================================================
+SECTION E — TIMING SUMMARY
+================================================================================
+
+  Prologue:  Motivation & Theory Overview ................  5 min
+  Act 1:     Pipeline (3 stage diagrams) .................  10 min
+  Act 2:     Reward Model (preference annotation) ........  15 min
+  Act 3:     PPO (4 experiments + manual stepping) .......  20 min
+  Act 4:     KL Divergence (4 demonstrations) ............  15 min
+  Act 5:     DPO vs RLHF (3 demonstrations + table) .....  10 min
+  Epilogue:  Wrap-up & Questions .........................   5 min (buffer)
+  --------------------------------------------------------
+  Total .................................................. ~75-80 min
+
+
+================================================================================
+END OF DOCUMENT
+================================================================================
